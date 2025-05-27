@@ -35,7 +35,7 @@ export const routes: RouteRecordRaw[] = [
         meta: { title: "Products", requiresAuth: false },
       },
       {
-        path: "products/:id",
+        path: "product/:id",
         name: "product-details",
         component: ProductDetailView,
         meta: { title: "Product Details", requiresAuth: false },

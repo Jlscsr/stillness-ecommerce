@@ -1,9 +1,19 @@
 import { get } from "@/composables/requests";
 import type { Product } from "@/types/Product";
+import type { ApiResponse } from "@/types/Response";
 
-export const fetchProducts = async (params?: object) => {
-  // TODO: Change the generic type to match the expected response structure from the backend
-  // For example, if the response is { status: boolean, message: string, data: Product[] }, you can use get<{ products: Product[] }>(...)
-  // For now, we assume the response is Product[]
-  return await get<Product[]>("", params);
+export const fetchProducts = async (
+  params?: object
+): Promise<ApiResponse<Product[]>> => {
+  try {
+    const response = await get<ApiResponse<Product[]>>("/products", params);
+    if (!response.success) {
+      throw new Error(response.message);
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw new Error("Failed to fetch products.");
+  }
 };

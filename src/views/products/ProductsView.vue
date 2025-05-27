@@ -51,7 +51,7 @@
           >
             <ScrollAnimation
               v-for="(product, index) in filteredProducts"
-              :key="product.id"
+              :key="product._id"
               type="scale"
               :delay="0.1 * (index % 4)"
             >
@@ -112,23 +112,24 @@ const filters = reactive<FilterState>({
 });
 
 // Computed filtered list
-const filteredProducts = computed(() =>
-  productStore.products
-    .filter(
-      (p) =>
-        !searchQuery.value ||
-        p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    )
-    .filter(
-      (p) =>
-        p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
-    )
-    .filter(
-      (p) =>
-        !filters.categories.length ||
-        filters.categories.includes(p.category.toLowerCase())
-    )
-    .filter((p) => {
+const filteredProducts = computed(
+  () =>
+    productStore.products
+      .filter(
+        (p) =>
+          !searchQuery.value ||
+          p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      )
+      .filter(
+        (p) =>
+          p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
+      )
+      .filter(
+        (p) =>
+          !filters.categories.length ||
+          filters.categories.includes(p.category.toLowerCase())
+      )
+  /* .filter((p) => {
       if (!filters.materials.length) return true;
       const materialMap: Record<string, number[]> = {
         ceramic: [1, 5],
@@ -138,8 +139,8 @@ const filteredProducts = computed(() =>
         wood: [7, 8],
       };
       const ids = filters.materials.flatMap((m) => materialMap[m] || []);
-      return ids.includes(p.id);
-    })
+      return ids.includes(p._id);
+    }) */
 );
 
 // Filter options

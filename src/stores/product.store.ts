@@ -5,7 +5,6 @@ import { fetchProducts } from "@services/product.service";
 
 export const useProductStore = defineStore("product", () => {
   const products = ref<Product[]>([]);
-  const isLoading = ref(false);
 
   // Getters for computed properties
   const productsCount = computed(() => products.value.length);
@@ -30,22 +29,17 @@ export const useProductStore = defineStore("product", () => {
   };
 
   const getProducts = async (params?: object) => {
-    isLoading.value = true;
-
     try {
       const response = await fetchProducts(params);
-      products.value = response;
+      products.value = response.data || [];
     } catch (error) {
       console.error("Failed to fetch products:", error);
       throw error;
-    } finally {
-      isLoading.value = false;
     }
   };
 
-  const getProductById = (id: number) => {
-    console.log(products.value);
-    const product = products.value.find((p) => Number(p.id) === id);
+  const getProductById = (id: string) => {
+    const product = products.value.find((p) => p._id === id);
     if (product) {
       return product;
     } else {
@@ -58,7 +52,6 @@ export const useProductStore = defineStore("product", () => {
     products,
     getProducts,
     getProductById,
-    isLoading,
     productsCount,
     productsByCategory,
     productsByPrice,

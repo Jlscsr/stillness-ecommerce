@@ -39,8 +39,6 @@ router.beforeEach(async (to, from, next) => {
       await authStore.checkUserAuthStatus();
       authStatusChecked = true;
     } catch (error) {
-      console.error("Failed to check auth status:", error);
-      // Continue with navigation even if auth check fails
       authStatusChecked = true;
     }
   }

@@ -43,7 +43,7 @@
           <ProductTabs :product="selectedProduct" />
 
           <!-- Product reviews -->
-          <ProductReviews :product-id="selectedProduct.id" />
+          <ProductReviews :product-id="selectedProduct._id" />
         </div>
       </div>
     </div>
@@ -67,21 +67,26 @@ const productStore = useProductStore();
 
 const selectedProduct = ref<Product | null>(null);
 
-const productId = ref(Number(route.params.id[0]));
-
 // Load product on mount and when route changes
 onMounted(async () => {
-  if (productId.value) {
-    selectedProduct.value = productStore.getProductById(productId.value);
+  if (route.params.id) {
+    const id = Array.isArray(route.params.id)
+      ? route.params.id[0]
+      : route.params.id;
+    selectedProduct.value = productStore.getProductById(id);
   }
 });
 
 // Watch for route changes
-watch(productId, (newId) => {
-  if (newId) {
-    selectedProduct.value = productStore.getProductById(newId);
+watch(
+  () => route.params.id,
+  (newId) => {
+    if (newId) {
+      const id = Array.isArray(newId) ? newId[0] : newId;
+      selectedProduct.value = productStore.getProductById(id);
+    }
   }
-});
+);
 
 // Handle add to cart (placeholder for now)
 const handleAddToCart = (payload: { product: Product; quantity: number }) => {

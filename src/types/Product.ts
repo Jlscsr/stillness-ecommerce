@@ -1,19 +1,20 @@
 interface Image {
-  id: number;
+  _id: number;
   src: string;
   alt: string;
 }
 
 export interface Product {
-  id: number;
+  _id: string;
   name: string;
   description: string;
+  longDescription?: string;
   japaneseText?: string;
   price: number;
   images: Image[];
   category: string;
   stock: number;
-  materials: string;
+  materials: string[];
   dimensions: string;
   createdAt: string;
   updatedAt: string;

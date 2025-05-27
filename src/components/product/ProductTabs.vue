@@ -29,7 +29,7 @@
         class="prose prose-stone max-w-none"
       >
         <div class="text-charcoal/80">
-          {{ product.fullDescription || product.description }}
+          {{ product.longDescription || product.description }}
         </div>
       </div>
 
@@ -38,17 +38,12 @@
         <div class="space-y-4">
           <div v-if="product.materials">
             <h4 class="font-medium mb-2 text-charcoal">Materials</h4>
-            <p class="text-charcoal/80">{{ product.materials }}</p>
+            <p class="text-charcoal/80">{{ product.materials.join(", ") }}</p>
           </div>
 
           <div v-if="product.dimensions">
             <h4 class="font-medium mb-2 text-charcoal">Dimensions</h4>
             <p class="text-charcoal/80">{{ product.dimensions }}</p>
-          </div>
-
-          <div v-if="product.care">
-            <h4 class="font-medium mb-2 text-charcoal">Care Instructions</h4>
-            <p class="text-charcoal/80">{{ product.care }}</p>
           </div>
         </div>
       </div>
@@ -58,17 +53,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  fullDescription?: string;
-  materials?: string;
-  dimensions?: string;
-  care?: string;
-  shipping?: string;
-}
+import type { Product } from "@/types/Product";
 
 interface Props {
   product: Product;
@@ -90,12 +75,8 @@ const visibleTabs = computed(() => {
     },
     {
       id: "details",
-      label: "Materials & Care",
-      show: Boolean(
-        props.product.materials ||
-          props.product.dimensions ||
-          props.product.care
-      ),
+      label: "Materials",
+      show: Boolean(props.product.materials || props.product.dimensions),
     },
   ].filter((tab) => tab.show);
 

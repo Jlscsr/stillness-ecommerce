@@ -1,13 +1,11 @@
 import { post } from "@/composables/requests";
-import type {
-  LoginCredentials,
-  RegisterCredentials,
-  AuthResponse,
-} from "@/types/Auth";
+import type { LoginCredentials, RegisterCredentials } from "@/types/Auth";
+import type { ApiResponse } from "@/types/Response";
+import type { UserCredentials } from "@/types/User";
 
-export const checkAuthStatus = async (): Promise<AuthResponse> => {
+export const checkAuthStatus = async (): Promise<ApiResponse> => {
   try {
-    const response = await post<AuthResponse>("/auth/check");
+    const response = await post<ApiResponse<UserCredentials>>("/auth/check");
 
     if (!response.success) {
       throw new Error(response.message);
@@ -15,16 +13,18 @@ export const checkAuthStatus = async (): Promise<AuthResponse> => {
 
     return response;
   } catch (error) {
-    console.error("Auth status check error:", error);
     throw new Error("Failed to check authentication status.");
   }
 };
 
 export const login = async (
   payload: LoginCredentials
-): Promise<AuthResponse> => {
+): Promise<ApiResponse> => {
   try {
-    const response = await post<AuthResponse>("/auth/login", payload);
+    const response = await post<ApiResponse<UserCredentials>>(
+      "/auth/login",
+      payload
+    );
 
     return response;
   } catch (error) {
@@ -35,9 +35,12 @@ export const login = async (
 
 export const register = async (
   payload: RegisterCredentials
-): Promise<AuthResponse> => {
+): Promise<ApiResponse> => {
   try {
-    const response = await post<AuthResponse>("/auth/register", payload);
+    const response = await post<ApiResponse<UserCredentials>>(
+      "/auth/register",
+      payload
+    );
 
     return response;
   } catch (error) {

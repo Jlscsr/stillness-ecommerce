@@ -215,8 +215,8 @@ import { ref, computed } from "vue";
 import { Star, StarHalf } from "lucide-vue-next";
 
 interface Review {
-  id: number;
-  productId: number;
+  id: string;
+  productId: string;
   name: string;
   rating: number;
   date: string;
@@ -226,7 +226,7 @@ interface Review {
 }
 
 interface Props {
-  productId: number;
+  productId: string;
 }
 
 const props = defineProps<Props>();
@@ -234,8 +234,8 @@ const props = defineProps<Props>();
 // Mock reviews data
 const mockReviews: Review[] = [
   {
-    id: 1,
-    productId: 1,
+    id: "1",
+    productId: "1",
     name: "Akiko T.",
     rating: 5,
     date: "2023-10-15",
@@ -244,8 +244,8 @@ const mockReviews: Review[] = [
     verified: true,
   },
   {
-    id: 2,
-    productId: 1,
+    id: "2",
+    productId: "1",
     name: "Michael L.",
     rating: 4,
     date: "2023-09-22",
@@ -254,8 +254,8 @@ const mockReviews: Review[] = [
     verified: true,
   },
   {
-    id: 3,
-    productId: 1,
+    id: "3",
+    productId: "1",
     name: "Emma S.",
     rating: 4.5,
     date: "2023-11-03",
@@ -264,8 +264,8 @@ const mockReviews: Review[] = [
     verified: true,
   },
   {
-    id: 4,
-    productId: 2,
+    id: "4",
+    productId: "2",
     name: "David K.",
     rating: 5,
     date: "2023-10-18",

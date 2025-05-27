@@ -1,6 +1,6 @@
 <template>
   <router-link
-    :to="{ name: 'product-details', params: { id: product.id } }"
+    :to="{ name: 'product-details', params: { id: product._id } }"
     class="group block"
   >
     <div class="mb-4 overflow-hidden rounded-sm shadow-lg">
@@ -30,7 +30,6 @@
       }}</span>
       <button
         class="text-sm bg-beige px-4 py-1.5 text-charcoal rounded-sm hover:bg-beige/90 transition-colors"
-        @click.prevent="handleShopNow"
       >
         Shop Now
       </button>
@@ -39,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import type { Product } from "@/types/Product";
 
 import ImageWithLoading from "@components/ui/ImageWithLoading.vue";
@@ -51,9 +49,4 @@ interface Props {
 
 const props = defineProps<Props>();
 const showFooter = props.showFooter ?? true;
-const router = useRouter();
-
-const handleShopNow = () => {
-  router.push({ name: "product-details", params: { id: props.product.id } });
-};
 </script>

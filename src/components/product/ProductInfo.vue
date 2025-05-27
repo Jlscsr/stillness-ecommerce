@@ -91,7 +91,9 @@
     <div class="border-t border-charcoal/10 pt-6 space-y-4">
       <div v-if="product.materials" class="flex">
         <span class="text-sm font-medium text-charcoal w-24">Materials:</span>
-        <span class="text-sm text-charcoal/80">{{ product.materials }}</span>
+        <span class="text-sm text-charcoal/80">{{
+          product.materials.join(", ")
+        }}</span>
       </div>
       <div v-if="product.dimensions" class="flex">
         <span class="text-sm font-medium text-charcoal w-24">Dimensions:</span>
@@ -110,17 +112,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { Heart, ShoppingBag, CreditCard } from "lucide-vue-next";
-
-interface Product {
-  id: number;
-  name: string;
-  japaneseText?: string;
-  price: number;
-  description: string;
-  materials?: string;
-  dimensions?: string;
-  stock?: number;
-}
+import type { Product } from "@/types/Product";
 
 interface Props {
   product: Product;

@@ -29,15 +29,31 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from "vue";
 import { RouterView } from "vue-router";
 import { useProductStore } from "@/stores/product.store";
+import { useAuthStore } from "@/stores/auth.store";
+import { useCartStore } from "./stores/cart.store";
 import { onMounted } from "vue";
 
+const authStore = useAuthStore();
 const { getProducts } = useProductStore();
+const { getCart, clearCart } = useCartStore();
 
 onMounted(async () => {
   await getProducts();
 });
+
+watch(
+  () => authStore.isAuthenticated,
+  async (isLoggedIn) => {
+    if (isLoggedIn) {
+      await getCart();
+    } else {
+      clearCart();
+    }
+  }
+);
 </script>
 
 <style>

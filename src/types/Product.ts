@@ -1,4 +1,4 @@
-interface Image {
+export interface Image {
   _id: number;
   src: string;
   alt: string;

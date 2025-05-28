@@ -97,9 +97,12 @@ import { Eye, EyeOff } from "lucide-vue-next";
 
 import { useFormValidation } from "@hooks/useFormValidation";
 import { required, email } from "@composables/validators";
-import { useAuthStore } from "@/stores/auth.store";
 
-const { userLogin, isLoading } = useAuthStore();
+import { useAuthStore } from "@/stores/auth.store";
+import { useCartStore } from "@/stores/cart.store";
+
+const { userLogin } = useAuthStore();
+const cartStore = useCartStore();
 const router = useRouter();
 
 // form state
@@ -120,11 +123,12 @@ const { errors, validateField, validate } = useFormValidation(formData, schema);
 // UI state
 const showPassword = ref(false);
 const error = ref("");
+const isLoading = ref(false);
 
 // disable submit if invalid or loading
 const isSubmitDisabled = computed(
   () =>
-    isLoading ||
+    isLoading.value ||
     Object.values(errors).some((e) => e != null) ||
     !formData.email.trim() ||
     formData.password === ""
@@ -132,6 +136,7 @@ const isSubmitDisabled = computed(
 
 // submit handler
 async function handleSubmit() {
+  isLoading.value = true;
   error.value = "";
   if (!validate()) {
     error.value = "Please fix the errors before continuing.";
@@ -147,9 +152,13 @@ async function handleSubmit() {
       error.value = response.error || "Login failed. Please try again.";
       return;
     }
+
+    await cartStore.getCart();
     router.push({ name: "home" });
   } catch {
     error.value = "Failed to login. Please check your credentials.";
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>

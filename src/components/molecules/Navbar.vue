@@ -115,10 +115,10 @@
           >
             <ShoppingBag class="h-5 w-5" />
             <span
-              v-if="itemCount > 0"
+              v-if="cartItemsCount > 0"
               class="absolute -top-1 -right-1 bg-beige text-charcoal text-xs w-4 h-4 flex items-center justify-center rounded-full"
             >
-              {{ itemCount }}
+              {{ cartItemsCount }}
             </span>
           </button>
         </template>
@@ -260,7 +260,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from "vue";
 import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+
 import { useAuthStore } from "@stores/auth.store";
+import { useCartStore } from "@stores/cart.store";
+
 import { LogIn, User, ShoppingBag, Menu, X, UserPlus } from "lucide-vue-next";
 import Logo from "@components/atoms/Logo.vue";
 import ShoppingCartSidebar from "@components/cart/ShoppingCartSidebar.vue";
@@ -271,18 +275,14 @@ interface User {
   email: string;
 }
 
-// Emits
-const emit = defineEmits<{
-  (e: "logout"): void;
-}>();
-
 // Store and router
 const authStore = useAuthStore();
+const cartStore = useCartStore();
+const { cartItemsCount } = storeToRefs(cartStore);
 const router = useRouter();
 
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const user = computed(() => authStore.user);
-const itemCount = ref(4); // Dummy cart count for demonstration
 
 // State
 const isScrolled = ref(false);
@@ -318,6 +318,7 @@ const closeMobileMenu = () => {
 const handleLogout = () => {
   isUserMenuOpen.value = false;
   authStore.logoutUser();
+  cartStore.clearCart();
   router.push("/");
 };
 

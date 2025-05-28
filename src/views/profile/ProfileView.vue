@@ -1,36 +1,140 @@
 <template>
-  <h1>ProfileView</h1>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
+    <h1 class="text-3xl font-light text-charcoal mb-8">My Account</h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <div class="bg-cream border border-charcoal/10 rounded-sm p-6">
+          <AccountSidebar 
+            :user="user" 
+            :activeTab="activeTab" 
+            @setTab="setActiveTab" 
+          />
+        </div>
+      </div>
+      
+      <!-- Main Content Area -->
+      <div class="lg:col-span-3">
+        <div v-if="activeTab === 'profile'" class="bg-cream border border-charcoal/10 rounded-sm p-6">
+          <AccountInfo :user="user" />
+        </div>
+        
+        <div v-else-if="activeTab === 'orders'">
+          <AccountOrders 
+            :pendingOrders="pendingOrders" 
+            :orderHistory="orderHistory" 
+            :expandedOrders="expandedOrders"
+            @toggleOrder="toggleOrderExpand"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref } from 'vue';
 
-const router = useRouter();
+import AccountSidebar from '@/components/profile/AccountSidebar.vue';
+import AccountInfo from '@/components/profile/AccountInfo.vue';
+import AccountOrders from '@/components/profile/AccountOrders.vue';
 
-// Mock order data
-const orders = ref([
+// State management
+const activeTab = ref('profile');
+const expandedOrders = ref<string[]>([]);
+
+// Methods
+const setActiveTab = (tab: string) => {
+  activeTab.value = tab;
+};
+
+const toggleOrderExpand = (orderId: string) => {
+  if (expandedOrders.value.includes(orderId)) {
+    expandedOrders.value = expandedOrders.value.filter(id => id !== orderId);
+  } else {
+    expandedOrders.value.push(orderId);
+  }
+};
+
+// Dummy user data based on the design
+const user = ref({
+  fullName: 'Akiko Tanaka',
+  email: 'akiko.tanaka@example.com',
+  memberSince: 'November 2022',
+  address: '1-2-3 Shibuya, Tokyo, Japan'
+});
+
+// Dummy order data exactly matching the NextJS reference
+const pendingOrders = ref([
   {
-    id: "WU12345678",
-    date: "May 15, 2023",
-    total: 149.97,
-    status: "Delivered",
+    id: 'JP-123456',
+    date: 'May 15, 2023',
+    status: 'Processing',
+    total: 89.00,
     items: [
-      { id: 1, name: "Product 1" },
-      { id: 2, name: "Product 2" },
-    ],
-  },
-  {
-    id: "WU98765432",
-    date: "April 2, 2023",
-    total: 89.99,
-    status: "Delivered",
-    items: [{ id: 3, name: "Product 3" }],
-  },
+      {
+        id: '1',
+        name: 'Ceramic Tea Set',
+        quantity: 1,
+        price: 89.00,
+        image: null
+      }
+    ]
+  }
 ]);
 
-const editProfile = () => {
-  // In a real app, this would open an edit form or navigate to an edit page
-  console.log("Edit profile clicked");
-};
+const orderHistory = ref([
+  {
+    id: 'JP-987654',
+    date: 'April 2, 2023',
+    status: 'Delivered',
+    total: 125.00,
+    items: [
+      {
+        id: '2',
+        name: 'Linen Throw Blanket',
+        price: 65.0,
+        quantity: 1,
+        image: null
+      },
+      {
+        id: '5',
+        name: 'Natural Incense Set',
+        price: 28.0,
+        quantity: 1,
+        image: null
+      },
+      {
+        id: '7',
+        name: 'Wooden Chopstick Set',
+        price: 32.0,
+        quantity: 1,
+        image: null
+      }
+    ]
+  },
+  {
+    id: 'JP-876543',
+    date: 'February 18, 2023',
+    status: 'Delivered',
+    total: 133.00,
+    items: [
+      {
+        id: '4',
+        name: 'Meditation Cushion',
+        price: 55.0,
+        quantity: 1,
+        image: null
+      },
+      {
+        id: '6',
+        name: 'Linen Kimono Robe',
+        price: 78.0,
+        quantity: 1,
+        image: null
+      }
+    ]
+  }
+]);
 </script>

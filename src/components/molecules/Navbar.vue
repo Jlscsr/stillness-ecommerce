@@ -5,6 +5,7 @@
       isScrolled ? 'bg-cream/95 backdrop-blur-sm shadow-sm' : 'bg-transparent',
     ]"
   >
+    <ShoppingCartSidebar :is-open="isCartOpen" @close="closeCart" />
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <!-- Logo -->
       <Logo />
@@ -83,14 +84,14 @@
               </div>
               <div class="py-1">
                 <router-link
-                  to="/account"
+                  to="/profile"
                   class="block px-4 py-2 text-sm text-charcoal hover:bg-beige/10"
                   @click="closeUserMenu"
                 >
                   My Account
                 </router-link>
                 <router-link
-                  to="/account/orders"
+                  to="/profile"
                   class="block px-4 py-2 text-sm text-charcoal hover:bg-beige/10"
                   @click="closeUserMenu"
                 >
@@ -217,7 +218,7 @@
                 </div>
               </div>
               <router-link
-                to="/account"
+                to="/profile"
                 class="block w-full py-3 text-center border border-charcoal/20 rounded-sm text-charcoal hover:bg-charcoal/5 transition-colors"
                 @click="closeMobileMenu"
               >
@@ -262,6 +263,7 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@stores/auth.store";
 import { LogIn, User, ShoppingBag, Menu, X, UserPlus } from "lucide-vue-next";
 import Logo from "@components/atoms/Logo.vue";
+import ShoppingCartSidebar from "@components/cart/ShoppingCartSidebar.vue";
 
 // Types
 interface User {
@@ -271,7 +273,6 @@ interface User {
 
 // Emits
 const emit = defineEmits<{
-  (e: "toggleCart"): void;
   (e: "logout"): void;
 }>();
 
@@ -281,16 +282,21 @@ const router = useRouter();
 
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const user = computed(() => authStore.user);
-const itemCount = ref(0); // Replace with cart store itemCount
+const itemCount = ref(4); // Dummy cart count for demonstration
 
 // State
 const isScrolled = ref(false);
 const isUserMenuOpen = ref(false);
 const isMobileMenuOpen = ref(false);
+const isCartOpen = ref(false);
 
 // Methods
 const toggleCart = () => {
-  emit("toggleCart");
+  isCartOpen.value = !isCartOpen.value;
+};
+
+const closeCart = () => {
+  isCartOpen.value = false;
 };
 
 const toggleUserMenu = () => {

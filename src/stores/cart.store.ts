@@ -1,8 +1,13 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { Cart, CartItem } from "@/types/Cart";
+import type { Cart, CartItem, CartRequestBody } from "@/types/Cart";
 
-import { fetchCartItems, addToCart } from "@/services/cart.service";
+import {
+  fetchCartItems,
+  addToCart,
+  updateCart,
+  removeCartItem,
+} from "@/services/cart.service";
 
 export const useCartStore = defineStore("cart", () => {
   const cart = ref<Cart | null>(null);
@@ -22,12 +27,43 @@ export const useCartStore = defineStore("cart", () => {
     }
   };
 
-  const addCartItem = async (item: CartItem) => {
+  const addCartItem = async (item: CartRequestBody) => {
     try {
       const response = await addToCart(item);
-      cart.value = response.data ?? null;
+
+      if (response.success) {
+        await getCart();
+      }
     } catch (error) {
       console.error("Failed to add item to cart:", error);
+      throw error;
+    }
+  };
+
+  const updateItemQuantity = async (
+    productId: string,
+    payload: CartRequestBody
+  ) => {
+    try {
+      const response = await updateCart(productId, payload);
+
+      if (response.success) {
+        await getCart();
+      }
+    } catch (error) {
+      console.error("Failed to update cart item:", error);
+      throw error;
+    }
+  };
+
+  const removeItem = async (productId: string) => {
+    try {
+      const response = await removeCartItem(productId);
+      if (response.success) {
+        await getCart();
+      }
+    } catch (error) {
+      console.error("Failed to remove cart item:", error);
       throw error;
     }
   };
@@ -36,5 +72,13 @@ export const useCartStore = defineStore("cart", () => {
     cart.value = null;
   };
 
-  return { cart, cartItemsCount, getCart, addCartItem, clearCart };
+  return {
+    cart,
+    cartItemsCount,
+    getCart,
+    addCartItem,
+    updateItemQuantity,
+    removeItem,
+    clearCart,
+  };
 });

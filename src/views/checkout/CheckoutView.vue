@@ -1,18 +1,25 @@
 <template>
   <main class="min-h-screen bg-cream">
     <!-- Order Confirmation View -->
-    <div v-if="isComplete" class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
+    <div
+      v-if="isComplete"
+      class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16"
+    >
       <div class="text-center">
-        <div class="w-16 h-16 bg-sage/20 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div
+          class="w-16 h-16 bg-sage/20 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
           <Check class="h-8 w-8 text-sage" />
         </div>
         <h1 class="text-3xl font-light text-charcoal mb-4">Order Confirmed</h1>
         <p class="text-charcoal/70 mb-6">
           Thank you for your order! Your order number is
-          <span class="font-medium text-charcoal">{{ orderNumber }}</span>.
+          <span class="font-medium text-charcoal">{{ orderNumber }}</span
+          >.
         </p>
         <p class="text-charcoal/70 mb-8">
-          We've sent a confirmation email to <span class="font-medium text-charcoal">{{ formData.email }}</span>
+          We've sent a confirmation email to
+          <span class="font-medium text-charcoal">{{ formData.email }}</span>
           with your order details.
         </p>
 
@@ -59,18 +66,36 @@
 
       <!-- Checkout steps -->
       <div class="flex items-center mb-8">
-        <div :class="`flex items-center ${step >= 1 ? 'text-sage' : 'text-charcoal/40'}`">
+        <div
+          :class="`flex items-center ${
+            step >= 1 ? 'text-sage' : 'text-charcoal/40'
+          }`"
+        >
           <div
-            :class="`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-sage text-cream' : 'bg-charcoal/20 text-charcoal/60'}`"
+            :class="`w-8 h-8 rounded-full flex items-center justify-center ${
+              step >= 1
+                ? 'bg-sage text-cream'
+                : 'bg-charcoal/20 text-charcoal/60'
+            }`"
           >
             1
           </div>
           <span class="ml-2 font-medium">Shipping</span>
         </div>
-        <div :class="`w-12 h-0.5 mx-2 ${step >= 2 ? 'bg-sage' : 'bg-charcoal/20'}`"></div>
-        <div :class="`flex items-center ${step >= 2 ? 'text-sage' : 'text-charcoal/40'}`">
+        <div
+          :class="`w-12 h-0.5 mx-2 ${step >= 2 ? 'bg-sage' : 'bg-charcoal/20'}`"
+        ></div>
+        <div
+          :class="`flex items-center ${
+            step >= 2 ? 'text-sage' : 'text-charcoal/40'
+          }`"
+        >
           <div
-            :class="`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-sage text-cream' : 'bg-charcoal/20 text-charcoal/60'}`"
+            :class="`w-8 h-8 rounded-full flex items-center justify-center ${
+              step >= 2
+                ? 'bg-sage text-cream'
+                : 'bg-charcoal/20 text-charcoal/60'
+            }`"
           >
             2
           </div>
@@ -85,11 +110,16 @@
             <form @submit.prevent="handleSubmit">
               <!-- Step 1: Shipping Information -->
               <div v-if="step === 1">
-                <h2 class="text-lg font-medium text-charcoal mb-4">Shipping Information</h2>
+                <h2 class="text-lg font-medium text-charcoal mb-4">
+                  Shipping Information
+                </h2>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label for="firstName" class="block text-sm font-medium text-charcoal mb-1">
+                    <label
+                      for="firstName"
+                      class="block text-sm font-medium text-charcoal mb-1"
+                    >
                       First Name *
                     </label>
                     <input
@@ -99,13 +129,20 @@
                       @blur="validateField('firstName')"
                       :class="[
                         'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        firstNameError ? 'border-red-500' : 'border-charcoal/20'
+                        firstNameError
+                          ? 'border-red-500'
+                          : 'border-charcoal/20',
                       ]"
                     />
-                    <p v-if="firstNameError" class="mt-1 text-xs text-red-500">{{ firstNameError }}</p>
+                    <p v-if="firstNameError" class="mt-1 text-xs text-red-500">
+                      {{ firstNameError }}
+                    </p>
                   </div>
                   <div>
-                    <label for="lastName" class="block text-sm font-medium text-charcoal mb-1">
+                    <label
+                      for="lastName"
+                      class="block text-sm font-medium text-charcoal mb-1"
+                    >
                       Last Name *
                     </label>
                     <input
@@ -115,15 +152,20 @@
                       @blur="validateField('lastName')"
                       :class="[
                         'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        lastNameError ? 'border-red-500' : 'border-charcoal/20'
+                        lastNameError ? 'border-red-500' : 'border-charcoal/20',
                       ]"
                     />
-                    <p v-if="lastNameError" class="mt-1 text-xs text-red-500">{{ lastNameError }}</p>
+                    <p v-if="lastNameError" class="mt-1 text-xs text-red-500">
+                      {{ lastNameError }}
+                    </p>
                   </div>
                 </div>
 
                 <div class="mb-4">
-                  <label for="email" class="block text-sm font-medium text-charcoal mb-1">
+                  <label
+                    for="email"
+                    class="block text-sm font-medium text-charcoal mb-1"
+                  >
                     Email Address *
                   </label>
                   <input
@@ -133,14 +175,19 @@
                     @blur="validateField('email')"
                     :class="[
                       'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                      emailError ? 'border-red-500' : 'border-charcoal/20'
+                      emailError ? 'border-red-500' : 'border-charcoal/20',
                     ]"
                   />
-                  <p v-if="emailError" class="mt-1 text-xs text-red-500">{{ emailError }}</p>
+                  <p v-if="emailError" class="mt-1 text-xs text-red-500">
+                    {{ emailError }}
+                  </p>
                 </div>
 
                 <div class="mb-4">
-                  <label for="address" class="block text-sm font-medium text-charcoal mb-1">
+                  <label
+                    for="address"
+                    class="block text-sm font-medium text-charcoal mb-1"
+                  >
                     Address *
                   </label>
                   <input
@@ -150,15 +197,20 @@
                     @blur="validateField('address')"
                     :class="[
                       'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                      addressError ? 'border-red-500' : 'border-charcoal/20'
+                      addressError ? 'border-red-500' : 'border-charcoal/20',
                     ]"
                   />
-                  <p v-if="addressError" class="mt-1 text-xs text-red-500">{{ addressError }}</p>
+                  <p v-if="addressError" class="mt-1 text-xs text-red-500">
+                    {{ addressError }}
+                  </p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label for="city" class="block text-sm font-medium text-charcoal mb-1">
+                    <label
+                      for="city"
+                      class="block text-sm font-medium text-charcoal mb-1"
+                    >
                       City *
                     </label>
                     <input
@@ -168,13 +220,18 @@
                       @blur="validateField('city')"
                       :class="[
                         'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        cityError ? 'border-red-500' : 'border-charcoal/20'
+                        cityError ? 'border-red-500' : 'border-charcoal/20',
                       ]"
                     />
-                    <p v-if="cityError" class="mt-1 text-xs text-red-500">{{ cityError }}</p>
+                    <p v-if="cityError" class="mt-1 text-xs text-red-500">
+                      {{ cityError }}
+                    </p>
                   </div>
                   <div>
-                    <label for="postalCode" class="block text-sm font-medium text-charcoal mb-1">
+                    <label
+                      for="postalCode"
+                      class="block text-sm font-medium text-charcoal mb-1"
+                    >
                       Postal Code *
                     </label>
                     <input
@@ -184,13 +241,20 @@
                       @blur="validateField('postalCode')"
                       :class="[
                         'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        postalCodeError ? 'border-red-500' : 'border-charcoal/20'
+                        postalCodeError
+                          ? 'border-red-500'
+                          : 'border-charcoal/20',
                       ]"
                     />
-                    <p v-if="postalCodeError" class="mt-1 text-xs text-red-500">{{ postalCodeError }}</p>
+                    <p v-if="postalCodeError" class="mt-1 text-xs text-red-500">
+                      {{ postalCodeError }}
+                    </p>
                   </div>
                   <div>
-                    <label for="country" class="block text-sm font-medium text-charcoal mb-1">
+                    <label
+                      for="country"
+                      class="block text-sm font-medium text-charcoal mb-1"
+                    >
                       Country *
                     </label>
                     <select
@@ -199,7 +263,7 @@
                       @blur="validateField('country')"
                       :class="[
                         'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        countryError ? 'border-red-500' : 'border-charcoal/20'
+                        countryError ? 'border-red-500' : 'border-charcoal/20',
                       ]"
                     >
                       <option value="Japan">Japan</option>
@@ -208,14 +272,18 @@
                       <option value="Australia">Australia</option>
                       <option value="United Kingdom">United Kingdom</option>
                     </select>
-                    <p v-if="countryError" class="mt-1 text-xs text-red-500">{{ countryError }}</p>
+                    <p v-if="countryError" class="mt-1 text-xs text-red-500">
+                      {{ countryError }}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <!-- Step 2: Payment Information -->
               <div v-if="step === 2">
-                <h2 class="text-lg font-medium text-charcoal mb-4">Payment Information</h2>
+                <h2 class="text-lg font-medium text-charcoal mb-4">
+                  Payment Information
+                </h2>
 
                 <div class="flex items-center mb-6">
                   <CreditCard class="h-5 w-5 text-charcoal/60 mr-2" />
@@ -223,7 +291,10 @@
                 </div>
 
                 <div class="mb-4">
-                  <label for="cardName" class="block text-sm font-medium text-charcoal mb-1">
+                  <label
+                    for="cardName"
+                    class="block text-sm font-medium text-charcoal mb-1"
+                  >
                     Name on Card *
                   </label>
                   <input
@@ -233,14 +304,19 @@
                     @blur="validateField('cardName')"
                     :class="[
                       'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                      cardNameError ? 'border-red-500' : 'border-charcoal/20'
+                      cardNameError ? 'border-red-500' : 'border-charcoal/20',
                     ]"
                   />
-                  <p v-if="cardNameError" class="mt-1 text-xs text-red-500">{{ cardNameError }}</p>
+                  <p v-if="cardNameError" class="mt-1 text-xs text-red-500">
+                    {{ cardNameError }}
+                  </p>
                 </div>
 
                 <div class="mb-4">
-                  <label for="cardNumber" class="block text-sm font-medium text-charcoal mb-1">
+                  <label
+                    for="cardNumber"
+                    class="block text-sm font-medium text-charcoal mb-1"
+                  >
                     Card Number *
                   </label>
                   <input
@@ -251,15 +327,20 @@
                     placeholder="XXXX XXXX XXXX XXXX"
                     :class="[
                       'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                      cardNumberError ? 'border-red-500' : 'border-charcoal/20'
+                      cardNumberError ? 'border-red-500' : 'border-charcoal/20',
                     ]"
                   />
-                  <p v-if="cardNumberError" class="mt-1 text-xs text-red-500">{{ cardNumberError }}</p>
+                  <p v-if="cardNumberError" class="mt-1 text-xs text-red-500">
+                    {{ cardNumberError }}
+                  </p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label for="expDate" class="block text-sm font-medium text-charcoal mb-1">
+                    <label
+                      for="expDate"
+                      class="block text-sm font-medium text-charcoal mb-1"
+                    >
                       Expiration Date *
                     </label>
                     <input
@@ -270,13 +351,18 @@
                       placeholder="MM/YY"
                       :class="[
                         'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        expDateError ? 'border-red-500' : 'border-charcoal/20'
+                        expDateError ? 'border-red-500' : 'border-charcoal/20',
                       ]"
                     />
-                    <p v-if="expDateError" class="mt-1 text-xs text-red-500">{{ expDateError }}</p>
+                    <p v-if="expDateError" class="mt-1 text-xs text-red-500">
+                      {{ expDateError }}
+                    </p>
                   </div>
                   <div>
-                    <label for="cvv" class="block text-sm font-medium text-charcoal mb-1">
+                    <label
+                      for="cvv"
+                      class="block text-sm font-medium text-charcoal mb-1"
+                    >
                       CVV *
                     </label>
                     <input
@@ -287,10 +373,12 @@
                       placeholder="XXX"
                       :class="[
                         'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        cvvError ? 'border-red-500' : 'border-charcoal/20'
+                        cvvError ? 'border-red-500' : 'border-charcoal/20',
                       ]"
                     />
-                    <p v-if="cvvError" class="mt-1 text-xs text-red-500">{{ cvvError }}</p>
+                    <p v-if="cvvError" class="mt-1 text-xs text-red-500">
+                      {{ cvvError }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -305,7 +393,13 @@
                     : 'bg-sage text-cream hover:bg-sage/90',
                 ]"
               >
-                {{ isSubmitting ? 'Processing...' : step === 1 ? 'Continue to Payment' : 'Place Order' }}
+                {{
+                  isSubmitting
+                    ? "Processing..."
+                    : step === 1
+                    ? "Continue to Payment"
+                    : "Place Order"
+                }}
               </button>
             </form>
           </div>
@@ -316,7 +410,9 @@
           <div
             ref="summaryRef"
             class="bg-cream border border-charcoal/10 rounded-sm sticky top-24 flex flex-col"
-            :style="{ maxHeight: summaryHeight ? `${summaryHeight}px` : 'auto' }"
+            :style="{
+              maxHeight: summaryHeight ? `${summaryHeight}px` : 'auto',
+            }"
           >
             <div class="p-6 border-b border-charcoal/10">
               <h2 class="text-lg font-medium text-charcoal">Order Summary</h2>
@@ -324,15 +420,22 @@
 
             <div class="flex-1 overflow-y-auto p-6">
               <div class="mb-4">
-                <p class="text-sm text-charcoal/70 mb-2">{{ items.length }} items</p>
+                <p class="text-sm text-charcoal/70 mb-2">
+                  {{ items.length }} items
+                </p>
                 <ul class="space-y-3">
-                  <li v-for="(item, index) in items" :key="index" class="flex justify-between text-sm">
+                  <li
+                    v-for="(item, index) in items"
+                    :key="index"
+                    class="flex justify-between text-sm"
+                  >
                     <span class="text-charcoal">
-                      {{ item.quantity }} × {{ item.product.name }}
-                      <span v-if="item.variant">({{ item.variant }})</span>
+                      {{ item.quantity }} × {{ item.name }}
                     </span>
                     <span class="text-charcoal font-medium">
-                      ${{ (item.product.price * item.quantity).toFixed(2) }}
+                      ${{
+                        (item.priceAtTimeOfAddition * item.quantity).toFixed(2)
+                      }}
                     </span>
                   </li>
                 </ul>
@@ -368,98 +471,50 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { ArrowLeft, CreditCard, Check } from 'lucide-vue-next';
-import { useFormValidation } from '@/hooks/useFormValidation';
-import { required, email as emailValidator, pattern, minLength } from '@/composables/validators';
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { ArrowLeft, CreditCard, Check } from "lucide-vue-next";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import {
+  required,
+  email as emailValidator,
+  pattern,
+  minLength,
+} from "@/composables/validators";
+import { useCartStore } from "@/stores/cart.store";
 
-// Types
-interface ProductImage {
-  src: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  images: ProductImage[];
-}
-
-interface CartItem {
-  product: Product;
-  quantity: number;
-  variant?: string;
-}
-
+const cartStore = useCartStore();
+const { cart } = storeToRefs(cartStore);
 const router = useRouter();
 const step = ref(1);
 const isSubmitting = ref(false);
 const isComplete = ref(false);
-const orderNumber = ref('');
+const orderNumber = ref("");
 const summaryRef = ref<HTMLElement | null>(null);
 const summaryHeight = ref<number | null>(null);
 
 // Form data
 const formData = ref({
-  firstName: '',
-  lastName: '',
-  email: '',
-  address: '',
-  city: '',
-  postalCode: '',
-  country: 'Japan',
-  cardName: '',
-  cardNumber: '',
-  expDate: '',
-  cvv: '',
+  firstName: "",
+  lastName: "",
+  email: "",
+  address: "",
+  city: "",
+  postalCode: "",
+  country: "Japan",
+  cardName: "",
+  cardNumber: "",
+  expDate: "",
+  cvv: "",
 });
 
-// Mock cart items - in a real app, these would come from a store
-const items = ref<CartItem[]>([
-  {
-    product: {
-      id: '1',
-      name: 'Ceramic Tea Set',
-      price: 89.00,
-      images: [{ src: '/placeholder.svg' }]
-    },
-    quantity: 10
-  },
-  {
-    product: {
-      id: '2',
-      name: 'Linen Throw Blanket',
-      price: 65.00,
-      images: [{ src: '/placeholder.svg' }]
-    },
-    quantity: 2,
-    variant: 'Natural'
-  },
-  {
-    product: {
-      id: '3',
-      name: 'Bamboo Serving Tray',
-      price: 42.00,
-      images: [{ src: '/placeholder.svg' }]
-    },
-    quantity: 1
-  },
-  {
-    product: {
-      id: '4',
-      name: 'Meditation Cushion',
-      price: 55.00,
-      images: [{ src: '/placeholder.svg' }]
-    },
-    quantity: 1
-  }
-]);
+const items = computed(() => cart.value?.items || []);
 
 // Computed values
 const subtotal = computed(() => {
   return items.value.reduce((total, item) => {
-    return total + (item.product.price * item.quantity);
+    return total + item.priceAtTimeOfAddition * item.quantity;
   }, 0);
 });
 
@@ -474,12 +529,27 @@ const validationSchema = {
   email: [required(), emailValidator()],
   address: [required()],
   city: [required()],
-  postalCode: [required(), pattern(/^\d{3,10}$/, 'Please enter a valid postal code')],
+  postalCode: [
+    required(),
+    pattern(/^\d{3,10}$/, "Please enter a valid postal code"),
+  ],
   country: [required()],
   cardName: [required()],
-  cardNumber: [required(), pattern(/^\d{4}(\s\d{4}){3}$/, 'Please enter a valid card number in format XXXX XXXX XXXX XXXX')],
-  expDate: [required(), pattern(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Please enter a valid expiration date (MM/YY)')],
-  cvv: [required(), pattern(/^\d{3,4}$/, 'CVV must be 3 or 4 digits')]
+  cardNumber: [
+    required(),
+    pattern(
+      /^\d{4}(\s\d{4}){3}$/,
+      "Please enter a valid card number in format XXXX XXXX XXXX XXXX"
+    ),
+  ],
+  expDate: [
+    required(),
+    pattern(
+      /^(0[1-9]|1[0-2])\/\d{2}$/,
+      "Please enter a valid expiration date (MM/YY)"
+    ),
+  ],
+  cvv: [required(), pattern(/^\d{3,4}$/, "CVV must be 3 or 4 digits")],
 };
 
 const {
@@ -497,16 +567,26 @@ const {
   cvv: cvvError,
   validateField,
   validate,
-  resetValidation
+  resetValidation,
 } = useFormValidation(formData, validationSchema);
 
 // Methods
 const handleSubmit = () => {
   if (step.value === 1) {
     // Validate shipping fields
-    const shippingFields = ['firstName', 'lastName', 'email', 'address', 'city', 'postalCode', 'country'];
-    const isValid = shippingFields.every(field => validateField(field as keyof typeof formData));
-    
+    const shippingFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "address",
+      "city",
+      "postalCode",
+      "country",
+    ];
+    const isValid = shippingFields.every((field) =>
+      validateField(field as keyof typeof formData)
+    );
+
     if (isValid) {
       step.value = 2;
     }
@@ -514,21 +594,14 @@ const handleSubmit = () => {
   }
 
   // Validate payment fields
-  const paymentFields = ['cardName', 'cardNumber', 'expDate', 'cvv'];
-  const isValid = paymentFields.every(field => validateField(field as keyof typeof formData));
-  
-  if (!isValid) return;
-  
-  isSubmitting.value = true;
+  const paymentFields = ["cardName", "cardNumber", "expDate", "cvv"];
+  const isValid = paymentFields.every((field) =>
+    validateField(field as keyof typeof formData)
+  );
 
-  // Simulate API call
-  setTimeout(() => {
-    isSubmitting.value = false;
-    isComplete.value = true;
-    orderNumber.value = `JP-${Math.floor(100000 + Math.random() * 900000)}`;
-    resetValidation();
-    // In a real app, we would clear the cart here
-  }, 1500);
+  if (!isValid) return;
+
+  isSubmitting.value = true;
 };
 
 // Calculate and set the height for the summary container
@@ -543,10 +616,10 @@ const updateSummaryHeight = () => {
 
 onMounted(() => {
   updateSummaryHeight();
-  window.addEventListener('resize', updateSummaryHeight);
+  window.addEventListener("resize", updateSummaryHeight);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateSummaryHeight);
+  window.removeEventListener("resize", updateSummaryHeight);
 });
 </script>

@@ -85,7 +85,13 @@
                   <!-- Quantity controls -->
                   <div class="flex items-center border border-charcoal/20">
                     <button
-                      @click="updateQuantity(item.productId, item.quantity - 1)"
+                      @click="
+                        updateQuantity(
+                          item.productId,
+                          item.quantity - 1,
+                          item.priceAtTimeOfAddition
+                        )
+                      "
                       class="p-1 text-charcoal/70 hover:text-charcoal"
                       aria-label="Decrease quantity"
                     >
@@ -95,7 +101,13 @@
                       item.quantity
                     }}</span>
                     <button
-                      @click="updateQuantity(item.productId, item.quantity + 1)"
+                      @click="
+                        updateQuantity(
+                          item.productId,
+                          item.quantity + 1,
+                          item.priceAtTimeOfAddition
+                        )
+                      "
                       class="p-1 text-charcoal/70 hover:text-charcoal"
                       aria-label="Increase quantity"
                     >
@@ -105,7 +117,7 @@
 
                   <!-- Remove button -->
                   <button
-                    @click="removeItem(item.productId)"
+                    @click="confirmRemoveItem(item.productId, item.name)"
                     class="text-xs text-charcoal/60 hover:text-charcoal transition-colors"
                   >
                     Remove
@@ -152,6 +164,8 @@ import { storeToRefs } from "pinia";
 import { X, Minus, Plus, ShoppingBag } from "lucide-vue-next";
 
 import { useCartStore } from "@/stores/cart.store";
+import { useToastStore } from "@/stores/toast.store";
+import { useModalStore } from "@/stores/modal.store";
 
 import ImageWithLoading from "@components/ui/ImageWithLoading.vue";
 
@@ -165,6 +179,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const cartStore = useCartStore();
+const toastStore = useToastStore();
+const modalStore = useModalStore();
 const { cartItemsCount, cart } = storeToRefs(cartStore);
 
 // Emits
@@ -189,14 +205,61 @@ const closeCart = () => {
   emit("close");
 };
 
-const updateQuantity = (productId: string, newQuantity: number) => {
+const updateQuantity = async (
+  productId: string,
+  newQuantity: number,
+  priceAtTimeOfAddition: number
+) => {
   if (newQuantity < 1) return;
 
+  // Get the item name for the toast message
+  const itemName =
+    items.value.find((item) => item.productId === productId)?.name || "Item";
+
   // Api Call
+  try {
+    await cartStore.updateItemQuantity(productId, {
+      quantity: newQuantity,
+      priceAtTimeOfAddition,
+    });
+
+    toastStore.success(`<strong>${itemName}</strong> quantity updated to ${newQuantity}`);
+  } catch (error) {
+    console.error("Failed to update quantity:", error);
+    toastStore.error("Failed to update quantity. Please try again.");
+    throw error;
+  }
 };
 
-const removeItem = (productId: string) => {
-  // Api call
+const confirmRemoveItem = async (productId: string, itemName: string) => {
+  const confirmed = await modalStore.open({
+    title: "Remove Item",
+    message: `Are you sure you want to remove <strong>${itemName}</strong> from your cart?`,
+    confirmText: "Remove",
+    cancelText: "Cancel",
+    confirmVariant: "danger",
+    size: "sm",
+  });
+
+  if (confirmed) {
+    removeItem(productId, itemName);
+  }
+};
+
+const removeItem = (productId: string, itemName: string = "") => {
+  // If itemName wasn't passed, try to find it
+  if (!itemName) {
+    const item = items.value.find((item) => item.productId === productId);
+    itemName = item?.name || "Item";
+  }
+
+  try {
+    cartStore.removeItem(productId);
+    toastStore.info(`<strong>${itemName}</strong> removed from cart`);
+  } catch (error) {
+    console.error("Failed to remove item:", error);
+    toastStore.error("Failed to remove item. Please try again.");
+  }
 };
 
 // Handle escape key press

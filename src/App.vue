@@ -13,28 +13,29 @@
         class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75"
       >
         <div
-          class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"
+          class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-beige"
         ></div>
       </div>
     </template>
   </Suspense>
 
-  <!-- Global notification -->
-  <!-- <div
-    v-if="showNotification"
-    class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg"
-  >
-    {{ notificationMessage }}
-  </div> -->
+  <!-- Global toast notifications -->
+  <ToastContainer position="top-right" />
+  
+  <!-- Global confirmation modal -->
+  <ConfirmationModal />
 </template>
 
 <script setup lang="ts">
-import { watch } from "vue";
+import { watch, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { useProductStore } from "@/stores/product.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCartStore } from "./stores/cart.store";
-import { onMounted } from "vue";
+
+// Import global UI components
+import ToastContainer from "@/components/ui/toast/ToastContainer.vue";
+import ConfirmationModal from "@/components/ui/modal/ConfirmationModal.vue";
 
 const authStore = useAuthStore();
 const { getProducts } = useProductStore();

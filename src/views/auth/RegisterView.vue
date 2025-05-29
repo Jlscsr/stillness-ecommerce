@@ -170,7 +170,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { Eye, EyeOff } from "lucide-vue-next";
 
 import { useFormValidation } from "@hooks/useFormValidation";
@@ -179,6 +179,7 @@ import { useAuthStore } from "@stores/auth.store";
 
 const { userRegister } = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 
 const formData = reactive({
   firstName: "",
@@ -237,7 +238,14 @@ async function handleSubmit() {
       error.value = response.error || "Registration failed.";
       return;
     }
-    router.push({ name: "home" });
+    
+    // Check if there's a returnUrl query parameter to redirect the user back to the product page
+    const returnUrl = route.query.returnUrl as string;
+    if (returnUrl) {
+      router.push(returnUrl);
+    } else {
+      router.push({ name: "home" });
+    }
   } catch {
     error.value = "Failed to create account. Please try again.";
   } finally {

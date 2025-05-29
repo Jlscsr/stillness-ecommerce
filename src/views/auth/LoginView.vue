@@ -92,7 +92,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { Eye, EyeOff } from "lucide-vue-next";
 
 import { useFormValidation } from "@hooks/useFormValidation";
@@ -104,6 +104,7 @@ import { useCartStore } from "@/stores/cart.store";
 const { userLogin } = useAuthStore();
 const cartStore = useCartStore();
 const router = useRouter();
+const route = useRoute();
 
 // form state
 const formData = reactive({
@@ -154,7 +155,14 @@ async function handleSubmit() {
     }
 
     await cartStore.getCart();
-    router.push({ name: "home" });
+    
+    // Check if there's a returnUrl query parameter to redirect the user back to the product page
+    const returnUrl = route.query.returnUrl as string;
+    if (returnUrl) {
+      router.push(returnUrl);
+    } else {
+      router.push({ name: "home" });
+    }
   } catch {
     error.value = "Failed to login. Please check your credentials.";
   } finally {

@@ -51,34 +51,23 @@
       </div>
     </div>
 
-    <!-- Add to cart and wishlist buttons -->
-    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+    <!-- Add to cart button -->
+    <div class="flex flex-col mb-6">
       <button
-        class="flex-1 py-3 px-6 rounded-sm flex items-center justify-center gap-2 transition-colors"
+        class="w-full py-3 px-6 rounded-sm flex items-center justify-center gap-2 transition-colors"
         :class="getAddToCartButtonClass()"
-        @click="handleAddToCart"
+        @click="handleAddToCart(product._id, quantity, product.price)"
         :disabled="isOutOfStock"
       >
         <ShoppingBag class="h-5 w-5" />
         <span>{{ getAddToCartButtonText() }}</span>
-      </button>
-      <button
-        class="py-3 px-6 rounded-sm flex items-center justify-center gap-2 transition-colors"
-        :class="getWishlistButtonClass()"
-        @click="handleAddToWishlist"
-      >
-        <Heart
-          class="h-5 w-5"
-          :class="{ 'fill-terracotta': isAddedToWishlist }"
-        />
-        <span>{{ isAddedToWishlist ? "Saved" : "Save" }}</span>
       </button>
     </div>
 
     <!-- Checkout button -->
     <div class="mb-8">
       <button
-        class="w-full py-4 px-6 bg-sage text-cream rounded-sm flex items-center justify-center gap-2 hover:bg-sage/90 transition-colors disabled:bg-charcoal/50 disabled:cursor-not-allowed"
+        class="w-full py-4 px-6 bg-charcoal text-cream rounded-sm flex items-center justify-center gap-2 hover:bg-charcoal/90 transition-colors disabled:bg-charcoal/50 disabled:cursor-not-allowed"
         @click="handleCheckout"
         :disabled="isOutOfStock"
       >
@@ -111,19 +100,25 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { Heart, ShoppingBag, CreditCard } from "lucide-vue-next";
+import { ShoppingBag, CreditCard } from "lucide-vue-next";
+import { useRouter } from "vue-router";
 import type { Product } from "@/types/Product";
+import { useCartStore } from "@stores/cart.store";
+import { useToastStore } from "@/stores/toast.store";
+import { useAuthStore } from "@/stores/auth.store";
 
 interface Props {
   product: Product;
 }
 
+const cartStore = useCartStore();
+const toastStore = useToastStore();
+const authStore = useAuthStore();
+const router = useRouter();
 const props = defineProps<Props>();
 
 const product = computed(() => props.product);
 const quantity = ref(1);
-const isAddedToCart = ref(false);
-const isAddedToWishlist = ref(false);
 
 const isOutOfStock = computed(() => {
   return !props.product.stock || props.product.stock === 0;
@@ -149,32 +144,60 @@ const incrementQuantity = () => {
   }
 };
 
-const handleAddToCart = () => {
-  // Show success message (cart store logic will be added later)
-  isAddedToCart.value = true;
-  setTimeout(() => {
-    isAddedToCart.value = false;
-    // cartStore.openCart() will be added when cart store is implemented
-  }, 1000);
+const handleAddToCart = async (
+  productId: string,
+  quantity: number,
+  price: number
+) => {
+  // Check if user is authenticated
+  if (!authStore.isAuthenticated) {
+    // Create a redirect URL to return to this product after login
+    const returnUrl = router.currentRoute.value.fullPath;
+    
+    // Show toast notification
+    toastStore.info("Please log in to add items to your cart");
+    
+    // Redirect to login with returnUrl parameter
+    router.push({
+      name: "login",
+      query: { returnUrl }
+    });
+    return;
+  }
+  
+  try {
+    await cartStore.addCartItem({
+      productId,
+      quantity,
+      priceAtTimeOfAddition: price,
+    });
 
-  // Emit event for parent component to handle
-  emit("add-to-cart", {
-    product: props.product,
-    quantity: quantity.value,
-  });
+    toastStore.success(`<strong>${product.value.name}</strong> added to cart`);
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    toastStore.error("Failed to add product to cart. Please try again.");
+  }
 };
 
-const handleAddToWishlist = () => {
-  isAddedToWishlist.value = !isAddedToWishlist.value;
 
-  // Emit event for parent component to handle
-  emit("add-to-wishlist", {
-    product: props.product,
-    added: isAddedToWishlist.value,
-  });
-};
 
 const handleCheckout = () => {
+  // Check if user is authenticated
+  if (!authStore.isAuthenticated) {
+    // Create a redirect URL to return to this product after login
+    const returnUrl = router.currentRoute.value.fullPath;
+    
+    // Show toast notification
+    toastStore.info("Please log in to checkout");
+    
+    // Redirect to login with returnUrl parameter
+    router.push({
+      name: "login",
+      query: { returnUrl }
+    });
+    return;
+  }
+  
   // Emit event for parent component to handle checkout
   emit("checkout", {
     product: props.product,
@@ -185,8 +208,6 @@ const handleCheckout = () => {
 const getAddToCartButtonClass = () => {
   if (isOutOfStock.value) {
     return "bg-charcoal/20 text-charcoal/50 cursor-not-allowed";
-  } else if (isAddedToCart.value) {
-    return "bg-sage text-cream";
   } else {
     return "bg-beige text-charcoal hover:bg-beige/90";
   }
@@ -195,25 +216,16 @@ const getAddToCartButtonClass = () => {
 const getAddToCartButtonText = () => {
   if (isOutOfStock.value) {
     return "Out of Stock";
-  } else if (isAddedToCart.value) {
-    return "Added to Cart";
   } else {
     return "Add to Cart";
   }
 };
 
-const getWishlistButtonClass = () => {
-  if (isAddedToWishlist.value) {
-    return "bg-terracotta/10 text-terracotta border border-terracotta/20";
-  } else {
-    return "border border-charcoal/20 text-charcoal hover:bg-charcoal/5";
-  }
-};
+
 
 // Define emits
 const emit = defineEmits<{
   "add-to-cart": [payload: { product: Product; quantity: number }];
-  "add-to-wishlist": [payload: { product: Product; added: boolean }];
   checkout: [payload: { product: Product; quantity: number }];
 }>();
 </script>

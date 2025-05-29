@@ -91,11 +91,18 @@
                   My Account
                 </router-link>
                 <router-link
-                  to="/profile"
+                  to="/profile?tab=orders"
                   class="block px-4 py-2 text-sm text-charcoal hover:bg-beige/10"
                   @click="closeUserMenu"
                 >
                   Orders
+                </router-link>
+                <router-link
+                  to="/cart"
+                  class="block px-4 py-2 text-sm text-charcoal hover:bg-beige/10"
+                  @click="closeUserMenu"
+                >
+                  Cart
                 </router-link>
                 <button
                   @click="handleLogout"
@@ -217,13 +224,29 @@
                   <p class="text-sm text-charcoal/60">{{ user?.email }}</p>
                 </div>
               </div>
-              <router-link
-                to="/profile"
-                class="block w-full py-3 text-center border border-charcoal/20 rounded-sm text-charcoal hover:bg-charcoal/5 transition-colors"
-                @click="closeMobileMenu"
-              >
-                My Account
-              </router-link>
+              <div class="flex flex-col space-y-3">
+                <router-link
+                  to="/profile"
+                  class="block w-full py-3 text-center border border-charcoal/20 rounded-sm text-charcoal hover:bg-charcoal/5 transition-colors"
+                  @click="closeMobileMenu"
+                >
+                  My Account
+                </router-link>
+                <router-link
+                  to="/profile?tab=orders"
+                  class="block w-full py-3 text-center border border-charcoal/20 rounded-sm text-charcoal hover:bg-charcoal/5 transition-colors"
+                  @click="closeMobileMenu"
+                >
+                  Orders
+                </router-link>
+                <router-link
+                  to="/cart"
+                  class="block w-full py-3 text-center border border-charcoal/20 rounded-sm text-charcoal hover:bg-charcoal/5 transition-colors"
+                  @click="closeMobileMenu"
+                >
+                  Cart
+                </router-link>
+              </div>
               <button
                 @click="handleMobileLogout"
                 class="block w-full py-3 text-center bg-beige text-charcoal rounded-sm hover:bg-beige/90 transition-colors"

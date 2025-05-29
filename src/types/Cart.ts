@@ -20,3 +20,9 @@ export interface Cart {
   updatedAt: Date;
   createdAt: Date;
 }
+
+export interface CartRequestBody {
+  productId?: string;
+  quantity: number;
+  priceAtTimeOfAddition: number;
+}

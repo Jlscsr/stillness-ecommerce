@@ -15,6 +15,7 @@ const ProductDetailView = () =>
 const CartView = () => import("@views/cart/CartView.vue");
 const CheckoutView = () => import("@views/checkout/CheckoutView.vue");
 const ProfileView = () => import("@views/profile/ProfileView.vue");
+const UIExampleView = () => import("@/components/ui/UIExample.vue");
 const NotFoundView = () => import("@views/errors/NotFoundView.vue");
 
 export const routes: RouteRecordRaw[] = [
@@ -82,6 +83,12 @@ export const routes: RouteRecordRaw[] = [
         name: "register",
         component: RegisterView,
         meta: { title: "Register" },
+      },
+      {
+        path: "ui-examples",
+        name: "ui-examples",
+        component: UIExampleView,
+        meta: { title: "UI Examples", requiresAuth: false },
       },
     ],
   },

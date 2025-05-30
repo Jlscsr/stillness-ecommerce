@@ -5,80 +5,104 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Personal Information Section -->
       <div>
-        <h3 class="text-sm font-medium text-charcoal mb-2">Personal Information</h3>
-        
+        <h3 class="text-sm font-medium text-charcoal mb-2">
+          Personal Information
+        </h3>
+
         <!-- View Mode -->
         <div v-if="!isEditingPersonal" class="bg-beige/10 p-4 rounded-sm">
           <div class="mb-3">
             <p class="text-xs text-charcoal/60">Full Name</p>
-            <p class="text-sm text-charcoal">{{ user.fullName }}</p>
+            <p class="text-sm text-charcoal">
+              {{ user?.firstName }} {{ user?.lastName }}
+            </p>
           </div>
           <div class="mb-3">
             <p class="text-xs text-charcoal/60">Email Address</p>
-            <p class="text-sm text-charcoal">{{ user.email }}</p>
+            <p class="text-sm text-charcoal">{{ user?.email }}</p>
           </div>
           <div>
             <p class="text-xs text-charcoal/60">Member Since</p>
-            <p class="text-sm text-charcoal">{{ user.memberSince }}</p>
+            <p class="text-sm text-charcoal">
+              {{ memberSince(user?.createdAt) }}
+            </p>
           </div>
         </div>
-        
+
         <!-- Edit Mode -->
-        <form v-else class="bg-beige/10 p-4 rounded-sm" @submit.prevent="savePersonalInfo">
-          <div class="mb-3">
-            <label for="fullName" class="block text-xs text-charcoal/60 mb-1">Full Name</label>
-            <input 
-              type="text" 
-              id="fullName" 
-              v-model="personalForm.fullName"
-              @blur="validateField('fullName')"
-              :class="[
-                'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                fullNameError ? 'border-red-500' : 'border-charcoal/20'
-              ]"
-            />
-            <p v-if="fullNameError" class="mt-1 text-xs text-red-500">{{ fullNameError }}</p>
+        <form
+          v-else
+          class="bg-beige/10 p-4 rounded-sm"
+          @submit.prevent="savePersonalInfo"
+        >
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="mb-3">
+              <label for="fullName" class="block text-xs text-charcoal/60 mb-1"
+                >First Name</label
+              >
+              <input
+                type="text"
+                id="fullName"
+                v-model="personalForm.firstName"
+                @blur="validatePersonalField('firstName')"
+                :class="[
+                  'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
+                  firstNameError ? 'border-red-500' : 'border-charcoal/20',
+                ]"
+              />
+              <p v-if="firstNameError" class="mt-1 text-xs text-red-500">
+                {{ firstNameError }}
+              </p>
+            </div>
+
+            <div class="mb-3">
+              <label for="fullName" class="block text-xs text-charcoal/60 mb-1"
+                >Last Name</label
+              >
+              <input
+                type="text"
+                id="fullName"
+                v-model="personalForm.lastName"
+                @blur="validatePersonalField('lastName')"
+                :class="[
+                  'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
+                  lastNameError ? 'border-red-500' : 'border-charcoal/20',
+                ]"
+              />
+              <p v-if="lastNameError" class="mt-1 text-xs text-red-500">
+                {{ lastNameError }}
+              </p>
+            </div>
           </div>
-          
+
           <div class="mb-3">
-            <label for="email" class="block text-xs text-charcoal/60 mb-1">Email Address</label>
-            <input 
-              type="email" 
-              id="email" 
+            <label for="email" class="block text-xs text-charcoal/60 mb-1"
+              >Email Address</label
+            >
+            <input
+              type="email"
+              id="email"
               v-model="personalForm.email"
-              @blur="validateField('email')"
+              @blur="validatePersonalField('email')"
               :class="[
                 'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                emailError ? 'border-red-500' : 'border-charcoal/20'
+                emailError ? 'border-red-500' : 'border-charcoal/20',
               ]"
             />
-            <p v-if="emailError" class="mt-1 text-xs text-red-500">{{ emailError }}</p>
+            <p v-if="emailError" class="mt-1 text-xs text-red-500">
+              {{ emailError }}
+            </p>
           </div>
-          
-          <div class="mb-3">
-            <label for="phone" class="block text-xs text-charcoal/60 mb-1">Phone Number</label>
-            <input 
-              type="tel" 
-              id="phone" 
-              v-model="personalForm.phone"
-              @blur="validateField('phone')"
-              :class="[
-                'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                phoneError ? 'border-red-500' : 'border-charcoal/20'
-              ]"
-            />
-            <p v-if="phoneError" class="mt-1 text-xs text-red-500">{{ phoneError }}</p>
-          </div>
-          
+
           <div class="flex space-x-3 mt-4">
-            <button 
+            <button
               type="submit"
               :disabled="isSaving"
               class="px-4 py-2 bg-sage text-cream rounded-sm hover:bg-sage/90 transition-colors disabled:bg-sage/50 disabled:cursor-not-allowed"
             >
-              {{ isSaving ? 'Saving...' : 'Save Changes' }}
+              {{ isSaving ? "Saving..." : "Save Changes" }}
             </button>
-            <button 
+            <button
               type="button"
               @click="cancelPersonalEdit"
               class="px-4 py-2 border border-charcoal/20 text-charcoal rounded-sm hover:bg-charcoal/5 transition-colors"
@@ -87,8 +111,8 @@
             </button>
           </div>
         </form>
-        
-        <button 
+
+        <button
           v-if="!isEditingPersonal"
           class="mt-3 text-sm text-sage hover:text-sage/80 transition-colors"
           @click="editPersonalInfo"
@@ -100,69 +124,91 @@
       <!-- Shipping Address Section -->
       <div>
         <h3 class="text-sm font-medium text-charcoal mb-2">Shipping Address</h3>
-        
+
         <!-- View Mode -->
         <div v-if="!isEditingAddress" class="bg-beige/10 p-4 rounded-sm">
-          <p class="text-sm text-charcoal">{{ user.address }}</p>
+          <p class="text-sm text-charcoal">
+            {{ formatUserAddress(user?.address) }}
+          </p>
         </div>
-        
+
         <!-- Edit Mode -->
-        <form v-else class="bg-beige/10 p-4 rounded-sm" @submit.prevent="saveShippingAddress">
+        <form
+          v-else
+          class="bg-beige/10 p-4 rounded-sm"
+          @submit.prevent="saveShippingAddress"
+        >
           <div class="mb-3">
-            <label for="street" class="block text-xs text-charcoal/60 mb-1">Street Address</label>
-            <input 
-              type="text" 
-              id="street" 
+            <label for="street" class="block text-xs text-charcoal/60 mb-1"
+              >Street Address</label
+            >
+            <input
+              type="text"
+              id="street"
               v-model="addressForm.street"
-              @blur="validateField('street')"
+              @blur="validateAddressField('street')"
               :class="[
                 'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                streetError ? 'border-red-500' : 'border-charcoal/20'
+                streetError ? 'border-red-500' : 'border-charcoal/20',
               ]"
             />
-            <p v-if="streetError" class="mt-1 text-xs text-red-500">{{ streetError }}</p>
+            <p v-if="streetError" class="mt-1 text-xs text-red-500">
+              {{ streetError }}
+            </p>
           </div>
-          
+
           <div class="mb-3">
-            <label for="city" class="block text-xs text-charcoal/60 mb-1">City</label>
-            <input 
-              type="text" 
-              id="city" 
+            <label for="city" class="block text-xs text-charcoal/60 mb-1"
+              >City</label
+            >
+            <input
+              type="text"
+              id="city"
               v-model="addressForm.city"
-              @blur="validateField('city')"
+              @blur="validateAddressField('city')"
               :class="[
                 'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                cityError ? 'border-red-500' : 'border-charcoal/20'
+                cityError ? 'border-red-500' : 'border-charcoal/20',
               ]"
             />
-            <p v-if="cityError" class="mt-1 text-xs text-red-500">{{ cityError }}</p>
+            <p v-if="cityError" class="mt-1 text-xs text-red-500">
+              {{ cityError }}
+            </p>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-3 mb-3">
             <div>
-              <label for="postalCode" class="block text-xs text-charcoal/60 mb-1">Postal Code</label>
-              <input 
-                type="text" 
-                id="postalCode" 
+              <label
+                for="postalCode"
+                class="block text-xs text-charcoal/60 mb-1"
+                >Postal Code</label
+              >
+              <input
+                type="text"
+                id="postalCode"
                 v-model="addressForm.postalCode"
-                @blur="validateField('postalCode')"
+                @blur="validateAddressField('postalCode')"
                 :class="[
                   'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                  postalCodeError ? 'border-red-500' : 'border-charcoal/20'
+                  postalCodeError ? 'border-red-500' : 'border-charcoal/20',
                 ]"
               />
-              <p v-if="postalCodeError" class="mt-1 text-xs text-red-500">{{ postalCodeError }}</p>
+              <p v-if="postalCodeError" class="mt-1 text-xs text-red-500">
+                {{ postalCodeError }}
+              </p>
             </div>
-            
+
             <div>
-              <label for="country" class="block text-xs text-charcoal/60 mb-1">Country</label>
-              <select 
-                id="country" 
+              <label for="country" class="block text-xs text-charcoal/60 mb-1"
+                >Country</label
+              >
+              <select
+                id="country"
                 v-model="addressForm.country"
-                @blur="validateField('country')"
+                @blur="validateAddressField('country')"
                 :class="[
                   'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                  countryError ? 'border-red-500' : 'border-charcoal/20'
+                  countryError ? 'border-red-500' : 'border-charcoal/20',
                 ]"
               >
                 <option value="Japan">Japan</option>
@@ -171,19 +217,21 @@
                 <option value="Australia">Australia</option>
                 <option value="United Kingdom">United Kingdom</option>
               </select>
-              <p v-if="countryError" class="mt-1 text-xs text-red-500">{{ countryError }}</p>
+              <p v-if="countryError" class="mt-1 text-xs text-red-500">
+                {{ countryError }}
+              </p>
             </div>
           </div>
-          
+
           <div class="flex space-x-3 mt-4">
-            <button 
+            <button
               type="submit"
               :disabled="isSaving"
               class="px-4 py-2 bg-sage text-cream rounded-sm hover:bg-sage/90 transition-colors disabled:bg-sage/50 disabled:cursor-not-allowed"
             >
-              {{ isSaving ? 'Saving...' : 'Save Changes' }}
+              {{ isSaving ? "Saving..." : "Save Changes" }}
             </button>
-            <button 
+            <button
               type="button"
               @click="cancelAddressEdit"
               class="px-4 py-2 border border-charcoal/20 text-charcoal rounded-sm hover:bg-charcoal/5 transition-colors"
@@ -192,8 +240,8 @@
             </button>
           </div>
         </form>
-        
-        <button 
+
+        <button
           v-if="!isEditingAddress"
           class="mt-3 text-sm text-sage hover:text-sage/80 transition-colors"
           @click="editShippingAddress"
@@ -206,30 +254,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useFormValidation } from '@/hooks/useFormValidation';
-import { required, email as emailValidator, pattern, minLength } from '@/composables/validators';
+import { computed, reactive, ref } from "vue";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import {
+  required,
+  email as emailValidator,
+  pattern,
+  type Validator,
+} from "@/composables/validators";
+import { type UserCredentials } from "@/types/User";
+import { useUserStore } from "@/stores/user.store";
+import { useToastStore } from "@/stores/toast.store";
 
 // Props
 interface Props {
-  user: {
-    fullName: string;
-    email: string;
-    memberSince: string;
-    address: string;
-    phone?: string;
-  };
+  user: UserCredentials | null;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  user: () => ({
-    fullName: 'Akiko Tanaka',
-    email: 'akiko.tanaka@example.com',
-    memberSince: 'November 2022',
-    address: '1-2-3 Shibuya, Tokyo, Japan',
-    phone: '+81 3-1234-5678'
-  })
-});
+interface PersonalFormData {
+  firstName: string | undefined;
+  lastName: string | undefined;
+  email: string | undefined;
+}
+
+interface AddressFormData {
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+const props = defineProps<Props>();
+
+const userStore = useUserStore();
+const toastStore = useToastStore();
 
 // Edit state
 const isEditingPersonal = ref(false);
@@ -237,91 +295,93 @@ const isEditingAddress = ref(false);
 const isSaving = ref(false);
 
 // Forms
-const personalForm = ref({
-  fullName: props.user.fullName,
-  email: props.user.email,
-  phone: props.user.phone || ''
+const personalForm = reactive<PersonalFormData>({
+  firstName: props.user?.firstName || "",
+  lastName: props.user?.lastName || "",
+  email: props.user?.email,
 });
 
-const addressForm = ref({
-  street: props.user.address.split(',')[0] || '',
-  city: props.user.address.split(',')[1]?.trim() || '',
-  postalCode: '',
-  country: 'Japan'
+const addressForm = reactive<AddressFormData>({
+  street: props.user?.address?.street || "",
+  city: props.user?.address?.city || "",
+  postalCode: props.user?.address?.postalCode || "",
+  country: props.user?.address?.country || "",
 });
 
 // Personal form validation
-const personalValidationSchema = {
-  fullName: [required('Full name is required')],
-  email: [required('Email is required'), emailValidator('Please enter a valid email address')],
-  phone: [pattern(/^\+?[0-9\s\-()]{8,}$/, 'Please enter a valid phone number')]
+const personalValidationSchema: Partial<
+  Record<keyof PersonalFormData, Validator[]>
+> = {
+  firstName: [required("First Name is required")],
+  lastName: [required("Last Name is required")],
+  email: [
+    required("Email is required"),
+    emailValidator("Please enter a valid email address"),
+  ],
 };
 
 const {
-  fullName: fullNameError,
-  email: emailError,
-  phone: phoneError,
+  errors: personalErrors,
   validateField: validatePersonalField,
   validate: validatePersonal,
-  resetValidation: resetPersonalValidation
+  resetValidation: resetPersonalValidation,
 } = useFormValidation(personalForm, personalValidationSchema);
 
+const firstNameError = computed(() => personalErrors.firstName);
+const lastNameError = computed(() => personalErrors.lastName);
+const emailError = computed(() => personalErrors.email);
+
 // Address form validation
-const addressValidationSchema = {
-  street: [required('Street address is required')],
-  city: [required('City is required')],
-  postalCode: [required('Postal code is required'), pattern(/^[0-9\-]{3,10}$/, 'Please enter a valid postal code')],
-  country: [required('Country is required')]
+const addressValidationSchema: Record<keyof AddressFormData, Validator[]> = {
+  street: [required("Street address is required")],
+  city: [required("City is required")],
+  postalCode: [
+    required("Postal code is required"),
+    pattern(/^[0-9\-]{3,10}$/, "Please enter a valid postal code"),
+  ],
+  country: [required("Country is required")],
 };
 
 const {
-  street: streetError,
-  city: cityError,
-  postalCode: postalCodeError,
-  country: countryError,
+  errors: addressErrors,
   validateField: validateAddressField,
   validate: validateAddress,
-  resetValidation: resetAddressValidation
+  resetValidation: resetAddressValidation,
 } = useFormValidation(addressForm, addressValidationSchema);
 
-// Unified validation field method
-const validateField = (field: string) => {
-  if (Object.keys(personalForm.value).includes(field)) {
-    return validatePersonalField(field as keyof typeof personalForm.value);
-  } else if (Object.keys(addressForm.value).includes(field)) {
-    return validateAddressField(field as keyof typeof addressForm.value);
-  }
-  return false;
-};
+const streetError = computed(() => addressErrors.street);
+const cityError = computed(() => addressErrors.city);
+const postalCodeError = computed(() => addressErrors.postalCode);
+const countryError = computed(() => addressErrors.country);
 
 // Methods
 const editPersonalInfo = () => {
   // Reset form to current user data
-  personalForm.value = {
-    fullName: props.user.fullName,
-    email: props.user.email,
-    phone: props.user.phone || ''
-  };
+  personalForm.firstName = props.user?.firstName;
+  personalForm.lastName = props.user?.lastName;
+  personalForm.email = props.user?.email;
+
   resetPersonalValidation();
   isEditingPersonal.value = true;
 };
 
 const savePersonalInfo = async () => {
   if (!validatePersonal()) return;
-  
+
   isSaving.value = true;
-  
+
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // In a real app, you would update the user data on the server
-    console.log('Personal info saved:', personalForm.value);
-    
-    // Close the form
+    const response = await userStore.updateUser(personalForm);
+
+    if (!response.success) {
+      return toastStore.error("Failed to update user info. Please try again.");
+    }
+
+    toastStore.success("User info updated successfully");
+
     isEditingPersonal.value = false;
   } catch (error) {
-    console.error('Error saving personal info:', error);
+    console.error("Error saving personal info:", error);
   } finally {
     isSaving.value = false;
   }
@@ -333,37 +393,32 @@ const cancelPersonalEdit = () => {
 };
 
 const editShippingAddress = () => {
-  // Parse the address - in a real app, these would be separate fields
-  const addressParts = props.user.address.split(',');
-  
-  addressForm.value = {
-    street: addressParts[0] || '',
-    city: addressParts[1]?.trim() || '',
-    postalCode: '',  // This would be stored in user data in a real app
-    country: 'Japan'
-  };
-  
+  addressForm.street = props.user?.address?.street || "";
+  addressForm.city = props.user?.address?.city || "";
+  addressForm.postalCode = props.user?.address?.postalCode || "";
+  addressForm.country = props.user?.address?.country || "";
+
   resetAddressValidation();
   isEditingAddress.value = true;
 };
 
 const saveShippingAddress = async () => {
   if (!validateAddress()) return;
-  
+
   isSaving.value = true;
-  
+
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // In a real app, you would update the address on the server
-    const formattedAddress = `${addressForm.value.street}, ${addressForm.value.city}, ${addressForm.value.country}`;
-    console.log('Address saved:', formattedAddress);
-    
-    // Close the form
+    const response = await userStore.updateUserAddress(addressForm);
+
+    if (!response.success) {
+      return toastStore.error("Failed to update address. Please try again.");
+    }
+
+    toastStore.success("Shipping address updated successfully");
+
     isEditingAddress.value = false;
   } catch (error) {
-    console.error('Error saving address:', error);
+    console.error("Error saving address:", error);
   } finally {
     isSaving.value = false;
   }
@@ -372,5 +427,20 @@ const saveShippingAddress = async () => {
 const cancelAddressEdit = () => {
   isEditingAddress.value = false;
   resetAddressValidation();
+};
+
+const memberSince = (date: Date | string | undefined) => {
+  if (!date) return "N/A";
+  const d = new Date(date);
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const formatUserAddress = (address: any) => {
+  if (!address) return "No address provided";
+  return `${address.street}, ${address.city}, ${address.postalCode}, ${address.country}`;
 };
 </script>

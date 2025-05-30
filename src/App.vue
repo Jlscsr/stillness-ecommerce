@@ -21,7 +21,7 @@
 
   <!-- Global toast notifications -->
   <ToastContainer position="top-right" />
-  
+
   <!-- Global confirmation modal -->
   <ConfirmationModal />
 </template>
@@ -32,6 +32,7 @@ import { RouterView } from "vue-router";
 import { useProductStore } from "@/stores/product.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCartStore } from "./stores/cart.store";
+import { useUserStore } from "@/stores/user.store";
 
 // Import global UI components
 import ToastContainer from "@/components/ui/toast/ToastContainer.vue";
@@ -40,6 +41,7 @@ import ConfirmationModal from "@/components/ui/modal/ConfirmationModal.vue";
 const authStore = useAuthStore();
 const { getProducts } = useProductStore();
 const { getCart, clearCart } = useCartStore();
+const { getUserInfoById } = useUserStore();
 
 onMounted(async () => {
   await getProducts();
@@ -49,6 +51,7 @@ watch(
   () => authStore.isAuthenticated,
   async (isLoggedIn) => {
     if (isLoggedIn) {
+      await getUserInfoById();
       await getCart();
     } else {
       clearCart();

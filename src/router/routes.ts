@@ -17,6 +17,7 @@ const CheckoutView = () => import("@views/checkout/CheckoutView.vue");
 const ProfileView = () => import("@views/profile/ProfileView.vue");
 const UIExampleView = () => import("@/components/ui/UIExample.vue");
 const NotFoundView = () => import("@views/errors/NotFoundView.vue");
+// const CollectionView = () => import("@/views/collections/CollectionView.vue");
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -90,6 +91,13 @@ export const routes: RouteRecordRaw[] = [
         component: UIExampleView,
         meta: { title: "UI Examples", requiresAuth: false },
       },
+      {
+        path: "collections/:category",
+        name: "collection",
+        // component: CollectionView,
+        meta: { title: "Collection", requiresAuth: false },
+        props: true,
+      },
     ],
   },
   // 404 - Keep this as the last route
@@ -97,6 +105,6 @@ export const routes: RouteRecordRaw[] = [
     path: "/:pathMatch(.*)*",
     name: "not-found",
     component: NotFoundView,
-    meta: { title: "Page Not Found", requiresAuth: false },
+    meta: { title: "Page Not Found" },
   },
 ];

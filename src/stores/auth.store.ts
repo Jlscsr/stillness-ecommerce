@@ -10,10 +10,8 @@ import {
 import type { LoginCredentials, RegisterCredentials } from "@/types/Auth";
 import type { UserCredentials } from "@/types/User";
 import { resetAuthCheck } from "@router/router";
-import { useCartStore } from "@stores/cart.store";
 
 export const useAuthStore = defineStore("auth", () => {
-  const user = ref<UserCredentials | null>(null);
   const isAuthenticated = ref(false);
   const error = ref<string | null>(null);
 
@@ -26,7 +24,6 @@ export const useAuthStore = defineStore("auth", () => {
         isAuthenticated.value = false;
         return { success: false, error: response.message };
       }
-      user.value = response.data;
       isAuthenticated.value = true;
 
       return { success: true };
@@ -45,7 +42,6 @@ export const useAuthStore = defineStore("auth", () => {
         return { success: false, error: response.message };
       }
 
-      user.value = response.data;
       isAuthenticated.value = true;
       return { success: true };
     } catch (err) {
@@ -63,7 +59,6 @@ export const useAuthStore = defineStore("auth", () => {
         return { success: false, error: response.message };
       }
 
-      user.value = response.data;
       isAuthenticated.value = true;
     } catch (err) {
       error.value = "Failed to check authentication status";
@@ -75,7 +70,6 @@ export const useAuthStore = defineStore("auth", () => {
   const logoutUser = async () => {
     try {
       await logout();
-      user.value = null;
       isAuthenticated.value = false;
       error.value = null;
 
@@ -87,7 +81,6 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   return {
-    user,
     isAuthenticated,
     error,
     userLogin,

@@ -52,13 +52,22 @@
           <span>Back to Cart</span>
         </router-link>
         <a
-          v-else
+          v-else-if="step === 2"
           href="#"
           @click.prevent="step = 1"
           class="inline-flex items-center text-charcoal/70 hover:text-charcoal transition-colors"
         >
           <ArrowLeft class="h-4 w-4 mr-1" />
           <span>Back to Shipping</span>
+        </a>
+        <a
+          v-else
+          href="#"
+          @click.prevent="step = 2"
+          class="inline-flex items-center text-charcoal/70 hover:text-charcoal transition-colors"
+        >
+          <ArrowLeft class="h-4 w-4 mr-1" />
+          <span>Back to Payment Method</span>
         </a>
       </div>
 
@@ -99,7 +108,26 @@
           >
             2
           </div>
-          <span class="ml-2 font-medium">Payment</span>
+          <span class="ml-2 font-medium">Payment Method</span>
+        </div>
+        <div
+          :class="`w-12 h-0.5 mx-2 ${step >= 3 ? 'bg-sage' : 'bg-charcoal/20'}`"
+        ></div>
+        <div
+          :class="`flex items-center ${
+            step >= 3 ? 'text-sage' : 'text-charcoal/40'
+          }`"
+        >
+          <div
+            :class="`w-8 h-8 rounded-full flex items-center justify-center ${
+              step >= 3
+                ? 'bg-sage text-cream'
+                : 'bg-charcoal/20 text-charcoal/60'
+            }`"
+          >
+            3
+          </div>
+          <span class="ml-2 font-medium">Payment Details</span>
         </div>
       </div>
 
@@ -279,107 +307,133 @@
                 </div>
               </div>
 
-              <!-- Step 2: Payment Information -->
+              <!-- Step 2: Payment Method Selection -->
               <div v-if="step === 2">
                 <h2 class="text-lg font-medium text-charcoal mb-4">
-                  Payment Information
+                  Payment Method
+                </h2>
+
+                <div class="space-y-4">
+                  <!-- COD Option -->
+                  <div
+                    class="border border-charcoal/10 rounded-sm p-4 cursor-pointer"
+                    :class="{
+                      'border-sage bg-sage/5': formData.paymentMethod === 'cod',
+                    }"
+                    @click="formData.paymentMethod = 'cod'"
+                  >
+                    <div class="flex items-center">
+                      <div class="mr-3">
+                        <input
+                          type="radio"
+                          id="cod"
+                          value="cod"
+                          v-model="formData.paymentMethod"
+                          class="h-4 w-4 text-sage focus:ring-sage"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          for="cod"
+                          class="font-medium text-charcoal cursor-pointer"
+                        >
+                          Cash on Delivery (COD)
+                        </label>
+                        <p class="text-sm text-charcoal/70 mt-1">
+                          Pay with cash when your order is delivered
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Online Payment Option -->
+                  <div
+                    class="border border-charcoal/10 rounded-sm p-4 cursor-pointer"
+                    :class="{
+                      'border-sage bg-sage/5':
+                        formData.paymentMethod === 'online',
+                    }"
+                    @click="formData.paymentMethod = 'online'"
+                  >
+                    <div class="flex items-center">
+                      <div class="mr-3">
+                        <input
+                          type="radio"
+                          id="online"
+                          value="online"
+                          v-model="formData.paymentMethod"
+                          class="h-4 w-4 text-sage focus:ring-sage"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          for="online"
+                          class="font-medium text-charcoal cursor-pointer"
+                        >
+                          Card Payment
+                        </label>
+                        <p class="text-sm text-charcoal/70 mt-1">
+                          Pay securely with your credit or debit card
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p
+                    v-if="paymentMethodError"
+                    class="mt-1 text-xs text-red-500"
+                  >
+                    {{ paymentMethodError }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 3: PayPal Payment (only for online payment) -->
+              <div v-if="step === 3">
+                <h2 class="text-lg font-medium text-charcoal mb-4">
+                  Payment with PayPal
                 </h2>
 
                 <div class="flex items-center mb-6">
-                  <CreditCard class="h-5 w-5 text-charcoal/60 mr-2" />
-                  <span class="text-sm text-charcoal">Credit Card</span>
-                </div>
-
-                <div class="mb-4">
-                  <label
-                    for="cardName"
-                    class="block text-sm font-medium text-charcoal mb-1"
+                  <CreditCard class="h-5 w-5 text-sage mr-2" />
+                  <span class="text-sm text-charcoal/70"
+                    >Secured payment processing via PayPal</span
                   >
-                    Name on Card *
-                  </label>
-                  <input
-                    type="text"
-                    id="cardName"
-                    v-model="formData.cardName"
-                    @blur="validateField('cardName')"
-                    :class="[
-                      'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                      cardNameError ? 'border-red-500' : 'border-charcoal/20',
-                    ]"
-                  />
-                  <p v-if="cardNameError" class="mt-1 text-xs text-red-500">
-                    {{ cardNameError }}
-                  </p>
                 </div>
 
-                <div class="mb-4">
-                  <label
-                    for="cardNumber"
-                    class="block text-sm font-medium text-charcoal mb-1"
-                  >
-                    Card Number *
-                  </label>
-                  <input
-                    type="text"
-                    id="cardNumber"
-                    v-model="formData.cardNumber"
-                    @blur="validateField('cardNumber')"
-                    placeholder="XXXX XXXX XXXX XXXX"
-                    :class="[
-                      'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                      cardNumberError ? 'border-red-500' : 'border-charcoal/20',
-                    ]"
-                  />
-                  <p v-if="cardNumberError" class="mt-1 text-xs text-red-500">
-                    {{ cardNumberError }}
-                  </p>
-                </div>
+                <!-- PayPal Button Container -->
+                <div
+                  class="mb-6 border border-charcoal/10 rounded-sm p-6 bg-white"
+                >
+                  <div class="flex justify-center items-center mb-4">
+                    <img
+                      src="/images/paypal-logo.png"
+                      alt="PayPal"
+                      class="h-8"
+                      onerror="this.src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png'; this.onerror=null;"
+                    />
+                  </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label
-                      for="expDate"
-                      class="block text-sm font-medium text-charcoal mb-1"
+                  <p class="text-sm text-charcoal/70 text-center mb-4">
+                    You'll be redirected to PayPal to complete your payment
+                    securely.
+                  </p>
+
+                  <!-- PayPal Button Placeholder (would be replaced by actual PayPal SDK in production) -->
+                  <div id="paypal-button-container" class="w-full">
+                    <button
+                      type="button"
+                      class="w-full bg-[#0070ba] hover:bg-[#003087] text-white font-medium py-3 px-4 rounded-sm transition-colors flex items-center justify-center"
+                      @click="handlePayPalCheckout"
                     >
-                      Expiration Date *
-                    </label>
-                    <input
-                      type="text"
-                      id="expDate"
-                      v-model="formData.expDate"
-                      @blur="validateField('expDate')"
-                      placeholder="MM/YY"
-                      :class="[
-                        'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        expDateError ? 'border-red-500' : 'border-charcoal/20',
-                      ]"
-                    />
-                    <p v-if="expDateError" class="mt-1 text-xs text-red-500">
-                      {{ expDateError }}
-                    </p>
+                      <span>Checkout with PayPal</span>
+                    </button>
                   </div>
-                  <div>
-                    <label
-                      for="cvv"
-                      class="block text-sm font-medium text-charcoal mb-1"
-                    >
-                      CVV *
-                    </label>
-                    <input
-                      type="text"
-                      id="cvv"
-                      v-model="formData.cvv"
-                      @blur="validateField('cvv')"
-                      placeholder="XXX"
-                      :class="[
-                        'w-full p-2 border bg-cream rounded-sm focus:outline-none focus:border-sage',
-                        cvvError ? 'border-red-500' : 'border-charcoal/20',
-                      ]"
-                    />
-                    <p v-if="cvvError" class="mt-1 text-xs text-red-500">
-                      {{ cvvError }}
-                    </p>
-                  </div>
+
+                  <p class="text-xs text-charcoal/50 text-center mt-4">
+                    Note: This is a sandbox integration. No actual payment will
+                    be processed.
+                  </p>
                 </div>
               </div>
 
@@ -387,7 +441,7 @@
                 type="submit"
                 :disabled="isSubmitting"
                 :class="[
-                  'w-full flex items-center justify-center px-6 py-3 rounded-sm transition-colors',
+                  'w-full flex items-center justify-center px-6 py-3 rounded-sm transition-colors mt-5',
                   isSubmitting
                     ? 'bg-sage/50 text-cream/80 cursor-not-allowed'
                     : 'bg-sage text-cream hover:bg-sage/90',
@@ -397,7 +451,11 @@
                   isSubmitting
                     ? "Processing..."
                     : step === 1
-                    ? "Continue to Payment"
+                    ? "Continue to Payment Method"
+                    : step === 2
+                    ? formData.paymentMethod === "cod"
+                      ? "Place Order"
+                      : "Continue to Payment Details"
                     : "Place Order"
                 }}
               </button>
@@ -471,7 +529,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import { ArrowLeft, CreditCard, Check } from "lucide-vue-next";
@@ -480,11 +538,15 @@ import {
   required,
   email as emailValidator,
   pattern,
-  minLength,
+  type Validator,
 } from "@/composables/validators";
 import { useCartStore } from "@/stores/cart.store";
+import { useUserStore } from "@/stores/user.store";
+import { type CartItem } from "@/types/Cart";
 
 const cartStore = useCartStore();
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore);
 const { cart } = storeToRefs(cartStore);
 const router = useRouter();
 const step = ref(1);
@@ -495,26 +557,34 @@ const summaryRef = ref<HTMLElement | null>(null);
 const summaryHeight = ref<number | null>(null);
 
 // Form data
-const formData = ref({
-  firstName: "",
-  lastName: "",
-  email: "",
-  address: "",
-  city: "",
-  postalCode: "",
-  country: "Japan",
-  cardName: "",
-  cardNumber: "",
-  expDate: "",
-  cvv: "",
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  paymentMethod: string;
+}
+
+const formData = reactive<FormData>({
+  firstName: userInfo.value?.firstName || "",
+  lastName: userInfo.value?.lastName || "",
+  email: userInfo.value?.email || "",
+  address: userInfo.value?.address?.street || "",
+  city: userInfo.value?.address?.city || "",
+  postalCode: userInfo.value?.address?.postalCode || "",
+  country: userInfo.value?.address?.country || "",
+  paymentMethod: "",
 });
 
-const items = computed(() => cart.value?.items || []);
+const items = computed<CartItem[]>(() => cart.value?.items || []);
 
 // Computed values
 const subtotal = computed(() => {
   return items.value.reduce((total, item) => {
-    return total + item.priceAtTimeOfAddition * item.quantity;
+    return total + (item.priceAtTimeOfAddition || 0) * item.quantity;
   }, 0);
 });
 
@@ -523,7 +593,7 @@ const tax = computed(() => subtotal.value * 0.08);
 const total = computed(() => subtotal.value + shipping.value + tax.value);
 
 // Setup form validation
-const validationSchema = {
+const validationSchema: Partial<Record<keyof FormData, Validator[]>> = {
   firstName: [required()],
   lastName: [required()],
   email: [required(), emailValidator()],
@@ -534,46 +604,27 @@ const validationSchema = {
     pattern(/^\d{3,10}$/, "Please enter a valid postal code"),
   ],
   country: [required()],
-  cardName: [required()],
-  cardNumber: [
-    required(),
-    pattern(
-      /^\d{4}(\s\d{4}){3}$/,
-      "Please enter a valid card number in format XXXX XXXX XXXX XXXX"
-    ),
-  ],
-  expDate: [
-    required(),
-    pattern(
-      /^(0[1-9]|1[0-2])\/\d{2}$/,
-      "Please enter a valid expiration date (MM/YY)"
-    ),
-  ],
-  cvv: [required(), pattern(/^\d{3,4}$/, "CVV must be 3 or 4 digits")],
+  paymentMethod: [required("Please select a payment method")],
 };
 
-const {
-  errors,
-  firstName: firstNameError,
-  lastName: lastNameError,
-  email: emailError,
-  address: addressError,
-  city: cityError,
-  postalCode: postalCodeError,
-  country: countryError,
-  cardName: cardNameError,
-  cardNumber: cardNumberError,
-  expDate: expDateError,
-  cvv: cvvError,
-  validateField,
-  validate,
-  resetValidation,
-} = useFormValidation(formData, validationSchema);
+const { errors, validateField, validate, resetValidation } = useFormValidation(
+  formData,
+  validationSchema
+);
+
+// Extract individual field errors using computed properties
+const firstNameError = computed(() => errors.firstName);
+const lastNameError = computed(() => errors.lastName);
+const emailError = computed(() => errors.email);
+const addressError = computed(() => errors.address);
+const cityError = computed(() => errors.city);
+const postalCodeError = computed(() => errors.postalCode);
+const countryError = computed(() => errors.country);
+const paymentMethodError = computed(() => errors.paymentMethod);
 
 // Methods
-const handleSubmit = () => {
+const handleSubmit = (): void => {
   if (step.value === 1) {
-    // Validate shipping fields
     const shippingFields = [
       "firstName",
       "lastName",
@@ -584,7 +635,7 @@ const handleSubmit = () => {
       "country",
     ];
     const isValid = shippingFields.every((field) =>
-      validateField(field as keyof typeof formData)
+      validateField(field as keyof FormData)
     );
 
     if (isValid) {
@@ -593,19 +644,63 @@ const handleSubmit = () => {
     return;
   }
 
-  // Validate payment fields
-  const paymentFields = ["cardName", "cardNumber", "expDate", "cvv"];
-  const isValid = paymentFields.every((field) =>
-    validateField(field as keyof typeof formData)
-  );
+  if (step.value === 2) {
+    // Validate payment method selection
+    if (!validateField("paymentMethod")) {
+      return;
+    }
 
-  if (!isValid) return;
+    // If COD is selected, skip to order confirmation
+    if (formData.paymentMethod === "cod") {
+      // Process order with COD payment
+      isSubmitting.value = true;
+      // Simulate order processing
+      setTimeout(() => {
+        orderNumber.value = `ORD-${Math.floor(Math.random() * 1000000)
+          .toString()
+          .padStart(6, "0")}`;
+        isComplete.value = true;
+        isSubmitting.value = false;
+      }, 1500);
+      return;
+    }
 
+    // If online payment is selected, proceed to payment details
+    step.value = 3;
+    return;
+  }
+
+  // For PayPal, we don't need to validate card fields
   isSubmitting.value = true;
+
+  // Here we would normally redirect to PayPal, but for the sandbox we'll just simulate
+  setTimeout(() => {
+    orderNumber.value = `ORD-${Math.floor(Math.random() * 1000000)
+      .toString()
+      .padStart(6, "0")}`;
+    isComplete.value = true;
+    isSubmitting.value = false;
+  }, 1500);
+};
+
+// Handle PayPal checkout button click
+const handlePayPalCheckout = (): void => {
+  // This would typically integrate with the PayPal SDK
+  // For now, we'll simulate a successful payment
+  isSubmitting.value = true;
+
+  // Simulate PayPal processing time
+  setTimeout(() => {
+    orderNumber.value = `ORD-${Math.floor(Math.random() * 1000000)
+      .toString()
+      .padStart(6, "0")}`;
+    isComplete.value = true;
+    isSubmitting.value = false;
+  }, 2000);
 };
 
 // Calculate and set the height for the summary container
-const updateSummaryHeight = () => {
+const updateSummaryHeight = (): void => {
   if (summaryRef.value) {
     const viewportHeight = window.innerHeight;
     const summaryTop = summaryRef.value.getBoundingClientRect().top;

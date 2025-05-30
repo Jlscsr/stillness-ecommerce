@@ -286,6 +286,7 @@ import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 
 import { useAuthStore } from "@stores/auth.store";
+import { useUserStore } from "@stores/user.store";
 import { useCartStore } from "@stores/cart.store";
 
 import { LogIn, User, ShoppingBag, Menu, X, UserPlus } from "lucide-vue-next";
@@ -300,12 +301,13 @@ interface User {
 
 // Store and router
 const authStore = useAuthStore();
+const userStore = useUserStore();
 const cartStore = useCartStore();
 const { cartItemsCount } = storeToRefs(cartStore);
 const router = useRouter();
 
 const isAuthenticated = computed(() => authStore.isAuthenticated);
-const user = computed(() => authStore.user);
+const user = computed(() => userStore.userInfo);
 
 // State
 const isScrolled = ref(false);

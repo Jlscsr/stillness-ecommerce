@@ -13,19 +13,12 @@
         </div>
         <h1 class="text-3xl font-light text-charcoal mb-4">Order Confirmed</h1>
         <p class="text-charcoal/70 mb-6">
-          Thank you for your order! Your order number is
-          <span class="font-medium text-charcoal">{{ orderNumber }}</span
-          >.
-        </p>
-        <p class="text-charcoal/70 mb-8">
-          We've sent a confirmation email to
-          <span class="font-medium text-charcoal">{{ formData.email }}</span>
-          with your order details.
+          Thank you for your order! You can view order status in My Account Page
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <router-link
-            to="/profile"
+            to="/profile?tab=orders"
             class="px-6 py-3 bg-beige text-charcoal font-medium rounded-sm hover:bg-beige/90 transition-colors"
           >
             View Order Status
@@ -127,7 +120,7 @@
           >
             3
           </div>
-          <span class="ml-2 font-medium">Payment Details</span>
+          <span class="ml-2 font-medium">Payment</span>
         </div>
       </div>
 
@@ -438,6 +431,7 @@
               </div>
 
               <button
+                v-if="step < 3 || formData.paymentMethod === 'cod'"
                 type="submit"
                 :disabled="isSubmitting"
                 :class="[
@@ -506,7 +500,9 @@
                 </div>
                 <div class="flex justify-between text-sm">
                   <span class="text-charcoal/70">Shipping</span>
-                  <span class="text-charcoal">${{ shipping.toFixed(2) }}</span>
+                  <span class="text-charcoal">{{
+                    shipping ? `$ ${shipping.toFixed(2)}` : "Free"
+                  }}</span>
                 </div>
                 <div class="flex justify-between text-sm">
                   <span class="text-charcoal/70">Tax</span>
@@ -531,7 +527,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
 import { storeToRefs } from "pinia";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { ArrowLeft, CreditCard, Check } from "lucide-vue-next";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import {
@@ -542,17 +538,25 @@ import {
 } from "@/composables/validators";
 import { useCartStore } from "@/stores/cart.store";
 import { useUserStore } from "@/stores/user.store";
+import { useUserOrdersStore } from "@/stores/userOrders.store";
+import { useProductStore } from "@/stores/product.store";
+import { useToastStore } from "@/stores/toast.store";
 import { type CartItem } from "@/types/Cart";
+import { createPaypalOrder } from "@/services/paypal.service";
 
 const cartStore = useCartStore();
 const userStore = useUserStore();
+const userOrdersStore = useUserOrdersStore();
+const productStore = useProductStore();
+const toastStore = useToastStore();
 const { userInfo } = storeToRefs(userStore);
 const { cart } = storeToRefs(cartStore);
+
 const router = useRouter();
+const route = useRoute();
 const step = ref(1);
 const isSubmitting = ref(false);
 const isComplete = ref(false);
-const orderNumber = ref("");
 const summaryRef = ref<HTMLElement | null>(null);
 const summaryHeight = ref<number | null>(null);
 
@@ -588,9 +592,20 @@ const subtotal = computed(() => {
   }, 0);
 });
 
-const shipping = computed(() => 10.0);
+const shipping = computed(() => {
+  if (subtotal.value > 100) {
+    return 0;
+  }
+  return 10;
+});
 const tax = computed(() => subtotal.value * 0.08);
-const total = computed(() => subtotal.value + shipping.value + tax.value);
+const total = computed(() => {
+  if (subtotal.value > 100) {
+    return subtotal.value + tax.value; // Free shipping for orders over $100
+  }
+
+  return subtotal.value + shipping.value + tax.value;
+});
 
 // Setup form validation
 const validationSchema: Partial<Record<keyof FormData, Validator[]>> = {
@@ -607,7 +622,7 @@ const validationSchema: Partial<Record<keyof FormData, Validator[]>> = {
   paymentMethod: [required("Please select a payment method")],
 };
 
-const { errors, validateField, validate, resetValidation } = useFormValidation(
+const { errors, validateField, resetValidation } = useFormValidation(
   formData,
   validationSchema
 );
@@ -634,6 +649,7 @@ const handleSubmit = (): void => {
       "postalCode",
       "country",
     ];
+
     const isValid = shippingFields.every((field) =>
       validateField(field as keyof FormData)
     );
@@ -645,58 +661,90 @@ const handleSubmit = (): void => {
   }
 
   if (step.value === 2) {
-    // Validate payment method selection
-    if (!validateField("paymentMethod")) {
-      return;
-    }
+    if (!validateField("paymentMethod")) return;
 
-    // If COD is selected, skip to order confirmation
     if (formData.paymentMethod === "cod") {
       // Process order with COD payment
       isSubmitting.value = true;
-      // Simulate order processing
-      setTimeout(() => {
-        orderNumber.value = `ORD-${Math.floor(Math.random() * 1000000)
-          .toString()
-          .padStart(6, "0")}`;
-        isComplete.value = true;
-        isSubmitting.value = false;
-      }, 1500);
+
+      processOrder();
       return;
     }
 
-    // If online payment is selected, proceed to payment details
     step.value = 3;
     return;
   }
-
-  // For PayPal, we don't need to validate card fields
-  isSubmitting.value = true;
-
-  // Here we would normally redirect to PayPal, but for the sandbox we'll just simulate
-  setTimeout(() => {
-    orderNumber.value = `ORD-${Math.floor(Math.random() * 1000000)
-      .toString()
-      .padStart(6, "0")}`;
-    isComplete.value = true;
-    isSubmitting.value = false;
-  }, 1500);
 };
 
 // Handle PayPal checkout button click
-const handlePayPalCheckout = (): void => {
-  // This would typically integrate with the PayPal SDK
-  // For now, we'll simulate a successful payment
+const handlePayPalCheckout = async (): Promise<void> => {
   isSubmitting.value = true;
 
-  // Simulate PayPal processing time
-  setTimeout(() => {
-    orderNumber.value = `ORD-${Math.floor(Math.random() * 1000000)
-      .toString()
-      .padStart(6, "0")}`;
+  try {
+    const createOrderResponse = await createPaypalOrder({
+      totalAmount: total.value,
+    });
+
+    if (!createOrderResponse.success) {
+      toastStore.error(
+        createOrderResponse.message || "Failed to create PayPal order"
+      );
+      isSubmitting.value = false;
+      return;
+    }
+    const { orderID } = createOrderResponse.data;
+
+    window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${orderID}`;
+  } catch (error) {
+    console.error("Error during PayPal checkout:", error);
+    toastStore.error("Failed to initiate PayPal checkout");
+    isSubmitting.value = false;
+    return;
+  }
+};
+
+const processOrder = async (paymentMethod: string = "cod"): Promise<void> => {
+  try {
+    const payload = {
+      shippingInformation: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        street: formData.address,
+        city: formData.city,
+        postalCode: formData.postalCode,
+        country: formData.country,
+      },
+      orderItems: items.value.map((item) => {
+        return {
+          ...item,
+          total: (item.priceAtTimeOfAddition || 0) * item.quantity,
+        };
+      }),
+      paymentMethod: paymentMethod,
+      paymentStatus: formData.paymentMethod === "cod" ? "pending" : "paid",
+      totalAmount: total.value,
+    };
+
+    // Add the order to the user's orders
+    const response = await userOrdersStore.addNewUserOrder(payload);
+
+    if (!response.success) {
+      toastStore.error(response.message || "Failed to place order");
+      return;
+    }
+
+    await userOrdersStore.getUserOrders();
+    await productStore.getProducts();
+    toastStore.success(response.message);
+    cartStore.clearCart();
+    resetValidation();
+  } catch (error) {
+    console.error("Error processing order:", error);
+  } finally {
     isComplete.value = true;
     isSubmitting.value = false;
-  }, 2000);
+  }
 };
 
 // Calculate and set the height for the summary container
@@ -709,9 +757,16 @@ const updateSummaryHeight = (): void => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   updateSummaryHeight();
   window.addEventListener("resize", updateSummaryHeight);
+
+  if (route.query.success && route.query.success === "true") {
+    step.value = 3;
+    processOrder("online");
+  } else {
+    isComplete.value = false;
+  }
 });
 
 onUnmounted(() => {

@@ -33,6 +33,7 @@ import { useProductStore } from "@/stores/product.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCartStore } from "./stores/cart.store";
 import { useUserStore } from "@/stores/user.store";
+import { useUserOrdersStore } from "./stores/userOrders.store";
 
 // Import global UI components
 import ToastContainer from "@/components/ui/toast/ToastContainer.vue";
@@ -42,6 +43,7 @@ const authStore = useAuthStore();
 const { getProducts } = useProductStore();
 const { getCart, clearCart } = useCartStore();
 const { getUserInfoById } = useUserStore();
+const { getUserOrders } = useUserOrdersStore();
 
 onMounted(async () => {
   await getProducts();
@@ -53,6 +55,7 @@ watch(
     if (isLoggedIn) {
       await getUserInfoById();
       await getCart();
+      await getUserOrders();
     } else {
       clearCart();
     }

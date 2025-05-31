@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@formkit/vue": "^1.6.9",
+    "@paypal/paypal-js": "^8.2.0",
     "@types/axios": "^0.9.36",
     "@vueuse/core": "^13.2.0",
     "@vueuse/motion": "^3.0.3",

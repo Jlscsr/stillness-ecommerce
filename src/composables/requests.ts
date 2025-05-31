@@ -5,8 +5,12 @@ export const get = async <T>(url: string, params?: object): Promise<T> => {
   return response.data;
 };
 
-export const post = async <T>(url: string, data?: object): Promise<T> => {
-  const response = await api.post<T>(url, data);
+export const post = async <T>(
+  url: string,
+  data?: object,
+  options?: object
+): Promise<T> => {
+  const response = await api.post<T>(url, data, options);
   return response.data;
 };
 

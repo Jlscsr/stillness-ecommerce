@@ -91,13 +91,13 @@ export const routes: RouteRecordRaw[] = [
         component: UIExampleView,
         meta: { title: "UI Examples", requiresAuth: false },
       },
-      {
+      /*  {
         path: "collections/:category",
         name: "collection",
-        // component: CollectionView,
+        component: CollectionView,
         meta: { title: "Collection", requiresAuth: false },
         props: true,
-      },
+      }, */
     ],
   },
   // 404 - Keep this as the last route

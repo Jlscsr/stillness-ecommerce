@@ -41,24 +41,32 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 import AccountSidebar from "@/components/profile/AccountSidebar.vue";
 import AccountInfo from "@/components/profile/AccountInfo.vue";
 import AccountOrders from "@/components/profile/AccountOrders.vue";
 
 import { useUserStore } from "@stores/user.store";
+import { useUserOrdersStore } from "@stores/userOrders.store";
 import { type UserCredentials } from "@/types/User";
 
 const userStore = useUserStore();
+const userOrdersStore = useUserOrdersStore();
+const route = useRoute();
+const router = useRouter();
 
 // State management
-const activeTab = ref("profile");
+const activeTab = ref((route.query.tab as string) || "profile");
 const expandedOrders = ref<string[]>([]);
 
 const user = computed<UserCredentials | null>(() => userStore.userInfo);
+const pendingOrders = computed(() => userOrdersStore.pendingOrders);
+const orderHistory = computed(() => userOrdersStore.orderHistory);
 
 // Methods
 const setActiveTab = (tab: string) => {
+  router.push({ name: "profile", query: { tab } });
   activeTab.value = tab;
 };
 
@@ -69,77 +77,4 @@ const toggleOrderExpand = (orderId: string) => {
     expandedOrders.value.push(orderId);
   }
 };
-
-// Dummy order data exactly matching the NextJS reference
-const pendingOrders = ref([
-  {
-    id: "JP-123456",
-    date: "May 15, 2023",
-    status: "Processing",
-    total: 89.0,
-    items: [
-      {
-        id: "1",
-        name: "Ceramic Tea Set",
-        quantity: 1,
-        price: 89.0,
-        image: null,
-      },
-    ],
-  },
-]);
-
-const orderHistory = ref([
-  {
-    id: "JP-987654",
-    date: "April 2, 2023",
-    status: "Delivered",
-    total: 125.0,
-    items: [
-      {
-        id: "2",
-        name: "Linen Throw Blanket",
-        price: 65.0,
-        quantity: 1,
-        image: null,
-      },
-      {
-        id: "5",
-        name: "Natural Incense Set",
-        price: 28.0,
-        quantity: 1,
-        image: null,
-      },
-      {
-        id: "7",
-        name: "Wooden Chopstick Set",
-        price: 32.0,
-        quantity: 1,
-        image: null,
-      },
-    ],
-  },
-  {
-    id: "JP-876543",
-    date: "February 18, 2023",
-    status: "Delivered",
-    total: 133.0,
-    items: [
-      {
-        id: "4",
-        name: "Meditation Cushion",
-        price: 55.0,
-        quantity: 1,
-        image: null,
-      },
-      {
-        id: "6",
-        name: "Linen Kimono Robe",
-        price: 78.0,
-        quantity: 1,
-        image: null,
-      },
-    ],
-  },
-]);
 </script>

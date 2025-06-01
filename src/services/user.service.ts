@@ -1,10 +1,25 @@
 import { get, put } from "@/composables/requests";
 import type { ApiResponse } from "@/types/Response";
 import type {
+  UserResponse,
   UserCredentials,
   UserUpdateRequestBody,
   AddressUpdateRequestBody,
 } from "@/types/User";
+
+export const getUsers = async (): Promise<ApiResponse<UserResponse[]>> => {
+  try {
+    const response = await get<ApiResponse<UserResponse[]>>(`/users`);
+
+    if (!response.success) {
+      throw new Error(response.message);
+    }
+
+    return response;
+  } catch (error) {
+    throw new Error("Failed to fetch users.");
+  }
+};
 
 export const getUserInfo = async (): Promise<ApiResponse<UserCredentials>> => {
   try {

@@ -71,7 +71,6 @@ export const routes: RouteRecordRaw[] = [
         component: AdminOrdersHistoryView,
         meta: { title: "Order History", requiresAuth: true, isAdmin: true },
       },
-      // Other admin routes can be added here
     ],
   },
   {

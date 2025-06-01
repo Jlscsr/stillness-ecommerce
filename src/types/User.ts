@@ -19,6 +19,18 @@ export interface UserCredentials {
   updatedAt: string;
 }
 
+export interface UserResponse {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: "admin" | "customer";
+  acceptTerms: boolean;
+  address?: UserAddress | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface UserUpdateRequestBody {
   email: string | undefined;
   firstName: string | undefined;

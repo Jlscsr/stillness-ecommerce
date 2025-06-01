@@ -13,7 +13,8 @@
       <router-link to="/admin" class="flex items-center">
         <Logo variant="small" />
       </router-link>
-      <div class="w-6"></div> <!-- Empty div for flex spacing -->
+      <div class="w-6"></div>
+      <!-- Empty div for flex spacing -->
     </div>
 
     <!-- Mobile Menu Overlay -->
@@ -110,8 +111,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
 import {
   LayoutDashboard,
   Users,
@@ -121,9 +122,13 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  Menu
-} from 'lucide-vue-next';
-import Logo from '@/components/atoms/Logo.vue';
+  Menu,
+} from "lucide-vue-next";
+import Logo from "@/components/atoms/Logo.vue";
+
+import { useAdminStore } from "@/stores/admin.store";
+
+const adminStore = useAdminStore();
 
 // State management with Vue refs
 const collapsed = ref(false);
@@ -134,38 +139,41 @@ const route = useRoute();
 // Check if current route is active
 const isActive = (path: string) => {
   // Exact match for dashboard
-  if (path === '/admin') {
-    return route.path === '/admin';
+  if (path === "/admin") {
+    return route.path === "/admin";
   }
-  
+
   // For nested routes, ensure we don't highlight parent routes
   // when a child route is active
   const currentPath = route.path;
-  
+
   // Check if this is the Orders route and we're on the history page
-  if (path === '/admin/orders' && currentPath === '/admin/orders/history') {
+  if (path === "/admin/orders" && currentPath === "/admin/orders/history") {
     return false;
   }
-  
+
   // Otherwise use the default behavior
-  return currentPath.startsWith(path) && 
-         // Make sure the current path doesn't have additional segments
-         // that would match a more specific menu item
-         !navItems.some(item => 
-           item.path !== path && 
-           item.path.startsWith(path) && 
-           currentPath.startsWith(item.path)
-         );
+  return (
+    currentPath.startsWith(path) &&
+    // Make sure the current path doesn't have additional segments
+    // that would match a more specific menu item
+    !navItems.some(
+      (item) =>
+        item.path !== path &&
+        item.path.startsWith(path) &&
+        currentPath.startsWith(item.path)
+    )
+  );
 };
 
 // Navigation items
 const navItems = [
-  { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-  { name: 'Users', path: '/admin/users', icon: Users },
-  { name: 'Products', path: '/admin/products', icon: Package },
-  { name: 'Orders', path: '/admin/orders', icon: ShoppingBag },
-  { name: 'Order History', path: '/admin/orders/history', icon: History },
-  { name: 'Settings', path: '/admin/settings', icon: Settings },
+  { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
+  { name: "Users", path: "/admin/users", icon: Users },
+  { name: "Products", path: "/admin/products", icon: Package },
+  { name: "Orders", path: "/admin/orders", icon: ShoppingBag },
+  { name: "Order History", path: "/admin/orders/history", icon: History },
+  { name: "Settings", path: "/admin/settings", icon: Settings },
 ];
 
 // Toggle sidebar collapsed state
@@ -184,13 +192,25 @@ const setMobileMenuOpen = (state: boolean) => {
 };
 
 // Event listeners to close dropdown when clicking outside
-onMounted(() => {
-  document.addEventListener('click', (e) => {
+onMounted(async () => {
+  document.addEventListener("click", (e) => {
     // Close mobile menu when clicking outside
-    if (mobileMenuOpen.value && e.target && !(e.target as HTMLElement).closest('.sidebar-menu')) {
+    if (
+      mobileMenuOpen.value &&
+      e.target &&
+      !(e.target as HTMLElement).closest(".sidebar-menu")
+    ) {
       mobileMenuOpen.value = false;
     }
   });
+
+  try {
+    // Fetch admin dashboard data
+    await adminStore.fetchUsers();
+    await adminStore.fetchOrders();
+  } catch (error) {
+    console.error("Error initializing admin store:", error);
+  }
 });
 
 // Check mobile on mount and handle resize
@@ -203,11 +223,11 @@ onMounted(() => {
   };
 
   checkMobile();
-  window.addEventListener('resize', checkMobile);
-  
+  window.addEventListener("resize", checkMobile);
+
   // Cleanup event listener on component unmount
   onUnmounted(() => {
-    window.removeEventListener('resize', checkMobile);
+    window.removeEventListener("resize", checkMobile);
   });
 });
 </script>

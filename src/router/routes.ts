@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from "vue-router";
 
 // Layouts
 const DefaultLayout = () => import("@layouts/DefaultLayout.vue");
+const AdminLayout = () => import("@layouts/AdminLayout.vue");
 
 // Views
 const LoginView = () => import("@views/auth/LoginView.vue");
@@ -17,9 +18,62 @@ const CheckoutView = () => import("@views/checkout/CheckoutView.vue");
 const ProfileView = () => import("@views/profile/ProfileView.vue");
 const UIExampleView = () => import("@/components/ui/UIExample.vue");
 const NotFoundView = () => import("@views/errors/NotFoundView.vue");
+
+// Admin Views
+const AdminDashboardView = () => import("@views/admin/AdminDashboardView.vue");
+const AdminUsersView = () => import("@/views/admin/AdminUsersView.vue");
+const AdminProductsView = () => import("@/views/admin/AdminProductsView.vue");
+const AdminAddProductView = () => import("@/views/admin/AdminAddProductView.vue");
+const AdminOrdersView = () => import("@/views/admin/AdminOrdersView.vue");
+const AdminOrdersHistoryView = () => import("@/views/admin/AdminOrdersHistoryView.vue");
 // const CollectionView = () => import("@/views/collections/CollectionView.vue");
 
 export const routes: RouteRecordRaw[] = [
+  // Admin Routes
+  {
+    path: "/admin",
+    component: AdminLayout,
+    meta: { requiresAuth: true, isAdmin: true },
+    children: [
+      {
+        path: "",
+        name: "admin-dashboard",
+        component: AdminDashboardView,
+        meta: { title: "Admin Dashboard", requiresAuth: true, isAdmin: true },
+      },
+      {
+        path: "users",
+        name: "admin-users",
+        component: AdminUsersView,
+        meta: { title: "User Management", requiresAuth: true, isAdmin: true },
+      },
+      {
+        path: "products",
+        name: "admin-products",
+        component: AdminProductsView,
+        meta: { title: "Product Management", requiresAuth: true, isAdmin: true },
+      },
+      {
+        path: "products/add",
+        name: "admin-add-product",
+        component: AdminAddProductView,
+        meta: { title: "Add New Product", requiresAuth: true, isAdmin: true },
+      },
+      {
+        path: "orders",
+        name: "admin-orders",
+        component: AdminOrdersView,
+        meta: { title: "Order Management", requiresAuth: true, isAdmin: true },
+      },
+      {
+        path: "orders/history",
+        name: "admin-orders-history",
+        component: AdminOrdersHistoryView,
+        meta: { title: "Order History", requiresAuth: true, isAdmin: true },
+      },
+      // Other admin routes can be added here
+    ],
+  },
   {
     path: "/",
     component: DefaultLayout,

@@ -88,23 +88,25 @@
               </div>
 
               <div class="space-y-2">
-                <label for="fullDescription" class="block text-sm font-medium text-charcoal">Full Description</label>
+                <label for="stock" class="block text-sm font-medium text-charcoal">Stock *</label>
+                <input
+                  id="stock"
+                  v-model="productData.stock"
+                  type="number"
+                  min="0"
+                  required
+                  class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <label for="longDescription" class="block text-sm font-medium text-charcoal">Long Description</label>
                 <textarea
-                  id="fullDescription"
-                  v-model="productData.fullDescription"
+                  id="longDescription"
+                  v-model="productData.longDescription"
                   rows="4"
                   class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
                 ></textarea>
-              </div>
-
-              <div class="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="inStock"
-                  v-model="productData.inStock"
-                  class="h-4 w-4 text-sage focus:ring-sage rounded"
-                />
-                <label for="inStock" class="block text-sm text-charcoal">In Stock</label>
               </div>
             </div>
           </div>
@@ -117,12 +119,30 @@
             <div class="p-6 space-y-4">
               <div class="space-y-2">
                 <label for="materials" class="block text-sm font-medium text-charcoal">Materials</label>
-                <input
-                  id="materials"
-                  v-model="productData.materials"
-                  type="text"
-                  class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
-                />
+                <div class="flex gap-2">
+                  <input
+                    id="materials"
+                    v-model="materialsInput"
+                    type="text"
+                    placeholder="Enter materials"
+                    @keyup="handleMaterialsKeyup"
+                    class="flex-1 p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
+                  />
+                  <button 
+                    type="button" 
+                    @click="addMaterial"
+                    class="px-3 py-2 bg-sage text-white rounded-md hover:bg-sage/90">
+                    Add
+                  </button>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <div v-for="(material, index) in productData.materials" :key="index" class="bg-cream px-2 py-1 rounded-md flex items-center">
+                    <span class="text-sm">{{ material }}</span>
+                    <button type="button" @click="removeMaterial(index)" class="ml-2">
+                      <X class="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div class="space-y-2">
@@ -134,77 +154,56 @@
                   class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
                 />
               </div>
-
-              <div class="space-y-2">
-                <label for="care" class="block text-sm font-medium text-charcoal">Care Instructions</label>
-                <textarea
-                  id="care"
-                  v-model="productData.care"
-                  rows="2"
-                  class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
-                ></textarea>
-              </div>
-
-              <div class="space-y-2">
-                <label for="shipping" class="block text-sm font-medium text-charcoal">Shipping Information</label>
-                <textarea
-                  id="shipping"
-                  v-model="productData.shipping"
-                  rows="2"
-                  class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
-                ></textarea>
-              </div>
             </div>
           </div>
+        </div>
 
+        <!-- Right Column - Images -->
+        <div class="space-y-6">
           <div class="bg-white rounded-lg shadow-sm border border-charcoal/10">
-            <div class="p-6 pb-2 flex justify-between items-center">
-              <div>
-                <h3 class="text-lg font-medium text-charcoal">Variants</h3>
-                <p class="text-sm text-charcoal/60">Add product variants like size or color</p>
-              </div>
-              <button
-                type="button"
-                @click="addVariant"
-                class="inline-flex items-center px-3 py-1.5 border border-charcoal/20 text-sm font-medium rounded-md bg-white hover:bg-cream"
-              >
-                <Plus class="h-4 w-4 mr-2" />
-                Add Variant
-              </button>
+            <div class="p-6 pb-2">
+              <h3 class="text-lg font-medium text-charcoal">Product Images</h3>
+              <p class="text-sm text-charcoal/60">Upload images for this product</p>
             </div>
             <div class="p-6">
-              <div v-if="productData.variants.length === 0" class="text-center py-6 text-charcoal/60">
-                No variants added
-              </div>
-              <div v-else class="space-y-4">
-                <div
-                  v-for="(variant, index) in productData.variants"
-                  :key="index"
-                  class="flex items-end gap-4 pb-4 border-b border-charcoal/10"
+              <div class="mb-4">
+                <button
+                  type="button"
+                  @click="triggerFileInput"
+                  class="w-full border-2 border-dashed border-charcoal/20 rounded-md p-6 flex flex-col items-center justify-center hover:bg-cream/30"
                 >
-                  <div class="flex-1 space-y-2">
-                    <label :for="`variant-${index}-name`" class="block text-sm font-medium text-charcoal">Name</label>
-                    <input
-                      :id="`variant-${index}-name`"
-                      v-model="variant.name"
-                      type="text"
-                      placeholder="e.g. Small, Red, etc."
-                      class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
-                    />
-                  </div>
-                  <div class="flex items-center space-x-2 pb-2">
-                    <input
-                      :id="`variant-${index}-inStock`"
-                      v-model="variant.inStock"
-                      type="checkbox"
-                      class="h-4 w-4 text-sage focus:ring-sage rounded"
-                    />
-                    <label :for="`variant-${index}-inStock`" class="block text-sm text-charcoal">In Stock</label>
-                  </div>
+                  <Upload class="h-6 w-6 text-charcoal/50 mb-2" />
+                  <span class="text-sm text-charcoal/70">Click to upload images</span>
+                  <span class="text-xs text-charcoal/50 mt-1">JPG, PNG or SVG (max. 5MB)</span>
+                </button>
+                <input
+                  ref="fileInput"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  class="hidden"
+                  @change="handleImageUpload"
+                />
+              </div>
+
+              <div v-if="productData.images.length === 0" class="text-center py-6 text-charcoal/60">
+                No images added
+              </div>
+              <div v-else class="grid grid-cols-2 gap-4">
+                <div
+                  v-for="(image, index) in productData.images"
+                  :key="index"
+                  class="relative aspect-square border border-charcoal/10 rounded-md overflow-hidden group"
+                >
+                  <img
+                    :src="image.src"
+                    :alt="image.alt"
+                    class="w-full h-full object-cover"
+                  />
                   <button
                     type="button"
-                    @click="removeVariant(index)"
-                    class="p-2 rounded-full hover:bg-cream flex items-center justify-center"
+                    @click="removeImage(index)"
+                    class="absolute top-2 right-2 p-1 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X class="h-4 w-4" />
                   </button>
@@ -212,56 +211,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Right Column - Images and Submit -->
-        <div class="space-y-6">
-          <div class="bg-white rounded-lg shadow-sm border border-charcoal/10">
-            <div class="p-6 pb-2">
-              <h3 class="text-lg font-medium text-charcoal">Product Images</h3>
-              <p class="text-sm text-charcoal/60">Upload product images</p>
-            </div>
-            <div class="p-6">
-              <div
-                @click="triggerFileInput"
-                class="border-2 border-dashed border-charcoal/20 rounded-md p-6 text-center cursor-pointer hover:bg-charcoal/5 transition-colors"
-              >
-                <input
-                  type="file"
-                  ref="fileInput"
-                  accept="image/*"
-                  multiple
-                  class="hidden"
-                  @change="handleImageUpload"
-                />
-                <Upload class="h-10 w-10 text-charcoal/40 mx-auto mb-2" />
-                <p class="text-sm text-charcoal/70 mb-1">Click to upload or drag and drop</p>
-                <p class="text-xs text-charcoal/50">PNG, JPG, GIF up to 10MB</p>
-              </div>
-
-              <div v-if="images.length > 0" class="mt-4 grid grid-cols-2 gap-2">
-                <div
-                  v-for="(src, index) in images"
-                  :key="index"
-                  class="relative group rounded-md overflow-hidden"
-                >
-                  <img
-                    :src="src"
-                    :alt="`Product image ${index + 1}`"
-                    class="w-full h-[100px] object-cover"
-                  />
-                  <button
-                    type="button"
-                    @click="removeImage(index)"
-                    class="absolute top-1 right-1 bg-terracotta/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X class="h-3 w-3" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div class="flex justify-between">
             <router-link to="/admin/products">
               <button
@@ -289,27 +238,50 @@
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { X, Upload, Plus, ArrowLeft, ChevronDown } from 'lucide-vue-next';
+import type { Image } from '@/types/Product';
 
 const router = useRouter();
 const fileInput = ref<HTMLInputElement | null>(null);
 const isSubmitting = ref(false);
-const images = ref<string[]>([]);
+const uploadedImages = ref<File[]>([]);
+const materialsInput = ref('');
 
 // Product data state
 const productData = reactive({
   name: '',
   japaneseText: '',
-  price: '',
   description: '',
-  fullDescription: '',
+  longDescription: '',
+  price: '',
   category: '',
-  materials: '',
+  stock: 0,
+  materials: [] as string[],
   dimensions: '',
-  care: '',
-  shipping: '',
-  inStock: true,
-  variants: [{ name: '', inStock: true }],
+  images: [] as Image[],
 });
+
+// Materials handling
+const addMaterial = () => {
+  if (materialsInput.value.trim()) {
+    // Split by comma and add each material
+    const materials = materialsInput.value.split(',').map(m => m.trim()).filter(m => m);
+    productData.materials.push(...materials);
+    materialsInput.value = '';
+  }
+};
+
+// Watch for Enter key on materials input
+const handleMaterialsKeyup = (e: KeyboardEvent) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addMaterial();
+  }
+};
+
+// Remove a material
+const removeMaterial = (index: number) => {
+  productData.materials.splice(index, 1);
+};
 
 // Trigger file input click
 const triggerFileInput = () => {
@@ -322,29 +294,26 @@ const handleImageUpload = (e: Event) => {
   const files = input.files;
   if (!files) return;
 
-  const newImages: string[] = [];
   for (let i = 0; i < files.length; i++) {
-    newImages.push(URL.createObjectURL(files[i]));
+    const file = files[i];
+    uploadedImages.value.push(file);
+    
+    // Create object URL for preview
+    const imageUrl = URL.createObjectURL(file);
+    
+    // Add to product images array
+    productData.images.push({
+      _id: Date.now() + i, // Temporary ID
+      src: imageUrl,
+      alt: file.name
+    });
   }
-
-  images.value = [...images.value, ...newImages];
 };
 
 // Remove an image
 const removeImage = (index: number) => {
-  const newImages = [...images.value];
-  newImages.splice(index, 1);
-  images.value = newImages;
-};
-
-// Handle variant changes
-const addVariant = () => {
-  productData.variants.push({ name: '', inStock: true });
-};
-
-// Remove a variant
-const removeVariant = (index: number) => {
-  productData.variants.splice(index, 1);
+  productData.images.splice(index, 1);
+  uploadedImages.value.splice(index, 1);
 };
 
 // Handle form submission
@@ -352,35 +321,30 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
+    // Add materials if any are in the input field
+    if (materialsInput.value.trim()) {
+      addMaterial();
+    }
+    
     // Prepare the product data
     const newProduct = {
-      id: Date.now().toString(), // Use timestamp as temporary ID
+      _id: Date.now().toString(), // Use timestamp as temporary ID (will be replaced by backend)
       name: productData.name,
       japaneseText: productData.japaneseText || undefined,
       price: Number.parseFloat(productData.price) || 0,
       description: productData.description,
-      fullDescription: productData.fullDescription || undefined,
+      longDescription: productData.longDescription || undefined,
       category: productData.category,
-      materials: productData.materials || undefined,
-      dimensions: productData.dimensions || undefined,
-      care: productData.care || undefined,
-      shipping: productData.shipping || undefined,
-      inStock: productData.inStock,
-      images: images.value.map((src, i) => ({ 
-        id: i + 1, 
-        src, 
-        alt: `${productData.name} image ${i + 1}` 
+      stock: productData.stock,
+      materials: productData.materials,
+      dimensions: productData.dimensions,
+      images: productData.images.map((image, i) => ({
+        _id: i + 1, // Temporary ID
+        src: image.src,
+        alt: image.alt || `${productData.name} image ${i + 1}`
       })),
-      variants:
-        productData.variants.length > 0
-          ? productData.variants
-              .filter((v) => v.name)
-              .map((v, i) => ({
-                id: i + 1,
-                name: v.name,
-                inStock: v.inStock,
-              }))
-          : undefined,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     // In a real app, we would make an API call to save the product

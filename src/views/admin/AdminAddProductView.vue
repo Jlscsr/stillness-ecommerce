@@ -2,7 +2,9 @@
   <div class="p-6">
     <div class="flex items-center mb-6">
       <router-link to="/admin/products" class="mr-4">
-        <button class="rounded-full p-2 hover:bg-cream flex items-center justify-center">
+        <button
+          class="rounded-full p-2 hover:bg-cream flex items-center justify-center"
+        >
           <ArrowLeft class="h-5 w-5" />
         </button>
       </router-link>
@@ -15,13 +17,21 @@
         <div class="lg:col-span-2 space-y-6">
           <div class="bg-white rounded-lg shadow-sm border border-charcoal/10">
             <div class="p-6 pb-2">
-              <h3 class="text-lg font-medium text-charcoal">Product Information</h3>
-              <p class="text-sm text-charcoal/60">Basic information about the product</p>
+              <h3 class="text-lg font-medium text-charcoal">
+                Product Information
+              </h3>
+              <p class="text-sm text-charcoal/60">
+                Basic information about the product
+              </p>
             </div>
             <div class="p-6 space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
-                  <label for="name" class="block text-sm font-medium text-charcoal">Product Name *</label>
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-charcoal"
+                    >Product Name *</label
+                  >
                   <input
                     id="name"
                     v-model="productData.name"
@@ -31,7 +41,11 @@
                   />
                 </div>
                 <div class="space-y-2">
-                  <label for="japaneseText" class="block text-sm font-medium text-charcoal">Japanese Text (Optional)</label>
+                  <label
+                    for="japaneseText"
+                    class="block text-sm font-medium text-charcoal"
+                    >Japanese Text (Optional)</label
+                  >
                   <input
                     id="japaneseText"
                     v-model="productData.japaneseText"
@@ -43,7 +57,11 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
-                  <label for="price" class="block text-sm font-medium text-charcoal">Price ($) *</label>
+                  <label
+                    for="price"
+                    class="block text-sm font-medium text-charcoal"
+                    >Price ($) *</label
+                  >
                   <input
                     id="price"
                     v-model="productData.price"
@@ -55,7 +73,11 @@
                   />
                 </div>
                 <div class="space-y-2">
-                  <label for="category" class="block text-sm font-medium text-charcoal">Category *</label>
+                  <label
+                    for="category"
+                    class="block text-sm font-medium text-charcoal"
+                    >Category *</label
+                  >
                   <div class="relative">
                     <select
                       id="category"
@@ -71,13 +93,19 @@
                       <option value="Dining">Dining</option>
                       <option value="Tea">Tea</option>
                     </select>
-                    <ChevronDown class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none text-charcoal/50" />
+                    <ChevronDown
+                      class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none text-charcoal/50"
+                    />
                   </div>
                 </div>
               </div>
 
               <div class="space-y-2">
-                <label for="description" class="block text-sm font-medium text-charcoal">Short Description *</label>
+                <label
+                  for="description"
+                  class="block text-sm font-medium text-charcoal"
+                  >Short Description *</label
+                >
                 <textarea
                   id="description"
                   v-model="productData.description"
@@ -88,7 +116,11 @@
               </div>
 
               <div class="space-y-2">
-                <label for="stock" class="block text-sm font-medium text-charcoal">Stock *</label>
+                <label
+                  for="stock"
+                  class="block text-sm font-medium text-charcoal"
+                  >Stock *</label
+                >
                 <input
                   id="stock"
                   v-model="productData.stock"
@@ -100,7 +132,11 @@
               </div>
 
               <div class="space-y-2">
-                <label for="longDescription" class="block text-sm font-medium text-charcoal">Long Description</label>
+                <label
+                  for="longDescription"
+                  class="block text-sm font-medium text-charcoal"
+                  >Long Description</label
+                >
                 <textarea
                   id="longDescription"
                   v-model="productData.longDescription"
@@ -114,11 +150,17 @@
           <div class="bg-white rounded-lg shadow-sm border border-charcoal/10">
             <div class="p-6 pb-2">
               <h3 class="text-lg font-medium text-charcoal">Product Details</h3>
-              <p class="text-sm text-charcoal/60">Additional information about the product</p>
+              <p class="text-sm text-charcoal/60">
+                Additional information about the product
+              </p>
             </div>
             <div class="p-6 space-y-4">
               <div class="space-y-2">
-                <label for="materials" class="block text-sm font-medium text-charcoal">Materials</label>
+                <label
+                  for="materials"
+                  class="block text-sm font-medium text-charcoal"
+                  >Materials</label
+                >
                 <div class="flex gap-2">
                   <input
                     id="materials"
@@ -128,17 +170,26 @@
                     @keyup="handleMaterialsKeyup"
                     class="flex-1 p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage"
                   />
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     @click="addMaterial"
-                    class="px-3 py-2 bg-sage text-white rounded-md hover:bg-sage/90">
+                    class="px-3 py-2 bg-sage text-white rounded-md hover:bg-sage/90"
+                  >
                     Add
                   </button>
                 </div>
                 <div class="flex flex-wrap gap-2 mt-2">
-                  <div v-for="(material, index) in productData.materials" :key="index" class="bg-cream px-2 py-1 rounded-md flex items-center">
+                  <div
+                    v-for="(material, index) in productData.materials"
+                    :key="index"
+                    class="bg-cream px-2 py-1 rounded-md flex items-center"
+                  >
                     <span class="text-sm">{{ material }}</span>
-                    <button type="button" @click="removeMaterial(index)" class="ml-2">
+                    <button
+                      type="button"
+                      @click="removeMaterial(index)"
+                      class="ml-2"
+                    >
                       <X class="h-3 w-3" />
                     </button>
                   </div>
@@ -146,7 +197,11 @@
               </div>
 
               <div class="space-y-2">
-                <label for="dimensions" class="block text-sm font-medium text-charcoal">Dimensions</label>
+                <label
+                  for="dimensions"
+                  class="block text-sm font-medium text-charcoal"
+                  >Dimensions</label
+                >
                 <input
                   id="dimensions"
                   v-model="productData.dimensions"
@@ -163,7 +218,9 @@
           <div class="bg-white rounded-lg shadow-sm border border-charcoal/10">
             <div class="p-6 pb-2">
               <h3 class="text-lg font-medium text-charcoal">Product Images</h3>
-              <p class="text-sm text-charcoal/60">Upload images for this product</p>
+              <p class="text-sm text-charcoal/60">
+                Upload images for this product
+              </p>
             </div>
             <div class="p-6">
               <div class="mb-4">
@@ -173,8 +230,12 @@
                   class="w-full border-2 border-dashed border-charcoal/20 rounded-md p-6 flex flex-col items-center justify-center hover:bg-cream/30"
                 >
                   <Upload class="h-6 w-6 text-charcoal/50 mb-2" />
-                  <span class="text-sm text-charcoal/70">Click to upload images</span>
-                  <span class="text-xs text-charcoal/50 mt-1">JPG, PNG or SVG (max. 5MB)</span>
+                  <span class="text-sm text-charcoal/70"
+                    >Click to upload images</span
+                  >
+                  <span class="text-xs text-charcoal/50 mt-1"
+                    >JPG, PNG or SVG (max. 5MB)</span
+                  >
                 </button>
                 <input
                   ref="fileInput"
@@ -186,7 +247,10 @@
                 />
               </div>
 
-              <div v-if="productData.images.length === 0" class="text-center py-6 text-charcoal/60">
+              <div
+                v-if="productData.images.length === 0"
+                class="text-center py-6 text-charcoal/60"
+              >
                 No images added
               </div>
               <div v-else class="grid grid-cols-2 gap-4">
@@ -235,28 +299,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import { X, Upload, Plus, ArrowLeft, ChevronDown } from 'lucide-vue-next';
-import type { Image } from '@/types/Product';
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { X, Upload, Plus, ArrowLeft, ChevronDown } from "lucide-vue-next";
+import type { Image, ProductRequestBody } from "@/types/Product";
+import { useAdminStore } from "@/stores/admin.store";
 
 const router = useRouter();
+const adminStore = useAdminStore();
 const fileInput = ref<HTMLInputElement | null>(null);
 const isSubmitting = ref(false);
 const uploadedImages = ref<File[]>([]);
-const materialsInput = ref('');
+const materialsInput = ref("");
+const productOutput = ref<ProductRequestBody | null>(null);
 
 // Product data state
 const productData = reactive({
-  name: '',
-  japaneseText: '',
-  description: '',
-  longDescription: '',
-  price: '',
-  category: '',
+  name: "",
+  japaneseText: "",
+  description: "",
+  longDescription: "",
+  price: "",
+  category: "",
   stock: 0,
   materials: [] as string[],
-  dimensions: '',
+  dimensions: "",
   images: [] as Image[],
 });
 
@@ -264,15 +331,18 @@ const productData = reactive({
 const addMaterial = () => {
   if (materialsInput.value.trim()) {
     // Split by comma and add each material
-    const materials = materialsInput.value.split(',').map(m => m.trim()).filter(m => m);
+    const materials = materialsInput.value
+      .split(",")
+      .map((m) => m.trim())
+      .filter((m) => m);
     productData.materials.push(...materials);
-    materialsInput.value = '';
+    materialsInput.value = "";
   }
 };
 
 // Watch for Enter key on materials input
 const handleMaterialsKeyup = (e: KeyboardEvent) => {
-  if (e.key === 'Enter') {
+  if (e.key === "Enter") {
     e.preventDefault();
     addMaterial();
   }
@@ -297,17 +367,27 @@ const handleImageUpload = (e: Event) => {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     uploadedImages.value.push(file);
-    
+
     // Create object URL for preview
     const imageUrl = URL.createObjectURL(file);
-    
+
     // Add to product images array
     productData.images.push({
       _id: Date.now() + i, // Temporary ID
       src: imageUrl,
-      alt: file.name
+      alt: file.name,
     });
   }
+};
+
+// Convert file to base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 };
 
 // Remove an image
@@ -325,38 +405,59 @@ const handleSubmit = async () => {
     if (materialsInput.value.trim()) {
       addMaterial();
     }
-    
-    // Prepare the product data
-    const newProduct = {
-      _id: Date.now().toString(), // Use timestamp as temporary ID (will be replaced by backend)
+
+    // Convert all images to base64
+    const imagePromises = uploadedImages.value.map(async (file, index) => {
+      const base64 = await fileToBase64(file);
+      return {
+        _id: index + 1, // Temporary ID
+        src: base64,
+        alt:
+          productData.images[index]?.alt ||
+          `${productData.name} image ${index + 1}`,
+      };
+    });
+
+    const base64Images = await Promise.all(imagePromises);
+
+    // Prepare the product data according to ProductRequestBody
+    const productRequestData: ProductRequestBody = {
       name: productData.name,
-      japaneseText: productData.japaneseText || undefined,
-      price: Number.parseFloat(productData.price) || 0,
       description: productData.description,
-      longDescription: productData.longDescription || undefined,
+      price: Number.parseFloat(productData.price) || 0,
       category: productData.category,
       stock: productData.stock,
       materials: productData.materials,
       dimensions: productData.dimensions,
-      images: productData.images.map((image, i) => ({
-        _id: i + 1, // Temporary ID
-        src: image.src,
-        alt: image.alt || `${productData.name} image ${i + 1}`
-      })),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      images: base64Images,
+      // Optional fields
+      ...(productData.japaneseText
+        ? { japaneseText: productData.japaneseText }
+        : {}),
+      ...(productData.longDescription
+        ? { longDescription: productData.longDescription }
+        : {}),
     };
 
-    // In a real app, we would make an API call to save the product
-    console.log('New product:', newProduct);
+    // Store the data for display
+    productOutput.value = productRequestData;
+
+    // Print the structure to console
+    console.log(
+      "Product Request Structure:",
+      JSON.stringify(productRequestData, null, 2)
+    );
+
+    // For production, would call the AdminStore's addNewProduct function here
+    // const response = await adminStore.addNewProduct(productRequestData);
 
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Redirect to products page
-    router.push('/admin/products');
+    // Don't redirect for now, just show the data
+    // router.push('/admin/products');
   } catch (error) {
-    console.error('Error creating product:', error);
+    console.error("Error creating product:", error);
   } finally {
     isSubmitting.value = false;
   }

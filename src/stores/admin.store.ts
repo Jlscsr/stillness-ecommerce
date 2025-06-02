@@ -8,7 +8,8 @@ import {
   updateOrderPaymentStatus,
   updateOrderStatus,
 } from "@/services/order.service";
-import { deleteProduct } from "@/services/product.service";
+import { addProduct, deleteProduct } from "@/services/product.service";
+import type { ProductRequestBody } from "@/types/Product";
 
 export const useAdminStore = defineStore("admin", () => {
   const users = ref<UserResponse[] | []>([]);
@@ -131,6 +132,32 @@ export const useAdminStore = defineStore("admin", () => {
     }
   };
 
+  const addNewProduct = async (
+    payload: ProductRequestBody
+  ): Promise<{
+    success: boolean;
+    message: string;
+  }> => {
+    try {
+      const response = await addProduct(payload);
+      if (!response.success) {
+        return {
+          success: false,
+          message: response.message,
+        };
+      }
+      return {
+        success: true,
+        message: "Product added successfully.",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to add product.",
+      };
+    }
+  };
+
   const deleteSelectedProduct = async (
     productId: string
   ): Promise<{ success: boolean; message: string }> => {
@@ -162,5 +189,6 @@ export const useAdminStore = defineStore("admin", () => {
     updateUserOrderPaymentStatus,
     updateUserOrderStatus,
     deleteSelectedProduct,
+    addNewProduct,
   };
 });

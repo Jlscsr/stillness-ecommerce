@@ -19,3 +19,8 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
 }
+
+export type ProductRequestBody = Omit<
+  Product,
+  "_id" | "createdAt" | "updatedAt"
+>;

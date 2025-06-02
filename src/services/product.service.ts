@@ -1,6 +1,21 @@
-import { del, get } from "@/composables/requests";
-import type { Product } from "@/types/Product";
+import { get, post, del } from "@/composables/requests";
+import type { Product, ProductRequestBody } from "@/types/Product";
 import type { ApiResponse } from "@/types/Response";
+
+export const addProduct = async (
+  productData: ProductRequestBody
+): Promise<ApiResponse<Product>> => {
+  try {
+    const response = await post<ApiResponse<Product>>("/products", productData);
+    if (!response.success) {
+      throw new Error(response.message);
+    }
+    return response;
+  } catch (error) {
+    console.error("Error adding product:", error);
+    throw new Error("Failed to add product.");
+  }
+};
 
 export const fetchProducts = async (
   params?: object

@@ -8,6 +8,7 @@ import {
   updateOrderPaymentStatus,
   updateOrderStatus,
 } from "@/services/order.service";
+import { deleteProduct } from "@/services/product.service";
 
 export const useAdminStore = defineStore("admin", () => {
   const users = ref<UserResponse[] | []>([]);
@@ -129,6 +130,29 @@ export const useAdminStore = defineStore("admin", () => {
       };
     }
   };
+
+  const deleteSelectedProduct = async (
+    productId: string
+  ): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await deleteProduct(productId);
+      if (!response.success) {
+        return {
+          success: false,
+          message: response.message,
+        };
+      }
+      return {
+        success: true,
+        message: "Product deleted successfully.",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to delete product.",
+      };
+    }
+  };
   return {
     users,
     orders,
@@ -137,5 +161,6 @@ export const useAdminStore = defineStore("admin", () => {
     fetchOrders,
     updateUserOrderPaymentStatus,
     updateUserOrderStatus,
+    deleteSelectedProduct,
   };
 });

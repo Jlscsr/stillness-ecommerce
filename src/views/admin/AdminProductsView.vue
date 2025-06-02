@@ -442,11 +442,15 @@ import {
 import ProductGallery from "@/components/product/ProductGallery.vue";
 import { useModalStore } from "@/stores/modal.store";
 import { useProductStore } from "@/stores/product.store";
-import { type Product, type Image } from "@/types/Product";
+import { useAdminStore } from "@/stores/admin.store";
+import { useToastStore } from "@/stores/toast.store";
+import { type Product } from "@/types/Product";
 import ImageWithLoading from "@/components/ui/ImageWithLoading.vue";
 
 const router = useRouter();
 const productStore = useProductStore();
+const toastStore = useToastStore();
+const adminStore = useAdminStore();
 
 // State
 const products = computed(() => productStore.products);
@@ -557,10 +561,20 @@ const openDeleteDialog = async (product: Product) => {
   }
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (productToDelete.value) {
-    // Here you would call your API to delete the product
-    console.log(`Deleting product: ${productToDelete.value._id}`);
+    try {
+      const response = await adminStore.deleteSelectedProduct(
+        productToDelete.value._id
+      );
+
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+
+      await productStore.getProducts();
+      toastStore.success("Product deleted successfully");
+    } catch (error) {}
 
     productToDelete.value = null;
   }

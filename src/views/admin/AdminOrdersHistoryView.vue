@@ -138,7 +138,7 @@
             <thead class="bg-cream">
               <tr>
                 <th
-                  @click="handleSort('id')"
+                  @click="handleSort('_id')"
                   class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider cursor-pointer"
                 >
                   <div class="flex items-center">
@@ -147,7 +147,7 @@
                   </div>
                 </th>
                 <th
-                  @click="handleSort('date')"
+                  @click="handleSort('createdAt')"
                   class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider cursor-pointer"
                 >
                   <div class="flex items-center">
@@ -156,7 +156,7 @@
                   </div>
                 </th>
                 <th
-                  @click="handleSort('customerName')"
+                  @click="handleSort('shippingInformation')"
                   class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider cursor-pointer"
                 >
                   <div class="flex items-center">
@@ -165,7 +165,7 @@
                   </div>
                 </th>
                 <th
-                  @click="handleSort('total')"
+                  @click="handleSort('totalAmount')"
                   class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider cursor-pointer"
                 >
                   <div class="flex items-center">
@@ -198,23 +198,26 @@
               </tr>
               <tr
                 v-for="order in filteredOrders"
-                :key="order.id"
+                :key="order._id"
                 class="hover:bg-cream/50"
               >
                 <td class="px-4 py-4 whitespace-nowrap font-medium">
-                  {{ order.id }}
+                  {{ order.orderNumber }}
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
-                  {{ formatDate(order.date) }}
+                  {{ formatDate(order.createdAt) }}
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
-                  <div class="font-medium">{{ order.customerName }}</div>
+                  <div class="font-medium">
+                    {{ order.shippingInformation.firstName }}
+                    {{ order.shippingInformation.lastName }}
+                  </div>
                   <div class="text-xs text-charcoal/60">
-                    {{ order.customerEmail }}
+                    {{ order.shippingInformation.email }}
                   </div>
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
-                  ${{ order.total.toFixed(2) }}
+                  ${{ order.totalAmount.toFixed(2) }}
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
                   <span
@@ -227,25 +230,25 @@
                   <span
                     :class="[
                       'inline-flex items-center px-2 py-1 rounded-full text-xs capitalize',
-                      order.status === 'delivered'
+                      order.orderStatus === 'delivered'
                         ? 'bg-sage/10 text-sage'
                         : 'bg-terracotta/10 text-terracotta',
                     ]"
                   >
-                    {{ order.status }}
+                    {{ order.orderStatus }}
                   </span>
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
                   <div class="relative">
                     <button
-                      @click="toggleActionDropdown(order.id)"
+                      @click="toggleActionDropdown(order._id ? order._id : '')"
                       class="h-8 w-8 p-0 rounded-full hover:bg-cream flex items-center justify-center"
                     >
                       <span class="sr-only">Open menu</span>
                       <MoreHorizontal class="h-4 w-4" />
                     </button>
                     <div
-                      v-if="activeActionDropdown === order.id"
+                      v-if="activeActionDropdown === order._id"
                       class="absolute left-0 z-10 mt-1 w-[160px] rounded-md bg-white shadow-lg border border-charcoal/10"
                     >
                       <div class="py-1">
@@ -285,6 +288,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, onUnmounted } from "vue";
+import { useAdminStore } from "@/stores/admin.store";
+import { useProductStore } from "@/stores/product.store";
+import type { Order } from "@/types/Order";
+
 import {
   Search,
   ArrowUpDown,
@@ -294,26 +301,22 @@ import {
   Calendar,
 } from "lucide-vue-next";
 
+const adminStore = useAdminStore();
+
 // Types
 type OrderStatus = "delivered" | "cancelled";
-type PaymentMethod = "credit_card" | "paypal" | "bank_transfer";
-
-interface Order {
-  id: string;
-  date: string;
-  customerName: string;
-  customerEmail: string;
-  total: number;
-  status: OrderStatus;
-  paymentMethod: PaymentMethod;
-  items: Array<{ id: string; name: string; quantity: number; price: number }>;
-}
+type PaymentMethod = "cod" | "online";
 
 // State
-const orders = ref<Order[]>([]);
+const orders = computed(() => {
+  return adminStore.orders.filter(
+    (order) =>
+      order.orderStatus === "delivered" || order.orderStatus === "cancelled"
+  );
+});
 const filteredOrders = ref<Order[]>([]);
 const searchQuery = ref("");
-const sortField = ref<keyof Order>("date");
+const sortField = ref<keyof Order>("createdAt");
 const sortDirection = ref<"asc" | "desc">("desc");
 const selectedPeriod = ref<string>("all");
 
@@ -324,13 +327,13 @@ const activeActionDropdown = ref<string | null>(null);
 // Computed values
 const totalSales = computed(() =>
   filteredOrders.value
-    .filter((o) => o.status === "delivered")
-    .reduce((sum, order) => sum + order.total, 0)
+    .filter((o) => o.orderStatus === "delivered")
+    .reduce((sum, order) => sum + order.totalAmount, 0)
 );
 
 const averageOrderValue = computed(() => {
   const deliveredOrders = filteredOrders.value.filter(
-    (o) => o.status === "delivered"
+    (o) => o.orderStatus === "delivered"
   );
   return deliveredOrders.length ? totalSales.value / deliveredOrders.length : 0;
 });
@@ -366,7 +369,7 @@ onMounted(() => {
   });
 
   // Load initial data
-  loadHistoricalOrders();
+  filteredOrders.value = orders.value;
 });
 
 // Cleanup listeners
@@ -449,151 +452,11 @@ const filterByDateRange = (period: string) => {
   } else {
     const filteredByDate = orders.value.filter(
       (order) =>
-        new Date(order.date) >= startDate && new Date(order.date) <= now
+        new Date(order.createdAt) >= startDate &&
+        new Date(order.createdAt) <= now
     );
     filteredOrders.value = filteredByDate;
   }
-};
-
-// Load historical orders (simulated)
-const loadHistoricalOrders = () => {
-  // Mock data - in a real app, this would be an API call
-  orders.value = [
-    {
-      id: "ORD-1001",
-      date: "2025-05-10T14:30:00Z",
-      customerName: "John Doe",
-      customerEmail: "john.doe@example.com",
-      total: 129.99,
-      status: "delivered",
-      paymentMethod: "credit_card",
-      items: [
-        { id: "prod-001", name: "Ceramic Tea Set", quantity: 1, price: 89.99 },
-        {
-          id: "prod-003",
-          name: "Matcha Tea Powder",
-          quantity: 1,
-          price: 28.99,
-        },
-      ],
-    },
-    {
-      id: "ORD-1002",
-      date: "2025-05-08T09:15:00Z",
-      customerName: "Jane Smith",
-      customerEmail: "jane.smith@example.com",
-      total: 79.99,
-      status: "delivered",
-      paymentMethod: "paypal",
-      items: [
-        {
-          id: "prod-004",
-          name: "Linen Kimono Robe",
-          quantity: 1,
-          price: 79.99,
-        },
-      ],
-    },
-    {
-      id: "ORD-1003",
-      date: "2025-05-01T11:45:00Z",
-      customerName: "Robert Johnson",
-      customerEmail: "robert.j@example.com",
-      total: 43.49,
-      status: "delivered",
-      paymentMethod: "credit_card",
-      items: [
-        {
-          id: "prod-005",
-          name: "Bamboo Incense Holder",
-          quantity: 1,
-          price: 24.5,
-        },
-        {
-          id: "prod-006",
-          name: "Aromatic Bath Salts",
-          quantity: 1,
-          price: 18.99,
-        },
-      ],
-    },
-    {
-      id: "ORD-1004",
-      date: "2025-04-25T09:45:00Z",
-      customerName: "Emily Davis",
-      customerEmail: "emily.d@example.com",
-      total: 35.5,
-      status: "delivered",
-      paymentMethod: "credit_card",
-      items: [
-        {
-          id: "prod-002",
-          name: "Linen Pillow Covers",
-          quantity: 1,
-          price: 35.5,
-        },
-      ],
-    },
-    {
-      id: "ORD-1005",
-      date: "2025-04-24T16:20:00Z",
-      customerName: "Michael Wilson",
-      customerEmail: "michael.w@example.com",
-      total: 89.99,
-      status: "cancelled",
-      paymentMethod: "bank_transfer",
-      items: [
-        { id: "prod-001", name: "Ceramic Tea Set", quantity: 1, price: 89.99 },
-      ],
-    },
-    {
-      id: "ORD-1006",
-      date: "2025-04-18T10:30:00Z",
-      customerName: "Sarah Johnson",
-      customerEmail: "sarah.j@example.com",
-      total: 159.97,
-      status: "delivered",
-      paymentMethod: "credit_card",
-      items: [
-        {
-          id: "prod-004",
-          name: "Linen Kimono Robe",
-          quantity: 1,
-          price: 79.99,
-        },
-        {
-          id: "prod-007",
-          name: "Meditation Cushion",
-          quantity: 1,
-          price: 79.98,
-        },
-      ],
-    },
-    {
-      id: "ORD-1007",
-      date: "2025-04-10T14:15:00Z",
-      customerName: "David Brown",
-      customerEmail: "david.b@example.com",
-      total: 128.99,
-      status: "cancelled",
-      paymentMethod: "paypal",
-      items: [
-        {
-          id: "prod-008",
-          name: "Japanese Sake Set",
-          quantity: 1,
-          price: 128.99,
-        },
-      ],
-    },
-  ];
-
-  // Filter only completed or cancelled orders (default behavior)
-  const historicalOrders = orders.value.filter(
-    (order) => order.status === "delivered" || order.status === "cancelled"
-  );
-
-  filteredOrders.value = historicalOrders;
 };
 
 // Filter and sort orders when query changes
@@ -605,24 +468,24 @@ watch([searchQuery, sortField, sortDirection], () => {
     const query = searchQuery.value.toLowerCase();
     result = result.filter(
       (order) =>
-        order.id.toLowerCase().includes(query) ||
-        order.customerName.toLowerCase().includes(query) ||
-        order.customerEmail.toLowerCase().includes(query)
+        order._id?.toLowerCase().includes(query) ||
+        order.shippingInformation.firstName?.toLowerCase().includes(query) ||
+        order.shippingInformation.lastName?.toLowerCase().includes(query)
     );
   }
 
   // Sort results
   result = result.sort((a, b) => {
-    if (sortField.value === "date") {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
+    if (sortField.value === "createdAt") {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
       return sortDirection.value === "asc" ? dateA - dateB : dateB - dateA;
     }
 
-    if (sortField.value === "total") {
+    if (sortField.value === "totalAmount") {
       return sortDirection.value === "asc"
-        ? a.total - b.total
-        : b.total - a.total;
+        ? a.totalAmount - b.totalAmount
+        : b.totalAmount - a.totalAmount;
     }
 
     const aValue = a[sortField.value];

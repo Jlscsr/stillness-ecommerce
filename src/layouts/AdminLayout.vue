@@ -82,7 +82,7 @@
 
         <div class="border-t border-charcoal/10 p-4">
           <router-link
-            to="/"
+            :to="{ name: 'home' }"
             :class="[
               'flex items-center text-sm text-charcoal/70 hover:text-charcoal transition-colors',
               collapsed && 'justify-center',

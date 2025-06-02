@@ -37,6 +37,6 @@ export interface Order {
     | "cancelled";
   reasonOfCancellation?: string;
   totalAmount: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }

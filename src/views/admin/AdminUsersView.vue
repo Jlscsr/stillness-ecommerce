@@ -60,7 +60,9 @@
         </div>
 
         <!-- Users Table -->
-        <div class="rounded-md border overflow-hidden">
+        <div
+          class="rounded-md border overflow-hidden max-h-[600px] overflow-y-auto"
+        >
           <table class="min-w-full divide-y divide-charcoal/10">
             <thead class="bg-cream">
               <tr>
@@ -103,15 +105,10 @@
                 <th
                   class="px-4 py-3 text-center text-xs font-medium text-charcoal/70 uppercase tracking-wider"
                 >
-                  Orders
-                </th>
-                <th
-                  class="px-4 py-3 text-center text-xs font-medium text-charcoal/70 uppercase tracking-wider"
-                >
                   Role
                 </th>
                 <th
-                  class="px-4 py-3 text-right text-xs font-medium text-charcoal/70 uppercase tracking-wider"
+                  class="px-4 py-3 text-center text-xs font-medium text-charcoal/70 uppercase tracking-wider"
                 >
                   Actions
                 </th>
@@ -131,7 +128,7 @@
                 <td
                   class="px-4 py-4 whitespace-nowrap font-medium text-charcoal"
                 >
-                  {{ user._id.split("-")[1] }}
+                  {{ user._id }}
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap text-charcoal">
                   {{ user.firstName }}
@@ -141,11 +138,6 @@
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap text-charcoal">
                   {{ formatDate(user.createdAt) }}
-                </td>
-                <td
-                  class="px-4 py-4 whitespace-nowrap text-center text-charcoal"
-                >
-                  {{ getUserOrderCount(user._id) }}
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap text-center">
                   <span
@@ -163,11 +155,11 @@
                     Customer
                   </span>
                 </td>
-                <td class="px-4 py-4 whitespace-nowrap text-right">
-                  <div class="relative">
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="relative flex justify-end">
                     <button
                       @click="toggleActionDropdown(user._id)"
-                      class="h-8 w-8 p-0 rounded-full hover:bg-cream flex items-center justify-center"
+                      class="h-8 w-8 p-0 rounded-full hover:bg-cream flex items-center justify-center ml-auto"
                     >
                       <span class="sr-only">Open menu</span>
                       <MoreHorizontal class="h-4 w-4" />
@@ -178,6 +170,7 @@
                     >
                       <div class="py-1">
                         <button
+                          @click="openUserDetailsDialog(user)"
                           class="w-full flex items-center text-left px-4 py-2 text-sm text-charcoal hover:bg-cream"
                         >
                           <EyeIcon class="mr-2 h-4 w-4" />
@@ -197,6 +190,172 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Details Dialog -->
+  <div
+    v-if="showUserDetailsDialog"
+    class="fixed inset-0 bg-charcoal/50 flex items-center justify-center z-50 p-4"
+  >
+    <div
+      class="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+    >
+      <!-- Dialog Header -->
+      <div
+        class="p-6 border-b border-charcoal/10 flex justify-between items-center"
+      >
+        <h2 class="text-xl font-light text-charcoal">User Details</h2>
+        <button
+          @click="closeUserDetailsDialog"
+          class="h-8 w-8 rounded-full hover:bg-cream flex items-center justify-center"
+        >
+          <span class="sr-only">Close</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-5 w-5"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Dialog Content -->
+      <div class="p-6" v-if="selectedUser">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Personal Information -->
+          <div class="space-y-4">
+            <h3
+              class="text-lg font-medium text-charcoal border-b border-charcoal/10 pb-2"
+            >
+              Personal Information
+            </h3>
+            <div class="space-y-2">
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">User ID:</span>
+                <span class="text-charcoal font-medium">{{
+                  selectedUser._id
+                }}</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">First Name:</span>
+                <span class="text-charcoal">{{ selectedUser.firstName }}</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">Last Name:</span>
+                <span class="text-charcoal">{{ selectedUser.lastName }}</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">Email:</span>
+                <span class="text-charcoal">{{ selectedUser.email }}</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">Role:</span>
+                <span
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs"
+                  :class="
+                    selectedUser.role === 'admin'
+                      ? 'bg-sage/20 text-sage'
+                      : 'bg-beige/20 text-beige'
+                  "
+                >
+                  <component
+                    :is="selectedUser.role === 'admin' ? ShieldAlert : Shield"
+                    class="h-3 w-3 mr-1"
+                  />
+                  {{ selectedUser.role === "admin" ? "Admin" : "Customer" }}
+                </span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">Joined:</span>
+                <span class="text-charcoal">{{
+                  formatDate(selectedUser.createdAt)
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Information -->
+          <div class="space-y-4">
+            <h3
+              class="text-lg font-medium text-charcoal border-b border-charcoal/10 pb-2"
+            >
+              Shipping Information
+            </h3>
+            <div v-if="selectedUser.address" class="space-y-2">
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">Address:</span>
+                <span class="text-charcoal">{{
+                  selectedUser.address.street
+                }}</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">City:</span>
+                <span class="text-charcoal">{{
+                  selectedUser.address.city
+                }}</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">Postal Code:</span>
+                <span class="text-charcoal">{{
+                  selectedUser.address.postalCode
+                }}</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-charcoal/70">Country:</span>
+                <span class="text-charcoal">{{
+                  selectedUser.address.country
+                }}</span>
+              </div>
+            </div>
+            <div v-else class="italic text-charcoal/50">
+              No shipping information available
+            </div>
+          </div>
+
+          <!-- Account Status -->
+          <div class="space-y-4 md:col-span-2">
+            <h3
+              class="text-lg font-medium text-charcoal border-b border-charcoal/10 pb-2"
+            >
+              Account Status
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="bg-cream/50 rounded-lg p-4">
+                <div class="text-charcoal/70 text-sm mb-1">Created At</div>
+                <div class="text-charcoal">
+                  {{ formatDate(selectedUser.createdAt) }}
+                </div>
+              </div>
+              <div class="bg-cream/50 rounded-lg p-4">
+                <div class="text-charcoal/70 text-sm mb-1">Last Updated</div>
+                <div class="text-charcoal">
+                  {{ formatDate(selectedUser.updatedAt) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="p-4 border-t border-charcoal/10 flex justify-end gap-2">
+        <button
+          @click="closeUserDetailsDialog"
+          class="px-4 py-2 border border-charcoal/20 rounded-md text-charcoal hover:bg-cream"
+        >
+          Close
+        </button>
       </div>
     </div>
   </div>
@@ -238,17 +397,13 @@ const selectedStatus = ref("all");
 const showRoleDropdown = ref(false);
 const showStatusDropdown = ref(false);
 const activeActionDropdown = ref<string | null>(null);
+const showUserDetailsDialog = ref(false);
+const selectedUser = ref<UserResponse | null>(null);
 
 // Toggle dropdown visibility
 const toggleRoleDropdown = () => {
   showRoleDropdown.value = !showRoleDropdown.value;
   showStatusDropdown.value = false;
-  activeActionDropdown.value = null;
-};
-
-const toggleStatusDropdown = () => {
-  showStatusDropdown.value = !showStatusDropdown.value;
-  showRoleDropdown.value = false;
   activeActionDropdown.value = null;
 };
 
@@ -269,6 +424,20 @@ const closeDropdowns = () => {
   activeActionDropdown.value = null;
 };
 
+// User details dialog
+const openUserDetailsDialog = (user: UserResponse) => {
+  selectedUser.value = user;
+  showUserDetailsDialog.value = true;
+  closeDropdowns();
+};
+
+const closeUserDetailsDialog = () => {
+  showUserDetailsDialog.value = false;
+  setTimeout(() => {
+    selectedUser.value = null;
+  }, 200);
+};
+
 // Event listener for closing dropdowns when clicking outside
 onMounted(() => {
   document.addEventListener("click", (event) => {
@@ -278,7 +447,6 @@ onMounted(() => {
     }
   });
 
-  // Load users (dummy data for now)
   filteredUsers.value = users.value;
 });
 
@@ -295,12 +463,6 @@ const getRoleLabel = computed(() => {
   return "Admins";
 });
 
-const getStatusLabel = computed(() => {
-  if (selectedStatus.value === "all") return "All Status";
-  if (selectedStatus.value === "active") return "Active";
-  return "Inactive";
-});
-
 // Handle sorting
 const handleSort = (field: keyof UserResponse) => {
   if (field === sortField.value) {
@@ -314,11 +476,6 @@ const handleSort = (field: keyof UserResponse) => {
 // Format date
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString();
-};
-
-// Calculate total orders for a user
-const getUserOrderCount = (userId: string) => {
-  return getOrdersByCustomerId(userId).length;
 };
 
 // Filter and sort users
@@ -364,32 +521,6 @@ watch(
   },
   { immediate: true }
 );
-
-function getOrdersByCustomerId(customerId: string): Order[] {
-  // Mock orders data
-  const orders: Record<string, Order[]> = {
-    "user-001": [
-      { id: "order-001", customerId: "user-001" },
-      { id: "order-002", customerId: "user-001" },
-    ],
-    "user-002": [{ id: "order-003", customerId: "user-002" }],
-    "user-003": [],
-    "user-004": [{ id: "order-004", customerId: "user-004" }],
-    "user-005": [
-      { id: "order-005", customerId: "user-005" },
-      { id: "order-006", customerId: "user-005" },
-      { id: "order-007", customerId: "user-005" },
-    ],
-    "user-006": [],
-    "user-007": [{ id: "order-008", customerId: "user-007" }],
-    "user-008": [
-      { id: "order-009", customerId: "user-008" },
-      { id: "order-010", customerId: "user-008" },
-    ],
-  };
-
-  return orders[customerId] || [];
-}
 </script>
 
 <style scoped>

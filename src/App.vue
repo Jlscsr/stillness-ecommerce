@@ -55,7 +55,10 @@ watch(
     if (isLoggedIn) {
       await getUserInfoById();
       await getCart();
-      await getUserOrders();
+
+      if (authStore?.userRole === "customer") {
+        await getUserOrders();
+      }
     } else {
       clearCart();
     }

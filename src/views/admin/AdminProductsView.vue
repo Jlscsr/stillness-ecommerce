@@ -70,7 +70,9 @@
         </div>
 
         <!-- Products Table -->
-        <div class="rounded-md border overflow-hidden">
+        <div
+          class="rounded-md border overflow-hidden max-h-[600px] overflow-y-auto"
+        >
           <table class="min-w-full divide-y divide-charcoal/10">
             <thead class="bg-cream">
               <tr>
@@ -112,7 +114,7 @@
                   Stock
                 </th>
                 <th
-                  class="px-4 py-3 text-right text-xs font-medium text-charcoal/70 uppercase tracking-wider"
+                  class="px-4 py-3 text-center text-xs font-medium text-charcoal/70 uppercase tracking-wider"
                 >
                   Actions
                 </th>
@@ -164,7 +166,7 @@
                     v-if="product.stock > 0"
                     class="inline-flex items-center px-2 py-1 rounded-full bg-sage/10 text-sage text-xs"
                   >
-                    In Stock
+                    In Stock ({{ product.stock }})
                   </span>
                   <span
                     v-else
@@ -173,11 +175,11 @@
                     Out of Stock
                   </span>
                 </td>
-                <td class="px-4 py-4 whitespace-nowrap text-right">
-                  <div class="relative">
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="relative flex justify-end">
                     <button
                       @click="toggleActionDropdown(product._id)"
-                      class="h-8 w-8 p-0 rounded-full hover:bg-cream flex items-center justify-center"
+                      class="h-8 w-8 p-0 rounded-full hover:bg-cream flex items-center justify-center ml-auto"
                     >
                       <span class="sr-only">Open menu</span>
                       <MoreHorizontal class="h-4 w-4" />
@@ -187,14 +189,13 @@
                       class="absolute right-0 z-10 mt-1 w-[120px] rounded-md bg-white shadow-lg border border-charcoal/10"
                     >
                       <div class="py-1">
-                        <router-link :to="`/admin/products/${product._id}`">
-                          <button
-                            class="w-full flex items-center text-left px-4 py-2 text-sm text-charcoal hover:bg-cream"
-                          >
-                            <Eye class="mr-2 h-4 w-4" />
-                            View
-                          </button>
-                        </router-link>
+                        <button
+                          @click="openProductDetailsDialog(product)"
+                          class="w-full flex items-center text-left px-4 py-2 text-sm text-charcoal hover:bg-cream"
+                        >
+                          <Eye class="mr-2 h-4 w-4" />
+                          View
+                        </button>
                         <router-link
                           :to="`/admin/products/${product._id}/edit`"
                         >
@@ -296,31 +297,162 @@
       </div>
     </div>
   </div>
+
+  <!-- Product Details Dialog -->
+  <div
+    v-if="showProductDetailsDialog"
+    class="fixed inset-0 bg-charcoal/50 flex items-center justify-center z-50 p-4"
+  >
+    <div
+      class="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+    >
+      <!-- Dialog Header -->
+      <div
+        class="p-6 border-b border-charcoal/10 flex justify-between items-center"
+      >
+        <h2 class="text-xl font-light text-charcoal">Product Details</h2>
+        <button
+          @click="closeProductDetailsDialog"
+          class="h-8 w-8 rounded-full hover:bg-cream flex items-center justify-center"
+        >
+          <span class="sr-only">Close</span>
+          <X class="h-5 w-5" />
+        </button>
+      </div>
+
+      <!-- Dialog Content -->
+      <div class="p-6" v-if="selectedProduct">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Product Gallery -->
+          <div>
+            <ProductGallery
+              :images="selectedProduct.images"
+              :name="selectedProduct.name"
+            />
+          </div>
+
+          <!-- Product Information -->
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-2xl font-light text-charcoal">
+                {{ selectedProduct.name }}
+              </h3>
+              <p
+                v-if="selectedProduct.japaneseText"
+                class="text-sm text-charcoal/70 mt-1"
+              >
+                {{ selectedProduct.japaneseText }}
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <span class="text-xl font-medium text-charcoal"
+                >${{ selectedProduct.price.toFixed(2) }}</span
+              >
+              <span
+                :class="[
+                  'inline-flex items-center px-2 py-1 rounded-full text-xs',
+                  selectedProduct.stock > 0
+                    ? 'bg-sage/10 text-sage'
+                    : 'bg-terracotta/10 text-terracotta',
+                ]"
+              >
+                {{
+                  selectedProduct.stock > 0
+                    ? `In Stock (${selectedProduct.stock})`
+                    : "Out of Stock"
+                }}
+              </span>
+            </div>
+
+            <div>
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-full bg-beige/20 text-beige text-xs"
+              >
+                {{ selectedProduct.category }}
+              </span>
+            </div>
+
+            <div class="border-t border-charcoal/10 pt-4">
+              <h4 class="text-sm font-medium text-charcoal mb-2">
+                Description
+              </h4>
+              <p class="text-charcoal/80 whitespace-pre-line">
+                {{ selectedProduct.description }}
+              </p>
+            </div>
+
+            <div class="border-t border-charcoal/10 pt-4">
+              <h4 class="text-sm font-medium text-charcoal mb-2">
+                Product Details
+              </h4>
+              <div class="grid grid-cols-2 gap-y-2 text-sm">
+                <div class="text-charcoal/70">Materials:</div>
+                <div class="text-charcoal">
+                  {{ selectedProduct.materials?.join(", ") || "N/A" }}
+                </div>
+
+                <div class="text-charcoal/70">Dimensions:</div>
+                <div class="text-charcoal">
+                  {{ selectedProduct.dimensions || "N/A" }}
+                </div>
+
+                <div class="text-charcoal/70">Created:</div>
+                <div class="text-charcoal">
+                  {{ formatDate(selectedProduct.createdAt) }}
+                </div>
+
+                <div class="text-charcoal/70">Last Updated:</div>
+                <div class="text-charcoal">
+                  {{ formatDate(selectedProduct.updatedAt) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="p-4 border-t border-charcoal/10 flex justify-end gap-2">
+        <button
+          @click="closeProductDetailsDialog"
+          class="px-4 py-2 border border-charcoal/20 rounded-md text-charcoal hover:bg-cream"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useRouter } from "vue-router";
 import {
   Search,
   ArrowUpDown,
   ChevronDown,
   MoreHorizontal,
-  Plus,
+  Eye,
   Pencil,
   Trash2,
-  Eye,
+  X,
+  Plus,
 } from "lucide-vue-next";
+import ProductGallery from "@/components/product/ProductGallery.vue";
+import { useModalStore } from "@/stores/modal.store";
 import { useProductStore } from "@/stores/product.store";
-import { type Product } from "@/types/Product";
+import { type Product, type Image } from "@/types/Product";
 import ImageWithLoading from "@/components/ui/ImageWithLoading.vue";
 
+const router = useRouter();
 const productStore = useProductStore();
 
 // State
 const products = computed(() => productStore.products);
 const filteredProducts = ref<Product[]>([]);
 const searchQuery = ref("");
-const sortField = ref("name");
+const sortField = ref<keyof Product>("name");
 const sortDirection = ref<"asc" | "desc">("asc");
 const selectedCategory = ref<string>("all");
 const deleteDialogOpen = ref(false);
@@ -329,6 +461,8 @@ const productToDelete = ref<Product | null>(null);
 // UI state
 const showCategoryDropdown = ref(false);
 const activeActionDropdown = ref<string | number | null>(null);
+const showProductDetailsDialog = ref(false);
+const selectedProduct = ref<Product | null>(null);
 
 // Toggle dropdown visibility
 const toggleCategoryDropdown = () => {
@@ -389,18 +523,52 @@ const handleSort = (field: keyof Product) => {
   }
 };
 
-// Delete product functions
-const openDeleteDialog = (product: Product) => {
-  productToDelete.value = product;
-  deleteDialogOpen.value = true;
+// View product details
+const openProductDetailsDialog = (product: Product) => {
+  selectedProduct.value = product;
+  showProductDetailsDialog.value = true;
   activeActionDropdown.value = null;
+};
+
+const closeProductDetailsDialog = () => {
+  showProductDetailsDialog.value = false;
+  setTimeout(() => {
+    selectedProduct.value = null;
+  }, 200);
+};
+
+// Delete product functions
+const modalStore = useModalStore();
+
+const openDeleteDialog = async (product: Product) => {
+  productToDelete.value = product;
+  activeActionDropdown.value = null;
+
+  const confirmed = await modalStore.open({
+    title: "Delete Product",
+    message: `Are you sure you want to delete <strong>${product.name}</strong>? This action cannot be undone.`,
+    confirmText: "Delete",
+    cancelText: "Cancel",
+    confirmVariant: "danger",
+  });
+
+  if (confirmed) {
+    confirmDelete();
+  }
 };
 
 const confirmDelete = () => {
   if (productToDelete.value) {
-    deleteDialogOpen.value = false;
+    // Here you would call your API to delete the product
+    console.log(`Deleting product: ${productToDelete.value._id}`);
+
     productToDelete.value = null;
   }
+};
+
+// Format date
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString();
 };
 
 // Filter and sort products

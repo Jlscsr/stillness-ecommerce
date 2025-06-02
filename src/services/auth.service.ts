@@ -1,11 +1,11 @@
 import { post } from "@/composables/requests";
 import type { LoginCredentials, RegisterCredentials } from "@/types/Auth";
 import type { ApiResponse } from "@/types/Response";
-import type { UserCredentials } from "@/types/User";
+import type { UserResponse } from "@/types/User";
 
-export const checkAuthStatus = async (): Promise<ApiResponse> => {
+export const checkAuthStatus = async (): Promise<any> => {
   try {
-    const response = await post<ApiResponse<UserCredentials>>("/auth/check");
+    const response = await post<ApiResponse<any>>("/auth/check");
 
     if (!response.success) {
       throw new Error(response.message);
@@ -21,7 +21,7 @@ export const login = async (
   payload: LoginCredentials
 ): Promise<ApiResponse> => {
   try {
-    const response = await post<ApiResponse<UserCredentials>>(
+    const response = await post<ApiResponse<UserResponse>>(
       "/auth/login",
       payload
     );
@@ -37,7 +37,7 @@ export const register = async (
   payload: RegisterCredentials
 ): Promise<ApiResponse> => {
   try {
-    const response = await post<ApiResponse<UserCredentials>>(
+    const response = await post<ApiResponse<UserResponse>>(
       "/auth/register",
       payload
     );

@@ -46,6 +46,7 @@ router.beforeEach(async (to, from, next) => {
   const isAuthenticated = authStore.isAuthenticated;
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const guestOnly = to.matched.some((record) => record.meta.guestOnly);
+  const adminOnly = to.matched.some((record) => record.meta.isAdmin);
 
   // Set page title
   const title = (to.meta.title as string) || "Stillness";
@@ -62,6 +63,20 @@ router.beforeEach(async (to, from, next) => {
   // Handle guest-only routes (like login/register pages)
   if (guestOnly && isAuthenticated) {
     return next({ name: "home" });
+  }
+
+  if (adminOnly && authStore.userRole !== "admin") {
+    // block non-admins
+    return next({ name: "home" });
+  }
+
+  // OPTIONAL auto-redirect admins away from public pages
+  if (
+    !adminOnly &&
+    authStore.userRole === "admin" &&
+    to.name !== "admin-dashboard"
+  ) {
+    return next({ name: "admin-dashboard" });
   }
 
   next();

@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 import type { ApiResponse } from "@/types/Response";
 import type {
-  UserCredentials,
+  UserResponse,
   UserUpdateRequestBody,
   AddressUpdateRequestBody,
 } from "@/types/User";
@@ -14,11 +14,11 @@ import {
 } from "@/services/user.service";
 
 export const useUserStore = defineStore("user", () => {
-  const userInfo = ref<UserCredentials | null>(null);
+  const userInfo = ref<UserResponse | null>(null);
   const error = ref<string | null>(null);
 
   const getUserInfoById =
-    async (): Promise<ApiResponse<UserCredentials> | null> => {
+    async (): Promise<ApiResponse<UserResponse> | null> => {
       try {
         const response = await getUserInfo();
 
@@ -29,6 +29,7 @@ export const useUserStore = defineStore("user", () => {
 
         if (response.data) {
           userInfo.value = response.data;
+          console.log("User info fetched successfully:", userInfo.value);
         }
         return { success: true, message: response.message };
       } catch (err) {
@@ -74,5 +75,11 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
-  return { userInfo, error, getUserInfoById, updateUser, updateUserAddress };
+  return {
+    userInfo,
+    error,
+    getUserInfoById,
+    updateUser,
+    updateUserAddress,
+  };
 });

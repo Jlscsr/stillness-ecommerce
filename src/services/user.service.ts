@@ -21,9 +21,9 @@ export const getUsers = async (): Promise<ApiResponse<UserResponse[]>> => {
   }
 };
 
-export const getUserInfo = async (): Promise<ApiResponse<UserCredentials>> => {
+export const getUserInfo = async (): Promise<ApiResponse<UserResponse>> => {
   try {
-    const response = await get<ApiResponse<UserCredentials>>(`/users/me`);
+    const response = await get<ApiResponse<UserResponse>>(`/users/me`);
 
     if (!response.success) {
       throw new Error(response.message);

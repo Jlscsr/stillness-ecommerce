@@ -117,73 +117,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Recent Activity Section -->
-    <div class="bg-white rounded-lg shadow-sm border border-charcoal/10">
-      <div class="p-6">
-        <h3 class="text-lg font-medium text-charcoal">Recent Activity</h3>
-        <p class="text-sm text-charcoal/70 mb-4">
-          Latest updates from your store
-        </p>
-        <div class="space-y-6">
-          <div class="flex items-start">
-            <div class="bg-sage/10 p-2 rounded-full mr-4">
-              <Users class="h-4 w-4 text-sage" />
-            </div>
-            <div>
-              <p class="text-sm font-medium text-charcoal">
-                New user registered
-              </p>
-              <p class="text-xs text-charcoal/60 mt-1">
-                Akiko Tanaka just created an account
-              </p>
-              <p class="text-xs text-charcoal/60 mt-1">23 minutes ago</p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="bg-dusty-blue/10 p-2 rounded-full mr-4">
-              <Package class="h-4 w-4 text-dusty-blue" />
-            </div>
-            <div>
-              <p class="text-sm font-medium text-charcoal">New order placed</p>
-              <p class="text-xs text-charcoal/60 mt-1">
-                Order #JP-123456 for $89.00
-              </p>
-              <p class="text-xs text-charcoal/60 mt-1">1 hour ago</p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="bg-beige/20 p-2 rounded-full mr-4">
-              <ShoppingBag class="h-4 w-4 text-beige" />
-            </div>
-            <div>
-              <p class="text-sm font-medium text-charcoal">
-                Product added to inventory
-              </p>
-              <p class="text-xs text-charcoal/60 mt-1">
-                Linen Throw Blanket (10 units)
-              </p>
-              <p class="text-xs text-charcoal/60 mt-1">3 hours ago</p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="bg-terracotta/10 p-2 rounded-full mr-4">
-              <DollarSign class="h-4 w-4 text-terracotta" />
-            </div>
-            <div>
-              <p class="text-sm font-medium text-charcoal">Payment received</p>
-              <p class="text-xs text-charcoal/60 mt-1">
-                Payment of $133.00 for Order #JP-876543
-              </p>
-              <p class="text-xs text-charcoal/60 mt-1">5 hours ago</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -200,14 +133,12 @@ const productStore = useProductStore();
 // State for dashboard
 const totalUsers = computed(() => adminStore.dashboardData.totalUsers || 0);
 const totalProducts = computed(() => {
-  return productStore.products.length || 0; // Assuming products are loaded in the product store
+  return productStore.products.length || 0;
 });
 const totalOrders = computed(() => adminStore.dashboardData.totalOrders || 0);
 const revenue = computed(() => {
   return adminStore.dashboardData.totalRevenue || 0;
 });
-
-// We'll add chart configuration later when we install chart.js
 
 onMounted(() => {});
 </script>

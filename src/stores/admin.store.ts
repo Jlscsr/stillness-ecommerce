@@ -3,7 +3,11 @@ import { computed, ref } from "vue";
 import type { UserResponse } from "@/types/User";
 import type { Order } from "@/types/Order";
 import { getUsers } from "@/services/user.service";
-import { getOrders } from "@/services/order.service";
+import {
+  getOrders,
+  updateOrderPaymentStatus,
+  updateOrderStatus,
+} from "@/services/order.service";
 
 export const useAdminStore = defineStore("admin", () => {
   const users = ref<UserResponse[] | []>([]);
@@ -69,11 +73,69 @@ export const useAdminStore = defineStore("admin", () => {
       };
     }
   };
+
+  const updateUserOrderPaymentStatus = async (
+    orderId: string,
+    newPaymentStatus: string
+  ): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await updateOrderPaymentStatus(orderId, {
+        paymentStatus: newPaymentStatus,
+      });
+
+      if (!response.success) {
+        return {
+          success: false,
+          message: response.message,
+        };
+      }
+
+      return {
+        success: true,
+        message: "Order payment status updated successfully.",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to update order payment status.",
+      };
+    }
+  };
+
+  const updateUserOrderStatus = async (
+    orderId: string,
+    newOrderStatus: string
+  ): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await updateOrderStatus(orderId, {
+        orderStatus: newOrderStatus,
+      });
+      if (!response.success) {
+        return {
+          success: false,
+          message: response.message,
+        };
+      }
+
+      await fetchOrders();
+      return {
+        success: true,
+        message: "Order status updated successfully.",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to update order status.",
+      };
+    }
+  };
   return {
     users,
     orders,
     dashboardData,
     fetchUsers,
     fetchOrders,
+    updateUserOrderPaymentStatus,
+    updateUserOrderStatus,
   };
 });

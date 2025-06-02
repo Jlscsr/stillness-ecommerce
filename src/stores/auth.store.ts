@@ -8,11 +8,11 @@ import {
   logout,
 } from "@/services/auth.service";
 import type { LoginCredentials, RegisterCredentials } from "@/types/Auth";
-import type { UserCredentials } from "@/types/User";
 import { resetAuthCheck } from "@router/router";
 
 export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = ref(false);
+  const userRole = ref<string | null>(null);
   const error = ref<string | null>(null);
 
   // Simulate login
@@ -60,6 +60,7 @@ export const useAuthStore = defineStore("auth", () => {
       }
 
       isAuthenticated.value = true;
+      userRole.value = response.data?.role || null;
     } catch (err) {
       error.value = "Failed to check authentication status";
       isAuthenticated.value = false;
@@ -83,6 +84,7 @@ export const useAuthStore = defineStore("auth", () => {
   return {
     isAuthenticated,
     error,
+    userRole,
     userLogin,
     userRegister,
     checkUserAuthStatus,

@@ -8,7 +8,9 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-charcoal/70">Total Orders</p>
-              <h3 class="text-2xl font-light text-charcoal mt-1">{{ filteredOrders.length }}</h3>
+              <h3 class="text-2xl font-light text-charcoal mt-1">
+                {{ filteredOrders.length }}
+              </h3>
             </div>
             <div class="bg-beige/20 p-2 rounded-full">
               <Calendar class="h-5 w-5 text-beige" />
@@ -21,7 +23,9 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-charcoal/70">Total Sales</p>
-              <h3 class="text-2xl font-light text-charcoal mt-1">{{ formatCurrency(totalSales) }}</h3>
+              <h3 class="text-2xl font-light text-charcoal mt-1">
+                {{ formatCurrency(totalSales) }}
+              </h3>
             </div>
             <div class="bg-sage/10 p-2 rounded-full">
               <Calendar class="h-5 w-5 text-sage" />
@@ -34,7 +38,9 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-charcoal/70">Average Order</p>
-              <h3 class="text-2xl font-light text-charcoal mt-1">{{ formatCurrency(averageOrderValue) }}</h3>
+              <h3 class="text-2xl font-light text-charcoal mt-1">
+                {{ formatCurrency(averageOrderValue) }}
+              </h3>
             </div>
             <div class="bg-dusty-blue/10 p-2 rounded-full">
               <Calendar class="h-5 w-5 text-dusty-blue" />
@@ -52,7 +58,9 @@
         <!-- Filter Controls -->
         <div class="flex flex-col sm:flex-row gap-4 mb-6">
           <div class="relative flex-1">
-            <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-charcoal/50" />
+            <Search
+              class="absolute left-2.5 top-2.5 h-4 w-4 text-charcoal/50"
+            />
             <input
               type="text"
               placeholder="Search orders..."
@@ -165,9 +173,21 @@
                     <ArrowUpDown class="ml-2 h-4 w-4" />
                   </div>
                 </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider">Payment</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider">Status</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider">Actions</th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider"
+                >
+                  Payment
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-charcoal/70 uppercase tracking-wider"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-charcoal/10">
@@ -181,15 +201,25 @@
                 :key="order.id"
                 class="hover:bg-cream/50"
               >
-                <td class="px-4 py-4 whitespace-nowrap font-medium">{{ order.id }}</td>
-                <td class="px-4 py-4 whitespace-nowrap">{{ formatDate(order.date) }}</td>
+                <td class="px-4 py-4 whitespace-nowrap font-medium">
+                  {{ order.id }}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  {{ formatDate(order.date) }}
+                </td>
                 <td class="px-4 py-4 whitespace-nowrap">
                   <div class="font-medium">{{ order.customerName }}</div>
-                  <div class="text-xs text-charcoal/60">{{ order.customerEmail }}</div>
+                  <div class="text-xs text-charcoal/60">
+                    {{ order.customerEmail }}
+                  </div>
                 </td>
-                <td class="px-4 py-4 whitespace-nowrap">${{ order.total.toFixed(2) }}</td>
                 <td class="px-4 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2 py-1 rounded-full border border-charcoal/20 text-xs capitalize">
+                  ${{ order.total.toFixed(2) }}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <span
+                    class="inline-flex items-center px-2 py-1 rounded-full border border-charcoal/20 text-xs capitalize"
+                  >
                     {{ order.paymentMethod.replace("_", " ") }}
                   </span>
                 </td>
@@ -197,7 +227,9 @@
                   <span
                     :class="[
                       'inline-flex items-center px-2 py-1 rounded-full text-xs capitalize',
-                      order.status === 'delivered' ? 'bg-sage/10 text-sage' : 'bg-terracotta/10 text-terracotta'
+                      order.status === 'delivered'
+                        ? 'bg-sage/10 text-sage'
+                        : 'bg-terracotta/10 text-terracotta',
                     ]"
                   >
                     {{ order.status }}
@@ -238,7 +270,10 @@
         </div>
 
         <!-- Pagination or load more -->
-        <div v-if="orders.length > filteredOrders.length" class="mt-4 text-center">
+        <div
+          v-if="orders.length > filteredOrders.length"
+          class="mt-4 text-center"
+        >
           <p class="text-sm text-charcoal/60">
             Showing {{ filteredOrders.length }} of {{ orders.length }} orders
           </p>
@@ -249,19 +284,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
+import { ref, computed, onMounted, watch, onUnmounted } from "vue";
 import {
   Search,
   ArrowUpDown,
   ChevronDown,
   MoreHorizontal,
   Download,
-  Calendar
-} from 'lucide-vue-next';
+  Calendar,
+} from "lucide-vue-next";
 
 // Types
-type OrderStatus = 'delivered' | 'cancelled';
-type PaymentMethod = 'credit_card' | 'paypal' | 'bank_transfer';
+type OrderStatus = "delivered" | "cancelled";
+type PaymentMethod = "credit_card" | "paypal" | "bank_transfer";
 
 interface Order {
   id: string;
@@ -277,23 +312,26 @@ interface Order {
 // State
 const orders = ref<Order[]>([]);
 const filteredOrders = ref<Order[]>([]);
-const searchQuery = ref('');
-const sortField = ref<keyof Order>('date');
-const sortDirection = ref<'asc' | 'desc'>('desc');
-const selectedPeriod = ref<string>('all');
+const searchQuery = ref("");
+const sortField = ref<keyof Order>("date");
+const sortDirection = ref<"asc" | "desc">("desc");
+const selectedPeriod = ref<string>("all");
 
 // UI state
 const showDateDropdown = ref(false);
 const activeActionDropdown = ref<string | null>(null);
 
 // Computed values
-const totalSales = computed(() => 
-  filteredOrders.value.filter(o => o.status === 'delivered')
+const totalSales = computed(() =>
+  filteredOrders.value
+    .filter((o) => o.status === "delivered")
     .reduce((sum, order) => sum + order.total, 0)
 );
 
 const averageOrderValue = computed(() => {
-  const deliveredOrders = filteredOrders.value.filter(o => o.status === 'delivered');
+  const deliveredOrders = filteredOrders.value.filter(
+    (o) => o.status === "delivered"
+  );
   return deliveredOrders.length ? totalSales.value / deliveredOrders.length : 0;
 });
 
@@ -320,20 +358,20 @@ const closeDropdowns = () => {
 
 // Event listener for closing dropdowns when clicking outside
 onMounted(() => {
-  document.addEventListener('click', (e) => {
+  document.addEventListener("click", (e) => {
     const target = e.target as HTMLElement;
-    if (!target.closest('.relative')) {
+    if (!target.closest(".relative")) {
       closeDropdowns();
     }
   });
-  
+
   // Load initial data
   loadHistoricalOrders();
 });
 
 // Cleanup listeners
 onUnmounted(() => {
-  document.removeEventListener('click', closeDropdowns);
+  document.removeEventListener("click", closeDropdowns);
 });
 
 // Format date
@@ -343,37 +381,37 @@ const formatDate = (dateString: string) => {
 
 // Format currency
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
   }).format(amount);
 };
 
 // Get period display name
 const getPeriodDisplayName = (period: string) => {
   switch (period) {
-    case 'last7days':
-      return 'Last 7 Days';
-    case 'last30days':
-      return 'Last 30 Days';
-    case 'last3months':
-      return 'Last 3 Months';
-    case 'last6months':
-      return 'Last 6 Months';
-    case 'lastyear':
-      return 'Last Year';
+    case "last7days":
+      return "Last 7 Days";
+    case "last30days":
+      return "Last 30 Days";
+    case "last3months":
+      return "Last 3 Months";
+    case "last6months":
+      return "Last 6 Months";
+    case "lastyear":
+      return "Last Year";
     default:
-      return 'All Time';
+      return "All Time";
   }
 };
 
 // Handle sorting
 const handleSort = (field: keyof Order) => {
   if (field === sortField.value) {
-    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+    sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
   } else {
     sortField.value = field;
-    sortDirection.value = 'desc';
+    sortDirection.value = "desc";
   }
 };
 
@@ -386,19 +424,19 @@ const filterByDateRange = (period: string) => {
   let startDate = new Date();
 
   switch (period) {
-    case 'last7days':
+    case "last7days":
       startDate.setDate(now.getDate() - 7);
       break;
-    case 'last30days':
+    case "last30days":
       startDate.setDate(now.getDate() - 30);
       break;
-    case 'last3months':
+    case "last3months":
       startDate.setMonth(now.getMonth() - 3);
       break;
-    case 'last6months':
+    case "last6months":
       startDate.setMonth(now.getMonth() - 6);
       break;
-    case 'lastyear':
+    case "lastyear":
       startDate.setFullYear(now.getFullYear() - 1);
       break;
     default:
@@ -406,11 +444,12 @@ const filterByDateRange = (period: string) => {
       startDate = new Date(0); // Beginning of time
   }
 
-  if (period === 'all') {
+  if (period === "all") {
     filteredOrders.value = orders.value.slice(0, 100); // Limit to 100 for performance
   } else {
     const filteredByDate = orders.value.filter(
-      order => new Date(order.date) >= startDate && new Date(order.date) <= now
+      (order) =>
+        new Date(order.date) >= startDate && new Date(order.date) <= now
     );
     filteredOrders.value = filteredByDate;
   }
@@ -430,8 +469,13 @@ const loadHistoricalOrders = () => {
       paymentMethod: "credit_card",
       items: [
         { id: "prod-001", name: "Ceramic Tea Set", quantity: 1, price: 89.99 },
-        { id: "prod-003", name: "Matcha Tea Powder", quantity: 1, price: 28.99 }
-      ]
+        {
+          id: "prod-003",
+          name: "Matcha Tea Powder",
+          quantity: 1,
+          price: 28.99,
+        },
+      ],
     },
     {
       id: "ORD-1002",
@@ -442,8 +486,13 @@ const loadHistoricalOrders = () => {
       status: "delivered",
       paymentMethod: "paypal",
       items: [
-        { id: "prod-004", name: "Linen Kimono Robe", quantity: 1, price: 79.99 }
-      ]
+        {
+          id: "prod-004",
+          name: "Linen Kimono Robe",
+          quantity: 1,
+          price: 79.99,
+        },
+      ],
     },
     {
       id: "ORD-1003",
@@ -454,21 +503,36 @@ const loadHistoricalOrders = () => {
       status: "delivered",
       paymentMethod: "credit_card",
       items: [
-        { id: "prod-005", name: "Bamboo Incense Holder", quantity: 1, price: 24.50 },
-        { id: "prod-006", name: "Aromatic Bath Salts", quantity: 1, price: 18.99 }
-      ]
+        {
+          id: "prod-005",
+          name: "Bamboo Incense Holder",
+          quantity: 1,
+          price: 24.5,
+        },
+        {
+          id: "prod-006",
+          name: "Aromatic Bath Salts",
+          quantity: 1,
+          price: 18.99,
+        },
+      ],
     },
     {
       id: "ORD-1004",
       date: "2025-04-25T09:45:00Z",
       customerName: "Emily Davis",
       customerEmail: "emily.d@example.com",
-      total: 35.50,
+      total: 35.5,
       status: "delivered",
       paymentMethod: "credit_card",
       items: [
-        { id: "prod-002", name: "Linen Pillow Covers", quantity: 1, price: 35.50 }
-      ]
+        {
+          id: "prod-002",
+          name: "Linen Pillow Covers",
+          quantity: 1,
+          price: 35.5,
+        },
+      ],
     },
     {
       id: "ORD-1005",
@@ -479,8 +543,8 @@ const loadHistoricalOrders = () => {
       status: "cancelled",
       paymentMethod: "bank_transfer",
       items: [
-        { id: "prod-001", name: "Ceramic Tea Set", quantity: 1, price: 89.99 }
-      ]
+        { id: "prod-001", name: "Ceramic Tea Set", quantity: 1, price: 89.99 },
+      ],
     },
     {
       id: "ORD-1006",
@@ -491,9 +555,19 @@ const loadHistoricalOrders = () => {
       status: "delivered",
       paymentMethod: "credit_card",
       items: [
-        { id: "prod-004", name: "Linen Kimono Robe", quantity: 1, price: 79.99 },
-        { id: "prod-007", name: "Meditation Cushion", quantity: 1, price: 79.98 }
-      ]
+        {
+          id: "prod-004",
+          name: "Linen Kimono Robe",
+          quantity: 1,
+          price: 79.99,
+        },
+        {
+          id: "prod-007",
+          name: "Meditation Cushion",
+          quantity: 1,
+          price: 79.98,
+        },
+      ],
     },
     {
       id: "ORD-1007",
@@ -504,59 +578,65 @@ const loadHistoricalOrders = () => {
       status: "cancelled",
       paymentMethod: "paypal",
       items: [
-        { id: "prod-008", name: "Japanese Sake Set", quantity: 1, price: 128.99 }
-      ]
-    }
+        {
+          id: "prod-008",
+          name: "Japanese Sake Set",
+          quantity: 1,
+          price: 128.99,
+        },
+      ],
+    },
   ];
-  
+
   // Filter only completed or cancelled orders (default behavior)
   const historicalOrders = orders.value.filter(
-    order => order.status === 'delivered' || order.status === 'cancelled'
+    (order) => order.status === "delivered" || order.status === "cancelled"
   );
-  
+
   filteredOrders.value = historicalOrders;
 };
 
 // Filter and sort orders when query changes
-watch(
-  [searchQuery, sortField, sortDirection],
-  () => {
-    let result = [...filteredOrders.value];
+watch([searchQuery, sortField, sortDirection], () => {
+  let result = [...filteredOrders.value];
 
-    // Filter by search query
-    if (searchQuery.value) {
-      const query = searchQuery.value.toLowerCase();
-      result = result.filter(
-        (order) =>
-          order.id.toLowerCase().includes(query) ||
-          order.customerName.toLowerCase().includes(query) ||
-          order.customerEmail.toLowerCase().includes(query)
-      );
+  // Filter by search query
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    result = result.filter(
+      (order) =>
+        order.id.toLowerCase().includes(query) ||
+        order.customerName.toLowerCase().includes(query) ||
+        order.customerEmail.toLowerCase().includes(query)
+    );
+  }
+
+  // Sort results
+  result = result.sort((a, b) => {
+    if (sortField.value === "date") {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortDirection.value === "asc" ? dateA - dateB : dateB - dateA;
     }
 
-    // Sort results
-    result = result.sort((a, b) => {
-      if (sortField.value === 'date') {
-        const dateA = new Date(a.date).getTime();
-        const dateB = new Date(b.date).getTime();
-        return sortDirection.value === 'asc' ? dateA - dateB : dateB - dateA;
-      }
+    if (sortField.value === "total") {
+      return sortDirection.value === "asc"
+        ? a.total - b.total
+        : b.total - a.total;
+    }
 
-      if (sortField.value === 'total') {
-        return sortDirection.value === 'asc' ? a.total - b.total : b.total - a.total;
-      }
+    const aValue = a[sortField.value];
+    const bValue = b[sortField.value];
 
-      const aValue = a[sortField.value];
-      const bValue = b[sortField.value];
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return sortDirection.value === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
 
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection.value === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-      }
+    return 0;
+  });
 
-      return 0;
-    });
-
-    filteredOrders.value = result;
-  }
-);
+  filteredOrders.value = result;
+});
 </script>

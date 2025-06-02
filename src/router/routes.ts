@@ -23,9 +23,11 @@ const NotFoundView = () => import("@views/errors/NotFoundView.vue");
 const AdminDashboardView = () => import("@views/admin/AdminDashboardView.vue");
 const AdminUsersView = () => import("@/views/admin/AdminUsersView.vue");
 const AdminProductsView = () => import("@/views/admin/AdminProductsView.vue");
-const AdminAddProductView = () => import("@/views/admin/AdminAddProductView.vue");
+const AdminAddProductView = () =>
+  import("@/views/admin/AdminAddProductView.vue");
 const AdminOrdersView = () => import("@/views/admin/AdminOrdersView.vue");
-const AdminOrdersHistoryView = () => import("@/views/admin/AdminOrdersHistoryView.vue");
+const AdminOrdersHistoryView = () =>
+  import("@/views/admin/AdminOrdersHistoryView.vue");
 // const CollectionView = () => import("@/views/collections/CollectionView.vue");
 
 export const routes: RouteRecordRaw[] = [
@@ -51,7 +53,11 @@ export const routes: RouteRecordRaw[] = [
         path: "products",
         name: "admin-products",
         component: AdminProductsView,
-        meta: { title: "Product Management", requiresAuth: true, isAdmin: true },
+        meta: {
+          title: "Product Management",
+          requiresAuth: true,
+          isAdmin: true,
+        },
       },
       {
         path: "products/add",
@@ -81,50 +87,50 @@ export const routes: RouteRecordRaw[] = [
         path: "",
         name: "home",
         component: HomeView,
-        meta: { title: "Home", requiresAuth: false },
+        meta: { title: "Home", requiresAuth: false, isAdmin: false },
       },
       {
         path: "products",
         name: "products",
         component: ProductsView,
-        meta: { title: "Products", requiresAuth: false },
+        meta: { title: "Products", requiresAuth: false, isAdmin: false },
       },
       {
         path: "product/:id",
         name: "product-details",
         component: ProductDetailView,
-        meta: { title: "Product Details", requiresAuth: false },
+        meta: { title: "Product Details", requiresAuth: false, isAdmin: false },
         props: true,
       },
       {
         path: "about-us",
         name: "about-us",
         component: AboutUsView,
-        meta: { title: "About Us", requiresAuth: false },
+        meta: { title: "About Us", requiresAuth: false, isAdmin: false },
       },
       {
         path: "contact",
         name: "contact",
         component: ContactView,
-        meta: { title: "Contact", requiresAuth: false },
+        meta: { title: "Contact", requiresAuth: false, isAdmin: false },
       },
       {
         path: "cart",
         name: "cart",
         component: CartView,
-        meta: { title: "Shopping Cart", requiresAuth: true },
+        meta: { title: "Shopping Cart", requiresAuth: true, isAdmin: false },
       },
       {
         path: "checkout",
         name: "checkout",
         component: CheckoutView,
-        meta: { title: "Checkout", requiresAuth: true },
+        meta: { title: "Checkout", requiresAuth: true, isAdmin: false },
       },
       {
         path: "profile",
         name: "profile",
         component: ProfileView,
-        meta: { title: "My Profile", requiresAuth: true },
+        meta: { title: "My Profile", requiresAuth: true, isAdmin: false },
       },
       {
         path: "login",

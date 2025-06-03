@@ -552,7 +552,7 @@ const toastStore = useToastStore();
 const { userInfo } = storeToRefs(userStore);
 const { cart } = storeToRefs(cartStore);
 
-const router = useRouter();
+
 const route = useRoute();
 const step = ref(1);
 const isSubmitting = ref(false);

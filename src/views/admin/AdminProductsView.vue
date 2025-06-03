@@ -427,7 +427,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { useRouter } from "vue-router";
+
 import {
   Search,
   ArrowUpDown,

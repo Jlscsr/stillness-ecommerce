@@ -25,17 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/auth.store";
+// Imports removed as they were unused
 
 import Navbar from "@components/molecules/Navbar.vue";
 import Footer from "@components/molecules/Footer.vue";
 
-const router = useRouter();
-const authStore = useAuthStore();
-
-// Remove unused function that had incorrect method reference
-// If logout functionality is needed, use authStore.logoutUser() instead
+// Note: If logout functionality is needed in the future, use authStore.logoutUser()
 </script>
 
 <style scoped>

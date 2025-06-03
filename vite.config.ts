@@ -2,35 +2,20 @@ import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 import fs from "fs";
-import path from "path";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd());
+  const env = loadEnv(mode, process.cwd(), "");
   const isDev = env.VITE_ENV === "development";
-  const apiUrl = isDev ? env.VITE_API_URL : env.VITE_API_URL_HOST;
+  const targetUrl = isDev ? "https://127.0.0.1:3000" : env.VITE_API_URL_HOST;
 
   const resolvePath = (dir: string) =>
     fileURLToPath(new URL(`./src/${dir}`, import.meta.url));
 
   return {
     plugins: [vue()],
-    server: {
-      host: isDev,
-      port: 5173,
-      ...(isDev && {
-        https: {
-          key: fs.readFileSync(
-            path.resolve(__dirname, "certs/stillness.local-key.pem")
-          ),
-          cert: fs.readFileSync(
-            path.resolve(__dirname, "certs/stillness.local.pem")
-          ),
-        },
-      }),
-    },
     resolve: {
       alias: {
-        "@": resolvePath(""),
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
         "@components": resolvePath("components"),
         "@views": resolvePath("views"),
         "@assets": resolvePath("assets"),
@@ -47,8 +32,44 @@ export default defineConfig(({ mode }) => {
         "@hooks": resolvePath("hooks"),
       },
     },
+    server: {
+      host: true,
+      port: 5173,
+      ...(isDev && {
+        https: {
+          key: fs.readFileSync("certs/stillness.local-key.pem"),
+          cert: fs.readFileSync("certs/stillness.local.pem"),
+        },
+        proxy: {
+          "/api": {
+            target: targetUrl,
+            changeOrigin: true,
+            secure: false,
+          },
+        },
+      }),
+    },
+    preview: {
+      port: process.env.PORT ? parseInt(process.env.PORT) : 4173,
+      host: "0.0.0.0",
+    },
+    build: {
+      outDir: "dist",
+      sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ["vue", "vue-router"],
+          },
+        },
+      },
+    },
     define: {
-      __API_URL__: JSON.stringify(apiUrl),
+      __VUE_PROD_DEVTOOLS__: false,
+      __API_URL__: JSON.stringify(
+        isDev ? "https://localhost:3001" : env.VITE_API_URL_HOST
+      ),
+      "process.env.NODE_ENV": JSON.stringify(mode),
     },
   };
 });

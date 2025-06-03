@@ -66,6 +66,12 @@ export const routes: RouteRecordRaw[] = [
         meta: { title: "Add New Product", requiresAuth: true, isAdmin: true },
       },
       {
+        path: "products/:id/edit",
+        name: "admin-edit-product",
+        component: AdminAddProductView,
+        meta: { title: "Edit Product", requiresAuth: true, isAdmin: true },
+      },
+      {
         path: "orders",
         name: "admin-orders",
         component: AdminOrdersView,

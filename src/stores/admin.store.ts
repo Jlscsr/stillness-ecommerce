@@ -8,7 +8,7 @@ import {
   updateOrderPaymentStatus,
   updateOrderStatus,
 } from "@/services/order.service";
-import { addProduct, deleteProduct } from "@/services/product.service";
+import { addProduct, deleteProduct, updateProduct } from "@/services/product.service";
 import type { ProductRequestBody } from "@/types/Product";
 
 export const useAdminStore = defineStore("admin", () => {
@@ -180,6 +180,33 @@ export const useAdminStore = defineStore("admin", () => {
       };
     }
   };
+
+  const updateProductData = async (
+    productId: string,
+    payload: ProductRequestBody
+  ): Promise<{
+    success: boolean;
+    message: string;
+  }> => {
+    try {
+      const response = await updateProduct(productId, payload);
+      if (!response.success) {
+        return {
+          success: false,
+          message: response.message,
+        };
+      }
+      return {
+        success: true,
+        message: "Product updated successfully.",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to update product.",
+      };
+    }
+  };
   return {
     users,
     orders,
@@ -190,5 +217,6 @@ export const useAdminStore = defineStore("admin", () => {
     updateUserOrderStatus,
     deleteSelectedProduct,
     addNewProduct,
+    updateProductData,
   };
 });

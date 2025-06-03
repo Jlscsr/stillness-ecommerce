@@ -8,7 +8,9 @@
           <ArrowLeft class="h-5 w-5" />
         </button>
       </router-link>
-      <h1 class="text-2xl font-light text-charcoal">Add New Product</h1>
+      <h1 class="text-2xl font-light text-charcoal">
+        {{ isEditMode ? "Edit Product" : "Add New Product" }}
+      </h1>
     </div>
 
     <form @submit.prevent="handleSubmit">
@@ -289,7 +291,15 @@
               :disabled="isSubmitting"
               class="px-4 py-2 bg-sage text-white rounded-md hover:bg-sage/90 disabled:opacity-50"
             >
-              {{ isSubmitting ? "Creating..." : "Create Product" }}
+              {{
+                isSubmitting
+                  ? isEditMode
+                    ? "Updating..."
+                    : "Creating..."
+                  : isEditMode
+                  ? "Update Product"
+                  : "Create Product"
+              }}
             </button>
           </div>
         </div>
@@ -299,20 +309,70 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { useRouter } from "vue-router";
-import { X, Upload, Plus, ArrowLeft, ChevronDown } from "lucide-vue-next";
-import type { Image, ProductRequestBody } from "@/types/Product";
+import { ref, reactive, onMounted, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useAdminStore } from "@/stores/admin.store";
+import { useProductStore } from "@/stores/product.store";
+import { X, Upload, Plus, ArrowLeft, ChevronDown } from "lucide-vue-next";
+import type { Image, ProductRequestBody, Product } from "@/types/Product";
 import { useToastStore } from "@/stores/toast.store";
 
 const router = useRouter();
+const route = useRoute();
 const adminStore = useAdminStore();
+const productStore = useProductStore();
 const toastStore = useToastStore();
 const fileInput = ref<HTMLInputElement | null>(null);
 const isSubmitting = ref(false);
 const uploadedImages = ref<File[]>([]);
 const materialsInput = ref("");
+const originalProduct = ref<Product | null>(null);
+
+// Check if we're in edit mode by looking for an ID in the URL
+const isEditMode = computed(() => {
+  return route.params.id !== undefined && route.path.includes("/edit");
+});
+
+// Fetch product data if in edit mode
+onMounted(async () => {
+  if (isEditMode.value) {
+    const productId = route.params.id as string;
+    try {
+      // Fetch the product
+      const product = await productStore.getProductById(productId);
+      if (product) {
+        originalProduct.value = product;
+
+        // Populate the form with existing data
+        productData.name = product.name;
+        productData.japaneseText = product.japaneseText || "";
+        productData.description = product.description;
+        productData.longDescription = product.longDescription || "";
+        productData.price = product.price.toString();
+        productData.category = product.category;
+        productData.stock = product.stock;
+        productData.materials = [...product.materials];
+        productData.dimensions = product.dimensions;
+
+        // Handle images
+        if (product.images && product.images.length > 0) {
+          productData.images = product.images.map((img) => ({
+            _id: img._id,
+            src: img.src,
+            alt: img.alt,
+          }));
+        }
+      } else {
+        toastStore.error("Product not found");
+        router.push("/admin/products");
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      toastStore.error("Failed to load product data");
+      router.push("/admin/products");
+    }
+  }
+});
 
 // Product data state
 const productData = reactive({
@@ -399,6 +459,7 @@ const removeImage = (index: number) => {
 
 // Handle form submission
 const handleSubmit = async () => {
+  if (isSubmitting.value) return; // Prevent double submission
   isSubmitting.value = true;
 
   try {
@@ -407,19 +468,30 @@ const handleSubmit = async () => {
       addMaterial();
     }
 
-    // Convert all images to base64
-    const imagePromises = uploadedImages.value.map(async (file, index) => {
-      const base64 = await fileToBase64(file);
-      return {
-        _id: index + 1, // Temporary ID
-        src: base64,
-        alt:
-          productData.images[index]?.alt ||
-          `${productData.name} image ${index + 1}`,
-      };
-    });
+    // Prepare the image data
+    let productImages: Image[] = [];
 
-    const base64Images = await Promise.all(imagePromises);
+    // For new or modified images, convert to base64
+    if (uploadedImages.value.length > 0) {
+      const imagePromises = uploadedImages.value.map(async (file, index) => {
+        const base64 = await fileToBase64(file);
+        return {
+          _id: Date.now() + index, // Temporary ID for new images
+          src: base64,
+          alt:
+            productData.images[index]?.alt ||
+            `${productData.name} image ${index + 1}`,
+        };
+      });
+
+      const base64Images = await Promise.all(imagePromises);
+      productImages = base64Images;
+    }
+    // In edit mode, we need to include existing images that weren't changed
+    else if (isEditMode.value && productData.images.length > 0) {
+      // Keep existing images (no need to convert them to base64 again)
+      productImages = productData.images;
+    }
 
     // Prepare the product data according to ProductRequestBody
     const productRequestData: ProductRequestBody = {
@@ -430,7 +502,7 @@ const handleSubmit = async () => {
       stock: productData.stock,
       materials: productData.materials,
       dimensions: productData.dimensions,
-      images: base64Images,
+      images: productImages,
       // Optional fields
       ...(productData.japaneseText
         ? { japaneseText: productData.japaneseText }
@@ -440,20 +512,66 @@ const handleSubmit = async () => {
         : {}),
     };
 
-    const response = await adminStore.addNewProduct(productRequestData);
+    // Log the data for debugging (will display in console)
+    console.log("Submitting product data:", productRequestData);
 
-    if (!response.success) {
-      toastStore.error("Failed to create product. Please try again.");
-      return;
+    let response;
+
+    if (isEditMode.value && originalProduct.value) {
+      console.log("Previous product data:", originalProduct.value);
+
+      // Update existing product
+      const productId = route.params.id as string;
+      response = await adminStore.updateProductData(
+        productId,
+        productRequestData
+      );
+
+      if (response.success) {
+        // Update product in store after successful update
+        await productStore.getProducts(); // Refresh the product list
+        toastStore.success("Product updated successfully!");
+      } else {
+        toastStore.error(
+          response.message || "Failed to update product. Please try again."
+        );
+        isSubmitting.value = false;
+        return;
+      }
+    } else {
+      // Create new product
+      response = await adminStore.addNewProduct(productRequestData);
+
+      if (response.success) {
+        // Update product list after successful creation
+        await productStore.getProducts(); // Refresh the product list
+        toastStore.success("Product created successfully!");
+      } else {
+        toastStore.error(
+          response.message || "Failed to create product. Please try again."
+        );
+        isSubmitting.value = false;
+        return;
+      }
     }
 
-    toastStore.success("Product created successfully!");
-
+    // Navigate back to products list
     router.push("/admin/products");
-  } catch (error) {
-    console.error("Error creating product:", error);
-  } finally {
+  } catch (error: any) {
+    console.error(
+      `Error ${isEditMode.value ? "updating" : "creating"} product:`,
+      error
+    );
+    toastStore.error(
+      error?.message ||
+        `Something went wrong while ${
+          isEditMode.value ? "updating" : "creating"
+        } the product.`
+    );
     isSubmitting.value = false;
+  } finally {
+    // In case of success, isSubmitting will stay true during navigation
+    // This prevents issues with component unmounting during submission
   }
 };
 </script>

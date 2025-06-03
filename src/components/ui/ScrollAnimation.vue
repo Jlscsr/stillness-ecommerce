@@ -42,7 +42,7 @@ const isIntersecting = ref(false);
 const hasAnimated = ref(false);
 
 // Set up intersection observer
-const { stop } = useIntersectionObserver(
+useIntersectionObserver(
   target,
   ([{ isIntersecting: intersecting }]) => {
     console.log("Intersection detected:", intersecting); // Debug log

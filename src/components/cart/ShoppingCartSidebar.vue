@@ -117,7 +117,7 @@
 
                   <!-- Remove button -->
                   <button
-                    @click="confirmRemoveItem(item.productId, item.name)"
+                    @click="confirmRemoveItem(item.productId, item.name || 'Item')"
                     class="text-xs text-charcoal/60 hover:text-charcoal transition-colors"
                   >
                     Remove

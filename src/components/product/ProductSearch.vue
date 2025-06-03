@@ -48,8 +48,8 @@
       >
         <button
           v-for="product in results"
-          :key="product.id"
-          @click="handleResultClick(product.id)"
+          :key="product._id"
+          @click="handleResultClick(product._id)"
           class="w-full grid grid-cols-[1fr_auto] gap-2 p-3 hover:bg-beige/10 transition-colors"
         >
           <!-- text column: name + description -->
@@ -149,7 +149,7 @@ const handleSearch = (e: Event) => {
   }
 };
 
-const handleResultClick = (productId: number) => {
+const handleResultClick = (productId: string) => {
   router.push(`/products/${productId}`);
   isOpen.value = false;
   query.value = "";

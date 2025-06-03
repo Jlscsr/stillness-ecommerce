@@ -77,7 +77,7 @@ interface Props {
   activeTab: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   activeTab: "profile",
 });
 

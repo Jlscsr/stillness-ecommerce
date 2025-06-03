@@ -182,7 +182,7 @@ const createParticles = () => {
 };
 
 // Animation loop
-const animate = (timestamp: number) => {
+const animate = () => {
   if (!ctx || !canvas.value) return;
 
   // Clear canvas completely - no trails

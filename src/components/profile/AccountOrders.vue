@@ -211,8 +211,8 @@ interface Props {
   expandedOrders: string[];
 }
 
-// Default props and dummy data
-const props = withDefaults(defineProps<Props>(), {
+// Define props with defaults
+withDefaults(defineProps<Props>(), {
   pendingOrders: () => [],
   orderHistory: () => [],
   expandedOrders: () => [],

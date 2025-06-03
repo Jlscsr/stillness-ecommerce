@@ -11,10 +11,7 @@
             Meet Our Team
           </h2>
           <p class="mt-4 max-w-2xl mx-auto text-charcoal/70">
-            This e-commerce platform was created as a final project by a group
-            of seven students passionate about Japanese aesthetics and web
-            development. Each member brought their unique skills and
-            perspectives to create this immersive shopping experience.
+            This e-commerce platform was created as a final project for our school. Our team members worked together to create this Japanese-inspired online shopping experience.
           </p>
         </div>
       </ScrollAnimation>
@@ -137,54 +134,26 @@ const isMobile = ref(false);
 
 const teamMembers: TeamMember[] = [
   {
-    name: "Yuki Nakamura",
-    role: "Project Lead",
+    name: "Julius Raagas",
+    role: "Full Stack Developer",
     description:
-      "Coordinated the team's efforts and ensured the project aligned with Japanese design principles. Specializes in user experience design and project management.",
+      "Developed both frontend and backend components of the e-commerce platform, integrating Vue.js with Node.js to create a seamless shopping experience.",
     image: "/placeholder.svg?height=200&width=200",
   },
   {
-    name: "Hiroshi Tanaka",
-    role: "Frontend Developer",
+    name: "Aaron Jan",
+    role: "UI Designer",
     description:
-      "Implemented the responsive user interface with a focus on subtle animations and transitions that reflect the Japanese aesthetic of elegant simplicity.",
+      "Created the visual language of the site, incorporating Japanese design principles and aesthetics into a modern, user-friendly interface.",
     image: "/placeholder.svg?height=200&width=200",
   },
   {
-    name: "Mei Zhang",
-    role: "Backend Developer",
+    name: "Mariel P. Costales",
+    role: "Documentation",
     description:
-      "Built the server-side architecture and database systems that power the e-commerce functionality, ensuring a seamless shopping experience.",
+      "Prepared comprehensive documentation for the project, ensuring that all features, functionalities and development processes were clearly recorded.",
     image: "/placeholder.svg?height=200&width=200",
-  },
-  {
-    name: "Aiko Yamamoto",
-    role: "UI/UX Designer",
-    description:
-      "Created the visual language of the site, incorporating traditional Japanese color palettes and design principles to create an immersive and authentic experience.",
-    image: "/placeholder.svg?height=200&width=200",
-  },
-  {
-    name: "Kenji Sato",
-    role: "Content Strategist",
-    description:
-      "Developed the product descriptions and cultural context, ensuring authentic representation of Japanese concepts like wabi-sabi and ma throughout the site.",
-    image: "/placeholder.svg?height=200&width=200",
-  },
-  {
-    name: "Sakura Ito",
-    role: "Accessibility Specialist",
-    description:
-      "Ensured the website is accessible to all users, implementing ARIA attributes and keyboard navigation while maintaining the aesthetic integrity of the design.",
-    image: "/placeholder.svg?height=200&width=200",
-  },
-  {
-    name: "Takashi Kimura",
-    role: "QA Engineer",
-    description:
-      "Rigorously tested all aspects of the site across devices and browsers, ensuring a flawless user experience that embodies the Japanese principle of quality craftsmanship.",
-    image: "/placeholder.svg?height=200&width=200",
-  },
+  }
 ];
 
 // Check if we're on mobile

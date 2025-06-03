@@ -23,7 +23,7 @@
     >
       <ScrollAnimation
         v-for="(product, index) in productLists"
-        :key="product.id"
+        :key="product._id"
         type="scale"
         :delay="0.1 * (index % 4)"
       >

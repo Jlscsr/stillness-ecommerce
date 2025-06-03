@@ -304,14 +304,15 @@ import { useRouter } from "vue-router";
 import { X, Upload, Plus, ArrowLeft, ChevronDown } from "lucide-vue-next";
 import type { Image, ProductRequestBody } from "@/types/Product";
 import { useAdminStore } from "@/stores/admin.store";
+import { useToastStore } from "@/stores/toast.store";
 
 const router = useRouter();
 const adminStore = useAdminStore();
+const toastStore = useToastStore();
 const fileInput = ref<HTMLInputElement | null>(null);
 const isSubmitting = ref(false);
 const uploadedImages = ref<File[]>([]);
 const materialsInput = ref("");
-const productOutput = ref<ProductRequestBody | null>(null);
 
 // Product data state
 const productData = reactive({
@@ -439,23 +440,16 @@ const handleSubmit = async () => {
         : {}),
     };
 
-    // Store the data for display
-    productOutput.value = productRequestData;
+    const response = await adminStore.addNewProduct(productRequestData);
 
-    // Print the structure to console
-    console.log(
-      "Product Request Structure:",
-      JSON.stringify(productRequestData, null, 2)
-    );
+    if (!response.success) {
+      toastStore.error("Failed to create product. Please try again.");
+      return;
+    }
 
-    // For production, would call the AdminStore's addNewProduct function here
-    // const response = await adminStore.addNewProduct(productRequestData);
+    toastStore.success("Product created successfully!");
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Don't redirect for now, just show the data
-    // router.push('/admin/products');
+    router.push("/admin/products");
   } catch (error) {
     console.error("Error creating product:", error);
   } finally {

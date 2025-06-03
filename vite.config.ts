@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [vue()],
     server: {
-      host: true,
+      host: env.VITE_ENV === "development" ? true : false,
       port: 5173,
       https:
         env.VITE_ENV === "development"

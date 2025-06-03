@@ -527,7 +527,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
 import { storeToRefs } from "pinia";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { ArrowLeft, CreditCard, Check } from "lucide-vue-next";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import {

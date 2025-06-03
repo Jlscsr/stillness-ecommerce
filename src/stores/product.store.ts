@@ -49,8 +49,9 @@ export const useProductStore = defineStore("product", () => {
         const response = await fetchProductById(id);
         if (response.success && response.data) {
           // Add the product to the local state
-          if (response.data && response.data._id && !products.value.some(p => p._id === response.data._id)) {
-            products.value.push(response.data);
+          const productData = response.data;
+          if (productData && productData._id && !products.value.some(p => p._id === productData._id)) {
+            products.value.push(productData);
           }
           return response.data || null;
         }

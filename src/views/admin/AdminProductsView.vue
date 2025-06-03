@@ -447,7 +447,7 @@ import { useToastStore } from "@/stores/toast.store";
 import { type Product } from "@/types/Product";
 import ImageWithLoading from "@/components/ui/ImageWithLoading.vue";
 
-const router = useRouter();
+
 const productStore = useProductStore();
 const toastStore = useToastStore();
 const adminStore = useAdminStore();

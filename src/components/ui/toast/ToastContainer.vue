@@ -35,7 +35,7 @@ interface Props {
     | "bottom-center";
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const { position } = withDefaults(defineProps<Props>(), {
   position: "top-right",
 });
 

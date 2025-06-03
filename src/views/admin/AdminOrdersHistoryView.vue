@@ -289,7 +289,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, onUnmounted } from "vue";
 import { useAdminStore } from "@/stores/admin.store";
-import { useProductStore } from "@/stores/product.store";
 import type { Order } from "@/types/Order";
 
 import {
@@ -303,9 +302,7 @@ import {
 
 const adminStore = useAdminStore();
 
-// Types
-type OrderStatus = "delivered" | "cancelled";
-type PaymentMethod = "cod" | "online";
+// State
 
 // State
 const orders = computed(() => {

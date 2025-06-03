@@ -378,11 +378,6 @@ import { type UserResponse } from "@/types/User";
 
 const adminStore = useAdminStore();
 
-interface Order {
-  id: string;
-  customerId: string;
-  // other order properties...
-}
 
 // State
 const users = computed(() => adminStore.users);

@@ -1,4 +1,4 @@
-import { get, post, put, del } from "@/composables/requests";
+import { get, post, put } from "@/composables/requests";
 import type { Order } from "@/types/Order";
 import type { ApiResponse } from "@/types/Response";
 

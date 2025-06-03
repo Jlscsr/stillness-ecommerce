@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from "vue";
+import { computed } from "vue";
 import { Users, ShoppingBag, Package, DollarSign } from "lucide-vue-next";
 
 import { useProductStore } from "@/stores/product.store";
@@ -140,7 +140,7 @@ const revenue = computed(() => {
   return adminStore.dashboardData.totalRevenue || 0;
 });
 
-onMounted(() => {});
+
 </script>
 
 <style scoped>

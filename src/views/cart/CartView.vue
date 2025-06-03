@@ -304,7 +304,9 @@ const updateQuantity = async (
   }
 };
 
-const confirmRemoveItem = async (productId: string, itemName: string) => {
+const confirmRemoveItem = async (productId: string | undefined, itemName: string) => {
+  if (!productId) return;
+  
   const confirmed = await modalStore.open({
     title: 'Remove Item',
     message: `Are you sure you want to remove <strong>${itemName}</strong> from your cart?`,

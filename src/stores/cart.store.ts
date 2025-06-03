@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { Cart, CartItem, CartRequestBody } from "@/types/Cart";
+import type { Cart, CartRequestBody } from "@/types/Cart";
 
 import {
   fetchCartItems,

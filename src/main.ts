@@ -20,7 +20,7 @@ const initApp = async () => {
     app.use(router);
 
     // Global error handler
-    app.config.errorHandler = (err, instance, info) => {
+    app.config.errorHandler = (err, _instance, _info) => {
       console.error("Vue error:", err);
       // Here you can add error reporting (e.g., Sentry, LogRocket)
     };

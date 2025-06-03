@@ -9,7 +9,7 @@ import { useAuthStore } from "@stores/auth.store";
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL || "/"),
   routes,
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(to, _from, savedPosition) {
     // Return to saved position if exists (browser back/forward)
     if (savedPosition) {
       return savedPosition;
@@ -30,7 +30,7 @@ export const router = createRouter({
 let authStatusChecked = false;
 
 // Global navigation guard
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore();
 
   // Check authentication status on first navigation or if not authenticated

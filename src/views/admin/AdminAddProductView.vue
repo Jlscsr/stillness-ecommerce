@@ -313,7 +313,7 @@ import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAdminStore } from "@/stores/admin.store";
 import { useProductStore } from "@/stores/product.store";
-import { X, Upload, Plus, ArrowLeft, ChevronDown } from "lucide-vue-next";
+import { X, Upload, ArrowLeft, ChevronDown } from "lucide-vue-next";
 import type { Image, ProductRequestBody, Product } from "@/types/Product";
 import { useToastStore } from "@/stores/toast.store";
 

@@ -34,10 +34,8 @@ import Footer from "@components/molecules/Footer.vue";
 const router = useRouter();
 const authStore = useAuthStore();
 
-const handleLogout = async () => {
-  await authStore.logout();
-  router.push("/");
-};
+// Remove unused function that had incorrect method reference
+// If logout functionality is needed, use authStore.logoutUser() instead
 </script>
 
 <style scoped>

@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { ArrowLeft } from "lucide-vue-next";
 import ProductGallery from "@components/product/ProductGallery.vue";
 import ProductInfo from "@components/product/ProductInfo.vue";
@@ -62,7 +62,6 @@ import { useProductStore } from "@stores/product.store";
 import type { Product } from "@/types/Product";
 
 const route = useRoute();
-const router = useRouter();
 const productStore = useProductStore();
 
 const selectedProduct = ref<Product | null>(null);
@@ -73,32 +72,20 @@ onMounted(async () => {
     const id = Array.isArray(route.params.id)
       ? route.params.id[0]
       : route.params.id;
-    selectedProduct.value = productStore.getProductById(id);
+    selectedProduct.value = await productStore.getProductById(id);
   }
 });
 
 // Watch for route changes
 watch(
   () => route.params.id,
-  (newId) => {
+  async (newId) => {
     if (newId) {
       const id = Array.isArray(newId) ? newId[0] : newId;
-      selectedProduct.value = productStore.getProductById(id);
+      selectedProduct.value = await productStore.getProductById(id);
     }
   }
 );
 
-// Handle add to cart (placeholder for now)
-const handleAddToCart = (payload: { product: Product; quantity: number }) => {
-  console.log("Add to cart:", payload);
-  // TODO: Implement cart store logic
-  // cartStore.addToCart(payload.product, payload.quantity)
-};
-
-// Handle add to wishlist (placeholder for now)
-const handleAddToWishlist = (payload: { product: Product; added: boolean }) => {
-  console.log("Add to wishlist:", payload);
-  // TODO: Implement wishlist store logic
-  // wishlistStore.toggleWishlist(payload.product)
-};
+// Handlers are implemented in ProductInfo.vue component
 </script>

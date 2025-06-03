@@ -56,7 +56,6 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      // Make API URL available globally in the app
       __API_URL__: JSON.stringify(apiUrl),
     },
   };

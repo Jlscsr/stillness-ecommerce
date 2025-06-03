@@ -10,7 +10,7 @@ export interface UserAddress {
 }
 
 export interface UserCredentials {
-  id: string;
+  _id: string;
   email: string;
   firstName: string;
   lastName: string;

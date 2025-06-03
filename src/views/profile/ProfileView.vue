@@ -60,7 +60,10 @@ const router = useRouter();
 const activeTab = ref((route.query.tab as string) || "profile");
 const expandedOrders = ref<string[]>([]);
 
-const user = computed<UserCredentials | null>(() => userStore.userInfo);
+const user = computed<UserCredentials | null>(() => {
+  if (!userStore.userInfo) return null;
+  return userStore.userInfo as unknown as UserCredentials;
+});
 const pendingOrders = computed(() => userOrdersStore.pendingOrders);
 const orderHistory = computed(() => userOrdersStore.orderHistory);
 

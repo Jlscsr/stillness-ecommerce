@@ -133,7 +133,7 @@
                       }}
                     </span>
                     <button
-                      @click="item.productId ? confirmRemoveItem(item.productId, item.name) : null"
+                      @click="item.productId ? confirmRemoveItem(item.productId, item.name || 'Product') : null"
                       class="ml-2 p-1 text-charcoal/50 hover:text-red-500 transition-colors"
                       aria-label="Remove item"
                     >

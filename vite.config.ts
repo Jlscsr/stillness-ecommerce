@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => {
   const apiUrl =
     env.VITE_ENV === "production" ? env.VITE_API_URL_HOST : env.VITE_API_URL;
 
+  console.log(`Using API URL: ${apiUrl}`);
+  console.log(`VITE_ENV: ${env.VITE_ENV}`);
+
   return {
     plugins: [vue()],
     server: {

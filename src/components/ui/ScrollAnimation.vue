@@ -45,7 +45,6 @@ const hasAnimated = ref(false);
 useIntersectionObserver(
   target,
   ([{ isIntersecting: intersecting }]) => {
-    console.log("Intersection detected:", intersecting); // Debug log
     if (intersecting && !hasAnimated.value) {
       setTimeout(() => {
         isIntersecting.value = true;
@@ -155,15 +154,5 @@ const currentStyles = computed(() => {
     ...baseStyles,
     transition: getTransitionStyle(),
   };
-});
-
-// Debug: Log when component mounts
-onMounted(() => {
-  console.log("ScrollAnimation mounted, type:", props.type);
-});
-
-// Debug: Watch intersection changes
-watch(isIntersecting, (newValue) => {
-  console.log("Animation triggered:", newValue, "Type:", props.type);
 });
 </script>

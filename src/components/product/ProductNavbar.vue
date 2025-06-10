@@ -19,11 +19,7 @@
           <router-link
             v-for="category in categories"
             :key="category.id"
-            :to="
-              category.id === 'all'
-                ? '/products'
-                : `/products/category/${category.id}`
-            "
+            to="/products"
             class="flex flex-col items-center group whitespace-nowrap"
           >
             <span
@@ -65,11 +61,7 @@
             <router-link
               v-for="category in categories"
               :key="category.id"
-              :to="
-                category.id === 'all'
-                  ? '/products'
-                  : `/products/category/${category.id}`
-              "
+              to="/"
               class="flex justify-between items-center py-2"
               @click="isMobileMenuOpen = false"
             >
@@ -97,28 +89,66 @@ import { useProductStore } from "@stores/product.store";
 import Logo from "@components/atoms/Logo.vue";
 import ProductSearch from "./ProductSearch.vue";
 
-// Define the category type
-interface Category {
-  id: string;
-  name: string;
-  japaneseText: string;
-  count: number;
-}
-
 const productStore = useProductStore();
 const isMobileMenuOpen = ref(false);
 
+const computeProductCategoriesCount = (category: string) => {
+  return productStore.products.filter(
+    (product) => product.category.toLowerCase() === category
+  ).length;
+};
+
 // Categories data
-const categories: Category[] = [
-  { id: "all", name: "All Products", japaneseText: "全製品", count: 24 },
-  { id: "home", name: "Home", japaneseText: "家", count: 8 },
-  { id: "apparel", name: "Apparel", japaneseText: "衣類", count: 6 },
-  { id: "decor", name: "Decor", japaneseText: "装飾", count: 5 },
-  { id: "wellness", name: "Wellness", japaneseText: "健康", count: 7 },
-  { id: "gifts", name: "Gifts", japaneseText: "贈り物", count: 4 },
-  { id: "seasonal", name: "Seasonal", japaneseText: "季節", count: 3 },
-  { id: "tea", name: "Tea", japaneseText: "お茶", count: 5 },
-];
+const categories = computed(() => [
+  {
+    id: "all",
+    name: "All Products",
+    japaneseText: "全製品",
+    count: productStore.products.length,
+  },
+  {
+    id: "home",
+    name: "Home",
+    japaneseText: "家",
+    count: computeProductCategoriesCount("home"),
+  },
+  {
+    id: "apparel",
+    name: "Apparel",
+    japaneseText: "衣類",
+    count: computeProductCategoriesCount("apparel"),
+  },
+  {
+    id: "decor",
+    name: "Decor",
+    japaneseText: "装飾",
+    count: computeProductCategoriesCount("decor"),
+  },
+  {
+    id: "wellness",
+    name: "Wellness",
+    japaneseText: "健康",
+    count: computeProductCategoriesCount("wellness"),
+  },
+  {
+    id: "gifts",
+    name: "Gifts",
+    japaneseText: "贈り物",
+    count: computeProductCategoriesCount("gifts"),
+  },
+  {
+    id: "seasonal",
+    name: "Seasonal",
+    japaneseText: "季節",
+    count: computeProductCategoriesCount("seasonal"),
+  },
+  {
+    id: "tea",
+    name: "Tea",
+    japaneseText: "お茶",
+    count: computeProductCategoriesCount("tea"),
+  },
+]);
 
 const productsCount = computed(() => productStore.productsCount);
 </script>

@@ -70,7 +70,7 @@
                   {{ selectedCollection.longDescription }}
                 </p>
                 <router-link
-                  :to="`/collections/${selectedCollection.id}`"
+                  to="/products"
                   :class="
                     cn(
                       'inline-flex items-center px-6 py-2 rounded-sm transition-colors',
@@ -79,7 +79,7 @@
                     )
                   "
                 >
-                  <span>View Collection</span>
+                  <span>View Products</span>
                   <ChevronRight class="ml-2 h-4 w-4" />
                 </router-link>
               </div>
@@ -98,10 +98,10 @@
         <!-- View All Link -->
         <div class="text-center">
           <router-link
-            :to="`/collections/${selectedCollection.id}`"
+            to="/products"
             class="inline-flex items-center text-charcoal hover:text-sage transition-colors"
           >
-            <span>View All {{ selectedCollection.name }} Products</span>
+            <span>View All Products</span>
             <ChevronRight class="ml-1 h-4 w-4" />
           </router-link>
         </div>

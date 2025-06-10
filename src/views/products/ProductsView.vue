@@ -112,35 +112,27 @@ const filters = reactive<FilterState>({
 });
 
 // Computed filtered list
-const filteredProducts = computed(
-  () =>
-    productStore.products
-      .filter(
-        (p) =>
-          !searchQuery.value ||
-          p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      )
-      .filter(
-        (p) =>
-          p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
-      )
-      .filter(
-        (p) =>
-          !filters.categories.length ||
-          filters.categories.includes(p.category.toLowerCase())
-      )
-  /* .filter((p) => {
-      if (!filters.materials.length) return true;
-      const materialMap: Record<string, number[]> = {
-        ceramic: [1, 5],
-        linen: [2, 6],
-        bamboo: [3],
-        cotton: [4],
-        wood: [7, 8],
-      };
-      const ids = filters.materials.flatMap((m) => materialMap[m] || []);
-      return ids.includes(p._id);
-    }) */
+const filteredProducts = computed(() =>
+  productStore.products
+    .filter(
+      (p) =>
+        !searchQuery.value ||
+        p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+    .filter(
+      (p) =>
+        p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
+    )
+    .filter(
+      (p) =>
+        !filters.categories.length ||
+        filters.categories.includes(p.category.toLowerCase())
+    )
+    .filter(
+      (p) =>
+        !filters.materials.length ||
+        p.materials.some((m) => filters.materials.includes(m.toLowerCase()))
+    )
 );
 
 // Filter options
@@ -151,13 +143,25 @@ const categoryOptions = [
   { id: "wellness", label: "Wellness" },
   { id: "tea", label: "Tea" },
 ];
-const materialOptions = [
-  { id: "ceramic", label: "Ceramic" },
-  { id: "linen", label: "Linen" },
-  { id: "bamboo", label: "Bamboo" },
-  { id: "cotton", label: "Cotton" },
-  { id: "wood", label: "Wood" },
-];
+
+const availableMaterials = productStore.products
+  .flatMap((p) => p.materials)
+  .filter(
+    (m, index, self) =>
+      self.findIndex((item) => item.toLowerCase() === m.toLowerCase()) === index
+  );
+
+const firstLetterToUpperCase = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+const materialOptions = computed(() =>
+  availableMaterials.map((m) => ({
+    id: m.toLowerCase(),
+    label: firstLetterToUpperCase(m.toLowerCase()),
+    japaneseLabel: firstLetterToUpperCase(m),
+  }))
+);
 
 // Handlers
 function handleFilterChange(newFilters: FilterState) {
@@ -179,7 +183,3 @@ function clearFilters() {
   filters.materials = [];
 }
 </script>
-
-<style scoped>
-/* page-specific tweaks */
-</style>

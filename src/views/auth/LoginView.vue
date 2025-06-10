@@ -56,7 +56,7 @@
         <!-- Remember Me & Forgot -->
         <div class="flex items-center justify-between">
           <router-link
-            to="/forgot-password"
+            to="/"
             class="text-sm text-sage hover:underline"
           >
             Forgot password?

@@ -81,16 +81,16 @@
         </nav>
 
         <div class="border-t border-charcoal/10 p-4">
-          <router-link
-            :to="{ name: 'home' }"
+          <button
+            @click="logoutUser()"
             :class="[
               'flex items-center text-sm text-charcoal/70 hover:text-charcoal transition-colors',
               collapsed && 'justify-center',
             ]"
           >
-            <span v-if="!collapsed">Back to Store</span>
-            <ShoppingBag v-if="collapsed" class="h-5 w-5" />
-          </router-link>
+            <span v-if="!collapsed">Logout</span>
+            <LogOut v-if="collapsed" class="h-5 w-5" />
+          </button>
         </div>
       </div>
     </aside>
@@ -112,28 +112,31 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { useAuthStore } from "@/stores/auth.store";
+import { useAdminStore } from "@/stores/admin.store";
+
 import {
   LayoutDashboard,
   Users,
   ShoppingBag,
   Package,
   History,
-  Settings,
   ChevronLeft,
   ChevronRight,
   Menu,
+  LogOut,
 } from "lucide-vue-next";
 import Logo from "@/components/atoms/Logo.vue";
 
-import { useAdminStore } from "@/stores/admin.store";
-
+const authStore = useAuthStore();
 const adminStore = useAdminStore();
 
 // State management with Vue refs
 const collapsed = ref(false);
 const isMobile = ref(false);
 const mobileMenuOpen = ref(false);
+const router = useRouter();
 const route = useRoute();
 
 // Check if current route is active
@@ -173,8 +176,16 @@ const navItems = [
   { name: "Products", path: "/admin/products", icon: Package },
   { name: "Orders", path: "/admin/orders", icon: ShoppingBag },
   { name: "Order History", path: "/admin/orders/history", icon: History },
-  { name: "Settings", path: "/admin/settings", icon: Settings },
 ];
+
+const logoutUser = async () => {
+  try {
+    await authStore.logoutUser();
+    router.go(0);
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
 
 // Toggle sidebar collapsed state
 const toggleSidebar = () => {

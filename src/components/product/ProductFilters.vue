@@ -103,9 +103,6 @@
             class="text-sm text-charcoal flex items-center cursor-pointer"
           >
             {{ option.label }}
-            <span class="text-xs text-charcoal/50 ml-2">{{
-              option.japaneseText
-            }}</span>
           </label>
         </div>
       </div>
@@ -275,9 +272,6 @@
                 class="text-sm text-charcoal flex flex-col cursor-pointer flex-1"
               >
                 <span>{{ option.label }}</span>
-                <span class="text-xs text-charcoal/50">{{
-                  option.japaneseText
-                }}</span>
               </label>
             </div>
           </div>
@@ -298,7 +292,10 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from "vue";
+import { useProductStore } from "@/stores/product.store";
+
 import { X, Filter } from "lucide-vue-next";
+
 import FilterSection from "@components/product/FilterSection.vue";
 import Checkbox from "@components/atoms/Checkbox.vue";
 
@@ -312,6 +309,7 @@ interface Props {
   initialFilters: FilterState;
   productCount: number;
   isMobile?: boolean;
+  materialOptions?: { id: string; label: string; japaneseText?: string }[];
 }
 
 interface Emits {
@@ -324,6 +322,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+const productStore = useProductStore();
+
 const filters = reactive<FilterState>({ ...props.initialFilters });
 const expandedSections = reactive({
   price: true,
@@ -332,14 +332,22 @@ const expandedSections = reactive({
 });
 const isMobileFiltersOpen = ref(false);
 
+const availableMaterials = productStore.products
+  .flatMap((p) => p.materials)
+  .filter(
+    (m, index, self) =>
+      self.findIndex((item) => item.toLowerCase() === m.toLowerCase()) === index
+  );
+
+const firstLetterToUpperCase = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 // Materials options
-const materialOptions = [
-  { id: "ceramic", label: "Ceramic", japaneseText: "陶器" },
-  { id: "linen", label: "Linen", japaneseText: "リネン" },
-  { id: "bamboo", label: "Bamboo", japaneseText: "竹" },
-  { id: "cotton", label: "Cotton", japaneseText: "綿" },
-  { id: "wood", label: "Wood", japaneseText: "木" },
-];
+const materialOptions = availableMaterials.map((material) => ({
+  id: material.toLowerCase(),
+  label: firstLetterToUpperCase(material.toLowerCase()),
+}));
 
 // Category options
 const categoryOptions = [

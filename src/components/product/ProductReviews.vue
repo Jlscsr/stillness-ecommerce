@@ -53,7 +53,7 @@
         <div v-if="productReviews.length > 0" class="space-y-6">
           <div
             v-for="review in productReviews"
-            :key="review.id"
+            :key="review._id"
             class="border-b border-charcoal/10 pb-6"
           >
             <div class="flex justify-between mb-2">
@@ -61,7 +61,7 @@
               <div class="flex">
                 <component
                   v-for="(star, index) in renderStars(review.rating)"
-                  :key="`review-star-${review.id}-${index}`"
+                  :key="`review-star-${review._id}-${index}`"
                   :is="star.component"
                   :class="star.class"
                 />
@@ -70,11 +70,7 @@
             <div class="flex items-center text-sm text-charcoal/70 mb-3">
               <span>{{ review.name }}</span>
               <span class="mx-2">•</span>
-              <span>{{ formatDate(review.date) }}</span>
-              <template v-if="review.verified">
-                <span class="mx-2">•</span>
-                <span class="text-sage">Verified Purchase</span>
-              </template>
+              <span>{{ formatDate(review.createdAt) }}</span>
             </div>
             <p class="text-charcoal/80">{{ review.text }}</p>
           </div>
@@ -99,9 +95,7 @@
         class="bg-sage/10 border border-sage/20 p-4 rounded-sm text-center"
       >
         <p class="text-sage font-medium">Thank you for your review!</p>
-        <p class="text-charcoal/70 mt-2">
-          Your review has been submitted and will appear once approved.
-        </p>
+        <p class="text-charcoal/70 mt-2">Your review has been submitted!</p>
       </div>
       <form v-else @submit="handleSubmit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -211,19 +205,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import {
+  getAllProductReviews,
+  createNewProductReview,
+} from "@/services/review.service";
+import { type Review, type ReviewRequestBody } from "@/types/Review";
 import { Star, StarHalf } from "lucide-vue-next";
-
-interface Review {
-  id: string;
-  productId: string;
-  name: string;
-  rating: number;
-  date: string;
-  title: string;
-  text: string;
-  verified: boolean;
-}
+import { useToastStore } from "@/stores/toast.store";
 
 interface Props {
   productId: string;
@@ -231,51 +220,10 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// Mock reviews data
-const mockReviews: Review[] = [
-  {
-    id: "1",
-    productId: "1",
-    name: "Akiko T.",
-    rating: 5,
-    date: "2023-10-15",
-    title: "Beautiful craftsmanship",
-    text: "This tea set is absolutely beautiful. The craftsmanship is exceptional and it brings a sense of calm to my daily tea ritual. The natural glazing has subtle variations that make each piece unique.",
-    verified: true,
-  },
-  {
-    id: "2",
-    productId: "1",
-    name: "Michael L.",
-    rating: 4,
-    date: "2023-09-22",
-    title: "Elegant design",
-    text: "I love the minimalist design of this tea set. The cups are the perfect size and the teapot pours without dripping. My only small complaint is that the bamboo tray is slightly lighter in color than shown in the photos.",
-    verified: true,
-  },
-  {
-    id: "3",
-    productId: "1",
-    name: "Emma S.",
-    rating: 4.5,
-    date: "2023-11-03",
-    title: "Perfect for daily use",
-    text: "This tea set has become an essential part of my morning routine. The ceramic retains heat well and the design is simple yet elegant. The only reason I'm not giving 5 stars is because one of the cups had a small imperfection, but customer service was excellent in addressing it.",
-    verified: true,
-  },
-  {
-    id: "4",
-    productId: "2",
-    name: "David K.",
-    rating: 5,
-    date: "2023-10-18",
-    title: "Incredibly soft",
-    text: "This linen throw is exactly what I was looking for. It's lightweight yet warm, and the natural color goes perfectly with my living room decor. The texture is amazing and it gets softer with each wash.",
-    verified: true,
-  },
-];
+const toastStore = useToastStore();
 
-const newReview = ref({
+const newReview = ref<ReviewRequestBody>({
+  productId: props.productId,
   name: "",
   email: "",
   rating: 5,
@@ -286,11 +234,8 @@ const isSubmitting = ref(false);
 const isSubmitted = ref(false);
 
 // Filter reviews for this product
-const productReviews = computed(() =>
-  mockReviews.filter((review) => review.productId === props.productId)
-);
+const productReviews = ref<Review[]>([]);
 
-// Calculate average rating
 const averageRating = computed(() =>
   productReviews.value.length > 0
     ? productReviews.value.reduce((sum, review) => sum + review.rating, 0) /
@@ -302,22 +247,50 @@ const handleRatingChange = (rating: number) => {
   newReview.value.rating = rating;
 };
 
-const handleSubmit = (e: Event) => {
+const handleSubmit = async (e: Event) => {
   e.preventDefault();
   isSubmitting.value = true;
 
-  // Simulate API call
-  setTimeout(() => {
+  try {
+    const response = await createNewProductReview(newReview.value);
+
+    if (!response.success) {
+      toastStore.error("Failed to submit review. Please try again later.");
+      return;
+    }
+
+    toastStore.success("Review submitted successfully!");
+    await getAllReviews();
+  } catch (error) {
+  } finally {
     isSubmitting.value = false;
     isSubmitted.value = true;
     newReview.value = {
+      productId: props.productId,
       name: "",
       email: "",
       rating: 5,
       title: "",
       text: "",
     };
-  }, 1000);
+  }
+};
+
+const getAllReviews = async () => {
+  try {
+    const response = await getAllProductReviews(props.productId);
+
+    if (!response.success) {
+      console.error("Failed to fetch reviews:", response.message);
+      return;
+    }
+
+    productReviews.value = response.data.filter(
+      (review: Review) => review.productId === props.productId
+    );
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+  }
 };
 
 // Render stars for ratings
@@ -369,4 +342,8 @@ const getRatingPercentage = (rating: number) => {
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString();
 };
+
+onMounted(async () => {
+  await getAllReviews();
+});
 </script>

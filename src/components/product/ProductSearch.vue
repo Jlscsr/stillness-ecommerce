@@ -150,7 +150,7 @@ const handleSearch = (e: Event) => {
 };
 
 const handleResultClick = (productId: string) => {
-  router.push(`/products/${productId}`);
+  router.push({ name: "product-details", params: { id: productId } });
   isOpen.value = false;
   query.value = "";
 };

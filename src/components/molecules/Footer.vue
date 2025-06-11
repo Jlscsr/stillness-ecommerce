@@ -55,7 +55,7 @@
           <ul class="space-y-2">
             <li>
               <router-link
-                to="/bestsellers"
+                to="/products"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Best Sellers
@@ -63,7 +63,7 @@
             </li>
             <li>
               <router-link
-                to="/sale"
+                to="/products"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Collections
@@ -71,15 +71,7 @@
             </li>
             <li>
               <router-link
-                to="/gift-cards"
-                class="text-charcoal/70 hover:text-charcoal transition-colors"
-              >
-                Limited Editions
-              </router-link>
-            </li>
-            <li>
-              <router-link
-                to="/collections"
+                to="/products"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Seasonals
@@ -93,7 +85,7 @@
           <ul class="space-y-2">
             <li>
               <router-link
-                to="/our-story"
+                to="/about-us"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Our Story
@@ -101,7 +93,7 @@
             </li>
             <li>
               <router-link
-                to="/sustainability"
+                to="/about-us"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Sustainability
@@ -109,7 +101,7 @@
             </li>
             <li>
               <router-link
-                to="/artisans"
+                to="/about-us"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Journal
@@ -117,7 +109,7 @@
             </li>
             <li>
               <router-link
-                to="/journal"
+                to="/about-us"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Our Team
@@ -152,7 +144,7 @@
           <ul class="space-y-2">
             <li>
               <router-link
-                to="/faq"
+                to="/contact"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 FAQ
@@ -168,7 +160,7 @@
             </li>
             <li>
               <router-link
-                to="/stores"
+                to="/contact"
                 class="text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 Store Locations

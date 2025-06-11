@@ -27,7 +27,7 @@
           :delay="0.05 * index"
         >
           <router-link
-            :to="category.href"
+            to="/products"
             class="flex flex-col items-center group bg-cream p-6 rounded-sm hover:bg-beige/10 transition-colors"
           >
             <div

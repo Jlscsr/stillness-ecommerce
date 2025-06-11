@@ -24,9 +24,11 @@ export const useProductStore = defineStore("product", () => {
     return [...products.value].sort((a, b) => a.price - b.price);
   });
 
-  const sliceProducts = (start: number, end: number) => {
-    return products.value.slice(start, end);
-  };
+  const sliceProducts = computed(() => {
+    return (start: number, end: number) => {
+      return products.value.slice(start, end);
+    };
+  });
 
   const getProducts = async (params?: object) => {
     try {
@@ -50,7 +52,11 @@ export const useProductStore = defineStore("product", () => {
         if (response.success && response.data) {
           // Add the product to the local state
           const productData = response.data;
-          if (productData && productData._id && !products.value.some(p => p._id === productData._id)) {
+          if (
+            productData &&
+            productData._id &&
+            !products.value.some((p) => p._id === productData._id)
+          ) {
             products.value.push(productData);
           }
           return response.data || null;

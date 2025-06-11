@@ -11,7 +11,9 @@
             Meet Our Team
           </h2>
           <p class="mt-4 max-w-2xl mx-auto text-charcoal/70">
-            This e-commerce platform was created as a final project for our school. Our team members worked together to create this Japanese-inspired online shopping experience.
+            This e-commerce platform was created as a final project for our
+            school. Our team members worked together to create this
+            Japanese-inspired online shopping experience.
           </p>
         </div>
       </ScrollAnimation>
@@ -66,15 +68,14 @@
               <div
                 class="bg-cream p-6 rounded-sm border border-charcoal/10 flex flex-col items-center text-center h-full"
               >
-                <div
-                  class="relative w-32 h-32 rounded-full overflow-hidden mb-4"
-                >
-                  <img
-                    :src="member.image || '/placeholder.svg'"
-                    :alt="`${member.name} - ${member.role}`"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
+                <ImageWithLoading
+                  :src="member.image || '/placeholder.svg'"
+                  :alt="member.name || 'Team Member'"
+                  container-class="relative w-32 h-32 rounded-full overflow-hidden mb-4"
+                  image-class="w-full h-full object-cover"
+                  root-margin="100px"
+                />
+
                 <h3 class="text-xl font-light text-charcoal mb-1">
                   {{ member.name }}
                 </h3>
@@ -118,6 +119,7 @@
 import { ref, onMounted, onUnmounted, nextTick } from "vue";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import ScrollAnimation from "@/components/ui/ScrollAnimation.vue";
+import ImageWithLoading from "@/components/ui/ImageWithLoading.vue";
 import { cn } from "@/composables/utils";
 
 interface TeamMember {
@@ -135,25 +137,60 @@ const isMobile = ref(false);
 const teamMembers: TeamMember[] = [
   {
     name: "Julius Raagas",
-    role: "Full Stack Developer",
+    role: "Developer | Project Manager",
     description:
-      "Developed both frontend and backend components of the e-commerce platform, integrating Vue.js with Node.js to create a seamless shopping experience.",
-    image: "/placeholder.svg?height=200&width=200",
+      "Led the development team and built the full-stack application, managing both the Vue.js frontend and Node.js backend to deliver a seamless e-commerce platform.",
+    image:
+      "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
-    name: "Aaron Jan",
+    name: "Aaron Jan A. Saguisa",
     role: "UI Designer",
     description:
-      "Created the visual language of the site, incorporating Japanese design principles and aesthetics into a modern, user-friendly interface.",
-    image: "/placeholder.svg?height=200&width=200",
+      "Designed the look and feel of the website, mixing Japanese design style with modern web design to make it both beautiful and easy to use.",
+    image:
+      "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
     name: "Mariel P. Costales",
-    role: "Documentation",
+    role: "Documentation Specialist",
     description:
-      "Prepared comprehensive documentation for the project, ensuring that all features, functionalities and development processes were clearly recorded.",
-    image: "/placeholder.svg?height=200&width=200",
-  }
+      "Wrote clear documentation for the project, creating guides and technical notes to help anyone understand how the website works.",
+    image:
+      "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/93_xvfawx.png",
+  },
+  {
+    name: "Angelie Q. Larioque",
+    role: "UI Designer",
+    description:
+      "Worked on making the website easy to use, focusing on user experience and creating designs that help customers enjoy shopping on the site.",
+    image:
+      "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/93_xvfawx.png",
+  },
+  {
+    name: "Jeff Lopez",
+    role: "Documentation Specialist",
+    description:
+      "Created technical documentation and guides, making sure all the project information is well organized and easy to understand for the team.",
+    image:
+      "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
+  },
+  {
+    name: "Ej Desabille",
+    role: "Documentation Specialist",
+    description:
+      "Managed documentation and quality checks, making sure everything is properly documented and the website works as it should.",
+    image:
+      "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
+  },
+  {
+    name: "Exequiel Marcolita",
+    role: "UI Designer",
+    description:
+      "Focused on creating intuitive user interfaces and visual design elements, ensuring the website provides a seamless and aesthetically pleasing user experience.",
+    image:
+      "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
+  },
 ];
 
 // Check if we're on mobile

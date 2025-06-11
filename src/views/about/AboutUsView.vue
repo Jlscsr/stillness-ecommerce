@@ -51,32 +51,41 @@
       </ScrollAnimation>
       <ScrollAnimation type="fade" :delay="0.1">
         <p class="text-charcoal/80 mb-6">
-          Stillness was founded in 2018 by Akiko Tanaka, a Japanese-American
-          designer with a passion for traditional Japanese aesthetics and
-          sustainable living. After years of working in the fast-paced design
-          industry in Tokyo and New York, Akiko felt a growing disconnect
-          between modern consumer culture and the mindful approach to objects
-          and spaces that she had grown up with in Japan.
+          Stillness was founded in 2025 out of a quiet desire to return to what
+          feels essential. In a world that moves faster with each passing day,
+          it was born as a counterpoint — a gentle reminder that beauty doesn’t
+          always demand attention, and that the objects we choose to surround
+          ourselves with can shape how we feel, think, and live.
         </p>
       </ScrollAnimation>
+
       <ScrollAnimation type="fade" :delay="0.2">
         <p class="text-charcoal/80 mb-6">
-          The idea for Stillness came during a three-month sabbatical in Kyoto,
-          where Akiko reconnected with traditional craftspeople and witnessed
-          firsthand the careful attention and respect given to materials,
-          process, and purpose. Inspired by these experiences, she returned to
-          the United States with a vision to create a brand that would bridge
-          these two worlds.
+          The idea was not sudden, but slowly formed — shaped by encounters with
+          honest materials, quiet rituals, and the enduring wisdom found in
+          handcraft. There was a deep respect for process, for the imperfections
+          that make each piece feel alive, and for the stories that emerge from
+          things made with care and intention.
         </p>
       </ScrollAnimation>
+
       <ScrollAnimation type="fade" :delay="0.3">
+        <p class="text-charcoal/80 mb-6">
+          From the beginning, Stillness sought to create more than just
+          products. It became a space — a mindset — for those drawn to
+          simplicity, to the poetry of restraint, and to the calm presence that
+          thoughtful design brings. It started small, with just a few objects
+          that reflected these values, and grew naturally, shaped by shared
+          appreciation rather than trends.
+        </p>
+      </ScrollAnimation>
+
+      <ScrollAnimation type="fade" :delay="0.4">
         <p class="text-charcoal/80">
-          Starting with a small collection of ceramics and textiles created in
-          collaboration with artisans she had met in Japan, Akiko launched
-          Stillness as an online store and small showroom in Portland, Oregon.
-          The name "Stillness" was chosen to reflect the sense of calm and
-          presence that these thoughtfully crafted objects bring to our daily
-          rituals and spaces.
+          Today, Stillness continues to evolve, not by chasing noise or speed,
+          but by deepening its connection to what matters. Each collection is a
+          quiet offering — an invitation to pause, to notice, and to reconnect
+          with the essence of living well.
         </p>
       </ScrollAnimation>
     </div>

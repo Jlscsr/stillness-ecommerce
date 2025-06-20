@@ -760,6 +760,14 @@ onMounted(async () => {
   if (!userInfo.value || items.value.length === 0) {
     await userStore.getUserInfoById();
     await cartStore.getCart();
+
+    formData.firstName = userInfo.value?.firstName || "";
+    formData.lastName = userInfo.value?.lastName || "";
+    formData.email = userInfo.value?.email || "";
+    formData.address = userInfo.value?.address?.street || "";
+    formData.city = userInfo.value?.address?.city || "";
+    formData.postalCode = userInfo.value?.address?.postalCode || "";
+    formData.country = userInfo.value?.address?.country || "Japan";
   }
   updateSummaryHeight();
   window.addEventListener("resize", updateSummaryHeight);

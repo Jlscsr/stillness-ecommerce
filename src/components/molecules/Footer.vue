@@ -190,9 +190,7 @@ const email = ref("");
 const currentYear = computed(() => new Date().getFullYear());
 
 const handleNewsletterSubmit = () => {
-  // Handle newsletter subscription logic here
   console.log("Newsletter subscription:", email.value);
-  // You can emit an event or call an API here
-  email.value = ""; // Clear the input after submission
+  email.value = "";
 };
 </script>

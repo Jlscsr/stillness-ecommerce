@@ -552,7 +552,6 @@ const toastStore = useToastStore();
 const { userInfo } = storeToRefs(userStore);
 const { cart } = storeToRefs(cartStore);
 
-
 const route = useRoute();
 const step = ref(1);
 const isSubmitting = ref(false);
@@ -707,13 +706,13 @@ const processOrder = async (paymentMethod: string = "cod"): Promise<void> => {
   try {
     const payload = {
       shippingInformation: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        street: formData.address,
-        city: formData.city,
-        postalCode: formData.postalCode,
-        country: formData.country,
+        firstName: formData.firstName || userInfo.value?.firstName,
+        lastName: formData.lastName || userInfo.value?.lastName,
+        email: formData.email || userInfo.value?.email,
+        street: formData.address || userInfo.value?.address?.street,
+        city: formData.city || userInfo.value?.address?.city,
+        postalCode: formData.postalCode || userInfo.value?.address?.postalCode,
+        country: formData.country || userInfo.value?.address?.country,
       },
       orderItems: items.value.map((item) => {
         return {

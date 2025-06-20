@@ -704,15 +704,6 @@ const handlePayPalCheckout = async (): Promise<void> => {
 
 const processOrder = async (paymentMethod: string = "cod"): Promise<void> => {
   try {
-    formData.firstName = userInfo.value?.firstName || formData.firstName;
-    formData.lastName = userInfo.value?.lastName || formData.lastName;
-    formData.email = userInfo.value?.email || formData.email;
-    formData.address = userInfo.value?.address?.street || formData.address;
-    formData.city = userInfo.value?.address?.city || formData.city;
-    formData.postalCode =
-      userInfo.value?.address?.postalCode || formData.postalCode;
-    formData.country = userInfo.value?.address?.country || formData.country;
-
     const payload = {
       shippingInformation: {
         firstName: formData.firstName,
@@ -766,6 +757,10 @@ const updateSummaryHeight = (): void => {
 };
 
 onMounted(async () => {
+  if (!userInfo.value || items.value.length === 0) {
+    await userStore.getUserInfoById();
+    await cartStore.getCart();
+  }
   updateSummaryHeight();
   window.addEventListener("resize", updateSummaryHeight);
 

@@ -144,6 +144,7 @@
                       First Name *
                     </label>
                     <input
+                      disabled
                       type="text"
                       id="firstName"
                       v-model="formData.firstName"
@@ -167,6 +168,7 @@
                       Last Name *
                     </label>
                     <input
+                      disabled
                       type="text"
                       id="lastName"
                       v-model="formData.lastName"
@@ -190,6 +192,7 @@
                     Email Address *
                   </label>
                   <input
+                    disabled
                     type="email"
                     id="email"
                     v-model="formData.email"
@@ -212,6 +215,7 @@
                     Address *
                   </label>
                   <input
+                    disabled
                     type="text"
                     id="address"
                     v-model="formData.address"
@@ -235,6 +239,7 @@
                       City *
                     </label>
                     <input
+                      disabled
                       type="text"
                       id="city"
                       v-model="formData.city"
@@ -256,6 +261,7 @@
                       Postal Code *
                     </label>
                     <input
+                      disabled
                       type="text"
                       id="postalCode"
                       v-model="formData.postalCode"
@@ -279,6 +285,7 @@
                       Country *
                     </label>
                     <select
+                      disabled
                       id="country"
                       v-model="formData.country"
                       @blur="validateField('country')"

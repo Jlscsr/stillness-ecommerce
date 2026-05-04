@@ -9,32 +9,30 @@
     "preview": "vite preview --port $PORT --host 0.0.0.0"
   },
   "dependencies": {
-    "@formkit/vue": "^1.6.9",
-    "@paypal/paypal-js": "^8.2.0",
-    "@types/axios": "^0.9.36",
-    "@vueuse/core": "^13.2.0",
+    "@formkit/vue": "^1.7.2",
+    "@vueuse/core": "^13.9.0",
     "@vueuse/motion": "^3.0.3",
-    "axios": "^1.9.0",
-    "chart.js": "^4.5.0",
+    "axios": "^1.16.0",
+    "chart.js": "^4.5.1",
     "date-fns": "^4.1.0",
     "lucide-vue-next": "^0.511.0",
-    "pinia": "^3.0.2",
-    "tailwind-merge": "^3.3.0",
+    "pinia": "^3.0.4",
+    "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
-    "vue": "^3.5.13",
-    "vue-chartjs": "^5.3.2",
-    "vue-router": "^4.5.1",
-    "vuetify": "^3.8.6"
+    "vue": "^3.5.33",
+    "vue-chartjs": "^5.3.3",
+    "vue-router": "^4.6.4",
+    "vuetify": "^3.12.5"
   },
   "devDependencies": {
-    "@types/node": "^22.15.21",
-    "@vitejs/plugin-vue": "^5.2.3",
+    "@types/node": "^22.19.17",
+    "@vitejs/plugin-vue": "^5.2.4",
     "@vue/tsconfig": "^0.7.0",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.17",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.13",
+    "tailwindcss": "^3.4.19",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5",
-    "vue-tsc": "^2.2.8"
+    "vite": "^6.4.2",
+    "vue-tsc": "^2.2.12"
   }
 }

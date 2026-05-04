@@ -92,9 +92,16 @@ import ProductSearch from "./ProductSearch.vue";
 const productStore = useProductStore();
 const isMobileMenuOpen = ref(false);
 
+const normalizeCategoryId = (category: string) =>
+  category
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
 const computeProductCategoriesCount = (category: string) => {
   return productStore.products.filter(
-    (product) => product.category.toLowerCase() === category
+    (product) => normalizeCategoryId(product.category) === category
   ).length;
 };
 
@@ -147,6 +154,30 @@ const categories = computed(() => [
     name: "Tea",
     japaneseText: "お茶",
     count: computeProductCategoriesCount("tea"),
+  },
+  {
+    id: "collections",
+    name: "Collections",
+    japaneseText: "Collections",
+    count: computeProductCategoriesCount("collections"),
+  },
+  {
+    id: "gifts",
+    name: "Gifts",
+    japaneseText: "Gifts",
+    count: computeProductCategoriesCount("gifts"),
+  },
+  {
+    id: "seasonal",
+    name: "Seasonal",
+    japaneseText: "Seasonal",
+    count: computeProductCategoriesCount("seasonal"),
+  },
+  {
+    id: "limited_edition",
+    name: "Limited Edition",
+    japaneseText: "Limited",
+    count: computeProductCategoriesCount("limited_edition"),
   },
 ]);
 

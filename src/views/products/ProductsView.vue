@@ -126,7 +126,7 @@ const filteredProducts = computed(() =>
     .filter(
       (p) =>
         !filters.categories.length ||
-        filters.categories.includes(p.category.toLowerCase())
+        filters.categories.includes(normalizeCategoryId(p.category))
     )
     .filter(
       (p) =>
@@ -135,6 +135,13 @@ const filteredProducts = computed(() =>
     )
 );
 
+const normalizeCategoryId = (category: string) =>
+  category
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
 // Filter options
 const categoryOptions = [
   { id: "home", label: "Home" },
@@ -142,6 +149,10 @@ const categoryOptions = [
   { id: "decor", label: "Decor" },
   { id: "wellness", label: "Wellness" },
   { id: "tea", label: "Tea" },
+  { id: "collections", label: "Collections" },
+  { id: "gifts", label: "Gifts" },
+  { id: "seasonal", label: "Seasonal" },
+  { id: "limited_edition", label: "Limited Edition" },
 ];
 
 const availableMaterials = productStore.products

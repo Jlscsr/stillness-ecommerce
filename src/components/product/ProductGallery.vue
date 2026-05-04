@@ -25,7 +25,7 @@
     <div v-if="images.length > 1" class="flex space-x-2 overflow-x-auto pb-2">
       <button
         v-for="(image, index) in images"
-        :key="image._id"
+        :key="image._id || image.src || index"
         class="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-sm border-2 transition-colors"
         :class="
           currentImage === index
@@ -50,7 +50,7 @@ import { ref } from "vue";
 import ImageWithLoading from "@/components/ui/ImageWithLoading.vue";
 
 interface ProductImage {
-  _id: number;
+  _id?: number | string;
   src: string;
   alt: string;
 }

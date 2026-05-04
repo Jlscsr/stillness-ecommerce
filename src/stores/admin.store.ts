@@ -11,6 +11,8 @@ import {
 import { addProduct, deleteProduct, updateProduct } from "@/services/product.service";
 import type { ProductRequestBody } from "@/types/Product";
 
+type ProductPayload = ProductRequestBody | FormData;
+
 export const useAdminStore = defineStore("admin", () => {
   const users = ref<UserResponse[] | []>([]);
   const orders = ref<Order[] | []>([]);
@@ -133,7 +135,7 @@ export const useAdminStore = defineStore("admin", () => {
   };
 
   const addNewProduct = async (
-    payload: ProductRequestBody
+    payload: ProductPayload
   ): Promise<{
     success: boolean;
     message: string;
@@ -183,7 +185,7 @@ export const useAdminStore = defineStore("admin", () => {
 
   const updateProductData = async (
     productId: string,
-    payload: ProductRequestBody
+    payload: ProductPayload
   ): Promise<{
     success: boolean;
     message: string;

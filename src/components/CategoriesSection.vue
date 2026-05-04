@@ -63,6 +63,7 @@ import {
   Leaf,
   Coffee,
   Sparkles,
+  Layers,
 } from "lucide-vue-next";
 import ScrollAnimation from "@/components/ui/ScrollAnimation.vue";
 
@@ -123,6 +124,13 @@ const categories: Category[] = [
     icon: Coffee,
     href: "/categories/tea",
     description: "Ceremonial and everyday tea essentials",
+  },
+  {
+    name: "Collections",
+    japaneseText: "Collections",
+    icon: Layers,
+    href: "/categories/collections",
+    description: "Curated pieces grouped by ritual and mood",
   },
   {
     name: "Limited Edition",

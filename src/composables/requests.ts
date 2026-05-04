@@ -14,8 +14,12 @@ export const post = async <T>(
   return response.data;
 };
 
-export const put = async <T>(url: string, data?: object): Promise<T> => {
-  const response = await api.put<T>(url, data);
+export const put = async <T>(
+  url: string,
+  data?: object,
+  options?: object
+): Promise<T> => {
+  const response = await api.put<T>(url, data, options);
   return response.data;
 };
 

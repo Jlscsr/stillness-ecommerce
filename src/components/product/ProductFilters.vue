@@ -356,6 +356,14 @@ const categoryOptions = [
   { id: "decor", label: "Decor", japaneseText: "装飾" },
   { id: "wellness", label: "Wellness", japaneseText: "健康" },
   { id: "tea", label: "Tea", japaneseText: "お茶" },
+  { id: "collections", label: "Collections", japaneseText: "Collections" },
+  { id: "gifts", label: "Gifts", japaneseText: "Gifts" },
+  { id: "seasonal", label: "Seasonal", japaneseText: "Seasonal" },
+  {
+    id: "limited_edition",
+    label: "Limited Edition",
+    japaneseText: "Limited",
+  },
 ];
 
 // Update parent component when filters change

@@ -92,8 +92,11 @@
                       <option value="Apparel">Apparel</option>
                       <option value="Decor">Decor</option>
                       <option value="Wellness">Wellness</option>
-                      <option value="Dining">Dining</option>
                       <option value="Tea">Tea</option>
+                      <option value="Collections">Collections</option>
+                      <option value="Gifts">Gifts</option>
+                      <option value="Seasonal">Seasonal</option>
+                      <option value="Limited Edition">Limited Edition</option>
                     </select>
                     <ChevronDown
                       class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none text-charcoal/50"
@@ -309,13 +312,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAdminStore } from "@/stores/admin.store";
 import { useProductStore } from "@/stores/product.store";
 import { X, Upload, ArrowLeft, ChevronDown } from "lucide-vue-next";
 import type { Image, ProductRequestBody, Product } from "@/types/Product";
 import { useToastStore } from "@/stores/toast.store";
+
+type PendingImageUpload = {
+  file: File;
+  previewSrc: string;
+  alt: string;
+};
 
 const router = useRouter();
 const route = useRoute();
@@ -324,7 +333,7 @@ const productStore = useProductStore();
 const toastStore = useToastStore();
 const fileInput = ref<HTMLInputElement | null>(null);
 const isSubmitting = ref(false);
-const uploadedImages = ref<File[]>([]);
+const uploadedImages = ref<PendingImageUpload[]>([]);
 const materialsInput = ref("");
 const originalProduct = ref<Product | null>(null);
 
@@ -372,6 +381,10 @@ onMounted(async () => {
       router.push("/admin/products");
     }
   }
+});
+
+onUnmounted(() => {
+  uploadedImages.value.forEach((upload) => URL.revokeObjectURL(upload.previewSrc));
 });
 
 // Product data state
@@ -427,34 +440,93 @@ const handleImageUpload = (e: Event) => {
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    uploadedImages.value.push(file);
+    if (productData.images.length >= 5) {
+      toastStore.error("A maximum of 5 images is allowed");
+      break;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toastStore.error(`${file.name} is larger than 5MB`);
+      continue;
+    }
 
     // Create object URL for preview
     const imageUrl = URL.createObjectURL(file);
+    const alt = file.name;
+
+    uploadedImages.value.push({
+      file,
+      previewSrc: imageUrl,
+      alt,
+    });
 
     // Add to product images array
     productData.images.push({
       _id: Date.now() + i, // Temporary ID
       src: imageUrl,
-      alt: file.name,
+      alt,
     });
   }
-};
 
-// Convert file to base64
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+  input.value = "";
 };
 
 // Remove an image
 const removeImage = (index: number) => {
-  productData.images.splice(index, 1);
-  uploadedImages.value.splice(index, 1);
+  const [removedImage] = productData.images.splice(index, 1);
+
+  if (removedImage?.src?.startsWith("blob:")) {
+    const uploadIndex = uploadedImages.value.findIndex(
+      (upload) => upload.previewSrc === removedImage.src
+    );
+
+    if (uploadIndex >= 0) {
+      URL.revokeObjectURL(uploadedImages.value[uploadIndex].previewSrc);
+      uploadedImages.value.splice(uploadIndex, 1);
+    }
+  }
+};
+
+const appendProductField = (
+  formData: FormData,
+  key: keyof ProductRequestBody,
+  value: string | number | string[]
+) => {
+  formData.append(key, Array.isArray(value) ? JSON.stringify(value) : String(value));
+};
+
+const buildProductFormData = (): FormData => {
+  const formData = new FormData();
+  const existingImages = productData.images.filter(
+    (image) => !image.src.startsWith("blob:")
+  );
+
+  appendProductField(formData, "name", productData.name);
+  appendProductField(formData, "description", productData.description);
+  appendProductField(formData, "price", Number.parseFloat(productData.price) || 0);
+  appendProductField(formData, "category", productData.category);
+  appendProductField(formData, "stock", productData.stock);
+  appendProductField(formData, "materials", productData.materials);
+  appendProductField(formData, "dimensions", productData.dimensions);
+  formData.append("images", JSON.stringify(existingImages));
+  formData.append(
+    "imageAlts",
+    JSON.stringify(uploadedImages.value.map((upload) => upload.alt))
+  );
+
+  if (productData.japaneseText) {
+    appendProductField(formData, "japaneseText", productData.japaneseText);
+  }
+
+  if (productData.longDescription) {
+    appendProductField(formData, "longDescription", productData.longDescription);
+  }
+
+  uploadedImages.value.forEach((upload) => {
+    formData.append("imageFiles", upload.file);
+  });
+
+  return formData;
 };
 
 // Handle form submission
@@ -468,58 +540,11 @@ const handleSubmit = async () => {
       addMaterial();
     }
 
-    // Prepare the image data
-    let productImages: Image[] = [];
-
-    // For new or modified images, convert to base64
-    if (uploadedImages.value.length > 0) {
-      const imagePromises = uploadedImages.value.map(async (file, index) => {
-        const base64 = await fileToBase64(file);
-        return {
-          _id: Date.now() + index, // Temporary ID for new images
-          src: base64,
-          alt:
-            productData.images[index]?.alt ||
-            `${productData.name} image ${index + 1}`,
-        };
-      });
-
-      const base64Images = await Promise.all(imagePromises);
-      productImages = base64Images;
-    }
-    // In edit mode, we need to include existing images that weren't changed
-    else if (isEditMode.value && productData.images.length > 0) {
-      // Keep existing images (no need to convert them to base64 again)
-      productImages = productData.images;
-    }
-
-    // Prepare the product data according to ProductRequestBody
-    const productRequestData: ProductRequestBody = {
-      name: productData.name,
-      description: productData.description,
-      price: Number.parseFloat(productData.price) || 0,
-      category: productData.category,
-      stock: productData.stock,
-      materials: productData.materials,
-      dimensions: productData.dimensions,
-      images: productImages,
-      // Optional fields
-      ...(productData.japaneseText
-        ? { japaneseText: productData.japaneseText }
-        : {}),
-      ...(productData.longDescription
-        ? { longDescription: productData.longDescription }
-        : {}),
-    };
-
-    // Log the data for debugging (will display in console)
-    console.log("Submitting product data:", productRequestData);
+    const productRequestData = buildProductFormData();
 
     let response;
 
     if (isEditMode.value && originalProduct.value) {
-      console.log("Previous product data:", originalProduct.value);
-
       // Update existing product
       const productId = route.params.id as string;
       response = await adminStore.updateProductData(

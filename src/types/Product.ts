@@ -1,7 +1,11 @@
 export interface Image {
-  _id: number;
+  _id?: number | string;
   src: string;
   alt: string;
+  storageProvider?: "supabase" | "cloudinary" | "external";
+  bucket?: string;
+  path?: string;
+  role?: "main" | "gallery";
 }
 
 export interface Product {

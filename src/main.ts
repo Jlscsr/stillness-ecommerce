@@ -4,6 +4,8 @@ import { MotionPlugin } from "@vueuse/motion";
 import { plugin, defaultConfig } from "@formkit/vue";
 
 import { router } from "@/router/router";
+import { setUnauthorizedHandler } from "@config/axios";
+import { useAuthStore } from "@stores/auth.store";
 import App from "./App.vue";
 import "./style.css";
 
@@ -15,6 +17,42 @@ const initApp = async () => {
 
     // Register plugins
     app.use(pinia);
+    const authStore = useAuthStore();
+
+    let isRedirectingToLogin = false;
+
+    setUnauthorizedHandler(async (error) => {
+      const requestUrl = error.config?.url || "";
+      const isAuthCheckRequest = requestUrl.includes("/auth/check");
+      const wasAuthenticated = authStore.isAuthenticated;
+
+      authStore.clearAuthState();
+
+      const currentRoute = router.currentRoute.value;
+      const isLoginRoute = currentRoute.name === "login";
+      const isProtectedRoute = currentRoute.matched.some(
+        (record) => record.meta.requiresAuth || record.meta.isAdmin
+      );
+      const shouldRedirect =
+        !isLoginRoute &&
+        !isRedirectingToLogin &&
+        !isAuthCheckRequest &&
+        (wasAuthenticated || isProtectedRoute);
+
+      if (!shouldRedirect) return;
+
+      isRedirectingToLogin = true;
+
+      try {
+        await router.push({
+          name: "login",
+          query: { redirect: currentRoute.fullPath },
+        });
+      } finally {
+        isRedirectingToLogin = false;
+      }
+    });
+
     app.use(MotionPlugin);
     app.use(plugin, defaultConfig);
     app.use(router);

@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { AxiosError } from "axios";
 
 const baseURL =
   import.meta.env.VITE_ENV === "production"
@@ -13,5 +14,24 @@ const api = axios.create({
   },
   withCredentials: true,
 });
+
+type UnauthorizedHandler = (error: AxiosError) => void | Promise<void>;
+
+let unauthorizedHandler: UnauthorizedHandler | null = null;
+
+export const setUnauthorizedHandler = (handler: UnauthorizedHandler) => {
+  unauthorizedHandler = handler;
+};
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      await unauthorizedHandler?.(error);
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;

@@ -68,13 +68,18 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  const clearAuthState = () => {
+    isAuthenticated.value = false;
+    userRole.value = null;
+    error.value = null;
+
+    resetAuthCheck();
+  };
+
   const logoutUser = async () => {
     try {
       await logout();
-      isAuthenticated.value = false;
-      error.value = null;
-
-      resetAuthCheck();
+      clearAuthState();
     } catch (err) {
       error.value = "Logout failed";
       return { success: false, error: error.value };
@@ -88,6 +93,7 @@ export const useAuthStore = defineStore("auth", () => {
     userLogin,
     userRegister,
     checkUserAuthStatus,
+    clearAuthState,
     logoutUser,
   };
 });

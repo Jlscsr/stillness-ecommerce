@@ -5,7 +5,7 @@ import fs from "fs";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const isDev = env.VITE_ENV !== "production";
+  const isDev = mode !== "production";
   const targetUrl = isDev
     ? env.VITE_API_URL || "http://localhost:5000"
     : env.VITE_API_URL_HOST;

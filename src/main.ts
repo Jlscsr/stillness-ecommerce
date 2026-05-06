@@ -68,11 +68,6 @@ const initApp = async () => {
 
     // Mount the app
     app.mount("#app");
-
-    // Log successful initialization
-    if (import.meta.env.DEV) {
-      console.log("App initialized in development mode");
-    }
   } catch (error) {
     console.error("Failed to initialize app:", error);
     // Render error state

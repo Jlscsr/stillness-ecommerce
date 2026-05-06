@@ -88,6 +88,10 @@ import ProductFilters from "@components/product/ProductFilters.vue";
 import ActiveFilters from "@components/product/ActiveFilters.vue";
 import ScrollAnimation from "@components/ui/ScrollAnimation.vue";
 import ProductCard from "@components/molecules/ProductCard.vue";
+import {
+  PRODUCT_CATEGORIES,
+  normalizeProductCategoryId,
+} from "@/constants/categories";
 
 const route = useRoute();
 const productStore = useProductStore();
@@ -126,7 +130,7 @@ const filteredProducts = computed(() =>
     .filter(
       (p) =>
         !filters.categories.length ||
-        filters.categories.includes(normalizeCategoryId(p.category))
+        filters.categories.includes(normalizeProductCategoryId(p.category))
     )
     .filter(
       (p) =>
@@ -135,25 +139,8 @@ const filteredProducts = computed(() =>
     )
 );
 
-const normalizeCategoryId = (category: string) =>
-  category
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-
 // Filter options
-const categoryOptions = [
-  { id: "home", label: "Home" },
-  { id: "apparel", label: "Apparel" },
-  { id: "decor", label: "Decor" },
-  { id: "wellness", label: "Wellness" },
-  { id: "tea", label: "Tea" },
-  { id: "collections", label: "Collections" },
-  { id: "gifts", label: "Gifts" },
-  { id: "seasonal", label: "Seasonal" },
-  { id: "limited_edition", label: "Limited Edition" },
-];
+const categoryOptions = [...PRODUCT_CATEGORIES];
 
 const availableMaterials = productStore.products
   .flatMap((p) => p.materials)
@@ -176,7 +163,6 @@ const materialOptions = computed(() =>
 
 // Handlers
 function handleFilterChange(newFilters: FilterState) {
-  console.log("Updating filters:", newFilters);
   Object.assign(filters, newFilters);
 }
 

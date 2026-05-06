@@ -107,6 +107,25 @@
                   Shipping Information
                 </h2>
 
+                <div
+                  class="mb-5 rounded-sm border border-sage/20 bg-sage/5 p-4 text-sm text-charcoal/80"
+                >
+                  <p class="font-medium text-charcoal">
+                    Shipping details come from your account profile.
+                  </p>
+                  <p class="mt-1">
+                    These fields are locked during checkout so your order uses
+                    the same saved contact and address information. To change
+                    them, update your profile first, then return to checkout.
+                  </p>
+                  <router-link
+                    to="/profile?tab=account"
+                    class="mt-3 inline-flex text-sage hover:text-charcoal transition-colors"
+                  >
+                    Update profile information
+                  </router-link>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label

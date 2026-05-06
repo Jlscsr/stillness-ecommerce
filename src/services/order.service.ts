@@ -9,8 +9,6 @@ export const getOrders = async (): Promise<ApiResponse<Order[]>> => {
       throw new Error(response.message);
     }
 
-    console.log("Orders fetched successfully:", response.data);
-
     return response;
   } catch (error) {
     console.error("Error fetching orders:", error);

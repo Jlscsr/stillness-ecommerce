@@ -88,20 +88,17 @@ import { ChevronDown } from "lucide-vue-next";
 import { useProductStore } from "@stores/product.store";
 import Logo from "@components/atoms/Logo.vue";
 import ProductSearch from "./ProductSearch.vue";
+import {
+  PRODUCT_CATEGORIES,
+  normalizeProductCategoryId,
+} from "@/constants/categories";
 
 const productStore = useProductStore();
 const isMobileMenuOpen = ref(false);
 
-const normalizeCategoryId = (category: string) =>
-  category
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-
 const computeProductCategoriesCount = (category: string) => {
   return productStore.products.filter(
-    (product) => normalizeCategoryId(product.category) === category
+    (product) => normalizeProductCategoryId(product.category) === category
   ).length;
 };
 
@@ -113,72 +110,12 @@ const categories = computed(() => [
     japaneseText: "全製品",
     count: productStore.products.length,
   },
-  {
-    id: "home",
-    name: "Home",
-    japaneseText: "家",
-    count: computeProductCategoriesCount("home"),
-  },
-  {
-    id: "apparel",
-    name: "Apparel",
-    japaneseText: "衣類",
-    count: computeProductCategoriesCount("apparel"),
-  },
-  {
-    id: "decor",
-    name: "Decor",
-    japaneseText: "装飾",
-    count: computeProductCategoriesCount("decor"),
-  },
-  {
-    id: "wellness",
-    name: "Wellness",
-    japaneseText: "健康",
-    count: computeProductCategoriesCount("wellness"),
-  },
-  {
-    id: "gifts",
-    name: "Gifts",
-    japaneseText: "贈り物",
-    count: computeProductCategoriesCount("gifts"),
-  },
-  {
-    id: "seasonal",
-    name: "Seasonal",
-    japaneseText: "季節",
-    count: computeProductCategoriesCount("seasonal"),
-  },
-  {
-    id: "tea",
-    name: "Tea",
-    japaneseText: "お茶",
-    count: computeProductCategoriesCount("tea"),
-  },
-  {
-    id: "collections",
-    name: "Collections",
-    japaneseText: "Collections",
-    count: computeProductCategoriesCount("collections"),
-  },
-  {
-    id: "gifts",
-    name: "Gifts",
-    japaneseText: "Gifts",
-    count: computeProductCategoriesCount("gifts"),
-  },
-  {
-    id: "seasonal",
-    name: "Seasonal",
-    japaneseText: "Seasonal",
-    count: computeProductCategoriesCount("seasonal"),
-  },
-  {
-    id: "limited_edition",
-    name: "Limited Edition",
-    japaneseText: "Limited",
-    count: computeProductCategoriesCount("limited_edition"),
-  },
+  ...PRODUCT_CATEGORIES.map((category) => ({
+    id: category.id,
+    name: category.label,
+    japaneseText: category.japaneseText,
+    count: computeProductCategoriesCount(category.id),
+  })),
 ]);
 
 const productsCount = computed(() => productStore.productsCount);

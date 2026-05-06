@@ -88,15 +88,13 @@
                       class="w-full p-2 border border-charcoal/20 rounded-md focus:outline-none focus:ring-1 focus:ring-sage focus:border-sage appearance-none"
                     >
                       <option value="" disabled>Select category</option>
-                      <option value="Home">Home</option>
-                      <option value="Apparel">Apparel</option>
-                      <option value="Decor">Decor</option>
-                      <option value="Wellness">Wellness</option>
-                      <option value="Tea">Tea</option>
-                      <option value="Collections">Collections</option>
-                      <option value="Gifts">Gifts</option>
-                      <option value="Seasonal">Seasonal</option>
-                      <option value="Limited Edition">Limited Edition</option>
+                      <option
+                        v-for="category in PRODUCT_CATEGORIES"
+                        :key="category.id"
+                        :value="category.id"
+                      >
+                        {{ category.label }}
+                      </option>
                     </select>
                     <ChevronDown
                       class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none text-charcoal/50"
@@ -319,6 +317,10 @@ import { useProductStore } from "@/stores/product.store";
 import { X, Upload, ArrowLeft, ChevronDown } from "lucide-vue-next";
 import type { Image, ProductRequestBody, Product } from "@/types/Product";
 import { useToastStore } from "@/stores/toast.store";
+import {
+  PRODUCT_CATEGORIES,
+  normalizeProductCategoryId,
+} from "@/constants/categories";
 
 type PendingImageUpload = {
   file: File;
@@ -358,7 +360,7 @@ onMounted(async () => {
         productData.description = product.description;
         productData.longDescription = product.longDescription || "";
         productData.price = product.price.toString();
-        productData.category = product.category;
+        productData.category = normalizeProductCategoryId(product.category);
         productData.stock = product.stock;
         productData.materials = [...product.materials];
         productData.dimensions = product.dimensions;

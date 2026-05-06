@@ -144,7 +144,7 @@ const teamMembers: TeamMember[] = [
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
-    name: "Aaron Jan A. Saguisa",
+    name: "Team Member 1",
     role: "UI Designer",
     description:
       "Designed the look and feel of the website, mixing Japanese design style with modern web design to make it both beautiful and easy to use.",
@@ -152,7 +152,7 @@ const teamMembers: TeamMember[] = [
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
-    name: "Mariel P. Costales",
+    name: "Team Member 2",
     role: "Documentation Specialist",
     description:
       "Wrote clear documentation for the project, creating guides and technical notes to help anyone understand how the website works.",
@@ -160,7 +160,7 @@ const teamMembers: TeamMember[] = [
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/93_xvfawx.png",
   },
   {
-    name: "Angelie Q. Larioque",
+    name: "Team Member 3",
     role: "UI Designer",
     description:
       "Worked on making the website easy to use, focusing on user experience and creating designs that help customers enjoy shopping on the site.",
@@ -168,7 +168,7 @@ const teamMembers: TeamMember[] = [
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/93_xvfawx.png",
   },
   {
-    name: "Jeff Lopez",
+    name: "Team Member 4",
     role: "Documentation Specialist",
     description:
       "Created technical documentation and guides, making sure all the project information is well organized and easy to understand for the team.",
@@ -176,7 +176,7 @@ const teamMembers: TeamMember[] = [
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
-    name: "Ej Desabille",
+    name: "Team Member 5",
     role: "Documentation Specialist",
     description:
       "Managed documentation and quality checks, making sure everything is properly documented and the website works as it should.",
@@ -184,7 +184,7 @@ const teamMembers: TeamMember[] = [
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
-    name: "Exequiel Marcolita",
+    name: "Team Member 6",
     role: "UI Designer",
     description:
       "Focused on creating intuitive user interfaces and visual design elements, ensuring the website provides a seamless and aesthetically pleasing user experience.",

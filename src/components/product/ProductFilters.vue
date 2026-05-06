@@ -298,6 +298,7 @@ import { X, Filter } from "lucide-vue-next";
 
 import FilterSection from "@components/product/FilterSection.vue";
 import Checkbox from "@components/atoms/Checkbox.vue";
+import { PRODUCT_CATEGORIES } from "@/constants/categories";
 
 export interface FilterState {
   priceRange: [number, number];
@@ -350,27 +351,12 @@ const materialOptions = availableMaterials.map((material) => ({
 }));
 
 // Category options
-const categoryOptions = [
-  { id: "home", label: "Home", japaneseText: "家" },
-  { id: "apparel", label: "Apparel", japaneseText: "衣類" },
-  { id: "decor", label: "Decor", japaneseText: "装飾" },
-  { id: "wellness", label: "Wellness", japaneseText: "健康" },
-  { id: "tea", label: "Tea", japaneseText: "お茶" },
-  { id: "collections", label: "Collections", japaneseText: "Collections" },
-  { id: "gifts", label: "Gifts", japaneseText: "Gifts" },
-  { id: "seasonal", label: "Seasonal", japaneseText: "Seasonal" },
-  {
-    id: "limited_edition",
-    label: "Limited Edition",
-    japaneseText: "Limited",
-  },
-];
+const categoryOptions = PRODUCT_CATEGORIES;
 
 // Update parent component when filters change
 watch(
   filters,
   (newFilters) => {
-    console.log("Change");
     emit("filterChange", { ...newFilters });
   },
   { deep: true }

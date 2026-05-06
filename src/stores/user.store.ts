@@ -29,7 +29,6 @@ export const useUserStore = defineStore("user", () => {
 
         if (response.data) {
           userInfo.value = response.data;
-          console.log("User info fetched successfully:", userInfo.value);
         }
         return { success: true, message: response.message };
       } catch (err) {

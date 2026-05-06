@@ -2,11 +2,26 @@ import { get, post, put, del } from "@/composables/requests";
 import type { Product, ProductRequestBody } from "@/types/Product";
 import type { ApiResponse } from "@/types/Response";
 
+type ProductPayload = ProductRequestBody | FormData;
+
+const getProductRequestOptions = (productData: ProductPayload) =>
+  productData instanceof FormData
+    ? {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    : undefined;
+
 export const addProduct = async (
-  productData: ProductRequestBody
+  productData: ProductPayload
 ): Promise<ApiResponse<Product>> => {
   try {
-    const response = await post<ApiResponse<Product>>("/products", productData);
+    const response = await post<ApiResponse<Product>>(
+      "/products",
+      productData,
+      getProductRequestOptions(productData)
+    );
     if (!response.success) {
       throw new Error(response.message);
     }
@@ -48,12 +63,13 @@ export const deleteProduct = async (id: string) => {
 
 export const updateProduct = async (
   id: string,
-  productData: ProductRequestBody
+  productData: ProductPayload
 ): Promise<ApiResponse<Product>> => {
   try {
     const response = await put<ApiResponse<Product>>(
       `/products/${id}`,
-      productData
+      productData,
+      getProductRequestOptions(productData)
     );
     if (!response.success) {
       throw new Error(response.message);

@@ -1,13 +1,15 @@
 <template>
-  <HeroSection />
-  <FeaturedProductsSection />
-  <CollectionsSection />
-  <AboutSection />
-  <CategoriesSection />
-  <TeamSection />
-  <TestimonialsSection />
-  <PromotionalBannerSection />
-  <NewsLetterSection />
+  <div>
+    <HeroSection />
+    <FeaturedProductsSection />
+    <CollectionsSection />
+    <AboutSection />
+    <CategoriesSection />
+    <TeamSection />
+    <TestimonialsSection />
+    <PromotionalBannerSection />
+    <NewsLetterSection />
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,34 +1,21 @@
 <template>
-  <Suspense>
-    <template #default>
-      <router-view v-slot="{ Component }">
-        <Transition name="fade" mode="out-in">
-          <component :is="Component" />
-        </Transition>
-      </router-view>
-    </template>
+  <div>
+    <router-view v-slot="{ Component }">
+      <Transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </Transition>
+    </router-view>
 
-    <template #fallback>
-      <div
-        class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75"
-      >
-        <div
-          class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-beige"
-        ></div>
-      </div>
-    </template>
-  </Suspense>
+    <!-- Global toast notifications -->
+    <ToastContainer position="top-right" />
 
-  <!-- Global toast notifications -->
-  <ToastContainer position="top-right" />
-
-  <!-- Global confirmation modal -->
-  <ConfirmationModal />
+    <!-- Global confirmation modal -->
+    <ConfirmationModal />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { watch, onMounted } from "vue";
-import { RouterView } from "vue-router";
 import { useProductStore } from "@/stores/product.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCartStore } from "./stores/cart.store";

@@ -53,15 +53,6 @@
           <ArrowLeft class="h-4 w-4 mr-1" />
           <span>Back to Shipping</span>
         </a>
-        <a
-          v-else
-          href="#"
-          @click.prevent="step = 2"
-          class="inline-flex items-center text-charcoal/70 hover:text-charcoal transition-colors"
-        >
-          <ArrowLeft class="h-4 w-4 mr-1" />
-          <span>Back to Payment Method</span>
-        </a>
       </div>
 
       <h1 class="text-3xl font-light text-charcoal mb-8">Checkout</h1>
@@ -103,25 +94,6 @@
           </div>
           <span class="ml-2 font-medium">Payment Method</span>
         </div>
-        <div
-          :class="`w-12 h-0.5 mx-2 ${step >= 3 ? 'bg-sage' : 'bg-charcoal/20'}`"
-        ></div>
-        <div
-          :class="`flex items-center ${
-            step >= 3 ? 'text-sage' : 'text-charcoal/40'
-          }`"
-        >
-          <div
-            :class="`w-8 h-8 rounded-full flex items-center justify-center ${
-              step >= 3
-                ? 'bg-sage text-cream'
-                : 'bg-charcoal/20 text-charcoal/60'
-            }`"
-          >
-            3
-          </div>
-          <span class="ml-2 font-medium">Payment</span>
-        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -134,6 +106,25 @@
                 <h2 class="text-lg font-medium text-charcoal mb-4">
                   Shipping Information
                 </h2>
+
+                <div
+                  class="mb-5 rounded-sm border border-sage/20 bg-sage/5 p-4 text-sm text-charcoal/80"
+                >
+                  <p class="font-medium text-charcoal">
+                    Shipping details come from your account profile.
+                  </p>
+                  <p class="mt-1">
+                    These fields are locked during checkout so your order uses
+                    the same saved contact and address information. To change
+                    them, update your profile first, then return to checkout.
+                  </p>
+                  <router-link
+                    to="/profile?tab=account"
+                    class="mt-3 inline-flex text-sage hover:text-charcoal transition-colors"
+                  >
+                    Update profile information
+                  </router-link>
+                </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
@@ -346,39 +337,6 @@
                     </div>
                   </div>
 
-                  <!-- Online Payment Option -->
-                  <div
-                    class="border border-charcoal/10 rounded-sm p-4 cursor-pointer"
-                    :class="{
-                      'border-sage bg-sage/5':
-                        formData.paymentMethod === 'online',
-                    }"
-                    @click="formData.paymentMethod = 'online'"
-                  >
-                    <div class="flex items-center">
-                      <div class="mr-3">
-                        <input
-                          type="radio"
-                          id="online"
-                          value="online"
-                          v-model="formData.paymentMethod"
-                          class="h-4 w-4 text-sage focus:ring-sage"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          for="online"
-                          class="font-medium text-charcoal cursor-pointer"
-                        >
-                          Card Payment
-                        </label>
-                        <p class="text-sm text-charcoal/70 mt-1">
-                          Pay securely with your credit or debit card
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
                   <p
                     v-if="paymentMethodError"
                     class="mt-1 text-xs text-red-500"
@@ -388,57 +346,7 @@
                 </div>
               </div>
 
-              <!-- Step 3: PayPal Payment (only for online payment) -->
-              <div v-if="step === 3">
-                <h2 class="text-lg font-medium text-charcoal mb-4">
-                  Payment with PayPal
-                </h2>
-
-                <div class="flex items-center mb-6">
-                  <CreditCard class="h-5 w-5 text-sage mr-2" />
-                  <span class="text-sm text-charcoal/70"
-                    >Secured payment processing via PayPal</span
-                  >
-                </div>
-
-                <!-- PayPal Button Container -->
-                <div
-                  class="mb-6 border border-charcoal/10 rounded-sm p-6 bg-white"
-                >
-                  <div class="flex justify-center items-center mb-4">
-                    <img
-                      src="/images/paypal-logo.png"
-                      alt="PayPal"
-                      class="h-8"
-                      onerror="this.src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png'; this.onerror=null;"
-                    />
-                  </div>
-
-                  <p class="text-sm text-charcoal/70 text-center mb-4">
-                    You'll be redirected to PayPal to complete your payment
-                    securely.
-                  </p>
-
-                  <!-- PayPal Button Placeholder (would be replaced by actual PayPal SDK in production) -->
-                  <div id="paypal-button-container" class="w-full">
-                    <button
-                      type="button"
-                      class="w-full bg-[#0070ba] hover:bg-[#003087] text-white font-medium py-3 px-4 rounded-sm transition-colors flex items-center justify-center"
-                      @click="handlePayPalCheckout"
-                    >
-                      <span>Checkout with PayPal</span>
-                    </button>
-                  </div>
-
-                  <p class="text-xs text-charcoal/50 text-center mt-4">
-                    Note: This is a sandbox integration. No actual payment will
-                    be processed.
-                  </p>
-                </div>
-              </div>
-
               <button
-                v-if="step < 3 || formData.paymentMethod === 'cod'"
                 type="submit"
                 :disabled="isSubmitting"
                 :class="[
@@ -453,10 +361,6 @@
                     ? "Processing..."
                     : step === 1
                     ? "Continue to Payment Method"
-                    : step === 2
-                    ? formData.paymentMethod === "cod"
-                      ? "Place Order"
-                      : "Continue to Payment Details"
                     : "Place Order"
                 }}
               </button>
@@ -534,8 +438,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
 import { storeToRefs } from "pinia";
-import { useRoute } from "vue-router";
-import { ArrowLeft, CreditCard, Check } from "lucide-vue-next";
+import { ArrowLeft, Check } from "lucide-vue-next";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import {
   required,
@@ -549,7 +452,6 @@ import { useUserOrdersStore } from "@/stores/userOrders.store";
 import { useProductStore } from "@/stores/product.store";
 import { useToastStore } from "@/stores/toast.store";
 import { type CartItem } from "@/types/Cart";
-import { createPaypalOrder } from "@/services/paypal.service";
 
 const cartStore = useCartStore();
 const userStore = useUserStore();
@@ -559,7 +461,6 @@ const toastStore = useToastStore();
 const { userInfo } = storeToRefs(userStore);
 const { cart } = storeToRefs(cartStore);
 
-const route = useRoute();
 const step = ref(1);
 const isSubmitting = ref(false);
 const isComplete = ref(false);
@@ -586,7 +487,7 @@ const formData = reactive<FormData>({
   city: userInfo.value?.address?.city || "",
   postalCode: userInfo.value?.address?.postalCode || "",
   country: userInfo.value?.address?.country || "",
-  paymentMethod: "",
+  paymentMethod: "cod",
 });
 
 const items = computed<CartItem[]>(() => cart.value?.items || []);
@@ -669,47 +570,13 @@ const handleSubmit = (): void => {
   if (step.value === 2) {
     if (!validateField("paymentMethod")) return;
 
-    if (formData.paymentMethod === "cod") {
-      // Process order with COD payment
-      isSubmitting.value = true;
-
-      processOrder();
-      return;
-    }
-
-    step.value = 3;
+    isSubmitting.value = true;
+    processOrder();
     return;
   }
 };
 
-// Handle PayPal checkout button click
-const handlePayPalCheckout = async (): Promise<void> => {
-  isSubmitting.value = true;
-
-  try {
-    const createOrderResponse = await createPaypalOrder({
-      totalAmount: total.value,
-    });
-
-    if (!createOrderResponse.success) {
-      toastStore.error(
-        createOrderResponse.message || "Failed to create PayPal order"
-      );
-      isSubmitting.value = false;
-      return;
-    }
-    const { orderID } = createOrderResponse.data;
-
-    window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${orderID}`;
-  } catch (error) {
-    console.error("Error during PayPal checkout:", error);
-    toastStore.error("Failed to initiate PayPal checkout");
-    isSubmitting.value = false;
-    return;
-  }
-};
-
-const processOrder = async (paymentMethod: string = "cod"): Promise<void> => {
+const processOrder = async (): Promise<void> => {
   try {
     const payload = {
       shippingInformation: {
@@ -727,8 +594,8 @@ const processOrder = async (paymentMethod: string = "cod"): Promise<void> => {
           total: (item.priceAtTimeOfAddition || 0) * item.quantity,
         };
       }),
-      paymentMethod: paymentMethod,
-      paymentStatus: formData.paymentMethod === "cod" ? "pending" : "paid",
+      paymentMethod: "cod",
+      paymentStatus: "pending",
       totalAmount: total.value,
     };
 
@@ -778,13 +645,7 @@ onMounted(async () => {
   }
   updateSummaryHeight();
   window.addEventListener("resize", updateSummaryHeight);
-
-  if (route.query.success && route.query.success === "true") {
-    step.value = 3;
-    processOrder("online");
-  } else {
-    isComplete.value = false;
-  }
+  isComplete.value = false;
 });
 
 onUnmounted(() => {

@@ -17,11 +17,11 @@
         </Transition>
       </router-view>
     </main>
-  </div>
 
-  <Footer
-    v-if="$route.fullPath !== '/login' && $route.fullPath !== '/register'"
-  />
+    <Footer
+      v-if="$route.fullPath !== '/login' && $route.fullPath !== '/register'"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

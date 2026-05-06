@@ -574,7 +574,13 @@ const confirmDelete = async () => {
 
       await productStore.getProducts();
       toastStore.success("Product deleted successfully");
-    } catch (error) {}
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to delete product. Please try again.";
+      toastStore.error(message);
+    }
 
     productToDelete.value = null;
   }
@@ -631,9 +637,12 @@ watch(
           : bValue.localeCompare(aValue);
       } else {
         // Handle non-string values (like numbers)
+        const aNumber = typeof aValue === "number" ? aValue : Number(aValue ?? 0);
+        const bNumber = typeof bValue === "number" ? bValue : Number(bValue ?? 0);
+
         return sortDirection.value === "asc"
-          ? (aValue as any) - (bValue as any)
-          : (bValue as any) - (aValue as any);
+          ? aNumber - bNumber
+          : bNumber - aNumber;
       }
     });
 

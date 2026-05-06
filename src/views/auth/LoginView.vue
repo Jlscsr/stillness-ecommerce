@@ -98,10 +98,10 @@ import { Eye, EyeOff } from "lucide-vue-next";
 import { useFormValidation } from "@hooks/useFormValidation";
 import { required, email } from "@composables/validators";
 
-import { useAuthStore } from "@/stores/auth.store";
 import { useCartStore } from "@/stores/cart.store";
+import { useAuthStore } from "@/stores/auth.store";
 
-const { userLogin } = useAuthStore();
+const authStore = useAuthStore();
 const cartStore = useCartStore();
 const router = useRouter();
 const route = useRoute();
@@ -145,7 +145,7 @@ async function handleSubmit() {
   }
 
   try {
-    const response = await userLogin({
+    const response = await authStore.userLogin({
       email: formData.email,
       password: formData.password,
     });
@@ -154,10 +154,16 @@ async function handleSubmit() {
       return;
     }
 
+    if (authStore.userRole === "admin") {
+      await router.push({ name: "admin-dashboard" });
+      return;
+    }
+
     await cartStore.getCart();
-    
-    // Check if there's a returnUrl query parameter to redirect the user back to the product page
-    const returnUrl = route.query.returnUrl as string;
+
+    const returnUrl = (route.query.returnUrl || route.query.redirect) as
+      | string
+      | undefined;
     if (returnUrl) {
       router.push(returnUrl);
     } else {

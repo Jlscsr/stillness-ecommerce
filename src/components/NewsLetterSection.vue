@@ -44,15 +44,6 @@ import { ref } from "vue";
 const email = ref("");
 
 const handleSubmit = () => {
-  // Handle newsletter subscription logic here
-  console.log("Newsletter subscription:", email.value);
-
-  // You can add your subscription logic here, for example:
-  // - Send to API endpoint
-  // - Show success message
-  // - Reset form
-
-  // Reset form after submission
   email.value = "";
 };
 </script>

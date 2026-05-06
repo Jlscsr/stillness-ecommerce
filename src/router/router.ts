@@ -33,8 +33,13 @@ let authStatusChecked = false;
 router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore();
 
-  // Check authentication status on first navigation or if not authenticated
-  if (!authStatusChecked || !authStore.isAuthenticated) {
+  const needsAuthCheck =
+    !authStatusChecked ||
+    !authStore.isAuthenticated ||
+    (authStore.isAuthenticated && !authStore.userRole);
+
+  // Check authentication status on first navigation, after login, or when role is missing
+  if (needsAuthCheck) {
     try {
       await authStore.checkUserAuthStatus();
       authStatusChecked = true;
@@ -70,7 +75,7 @@ router.beforeEach(async (to, _from, next) => {
     return next({ name: "home" });
   }
 
-  // OPTIONAL auto-redirect admins away from public pages
+  // Admin accounts may only use the admin area.
   if (
     !adminOnly &&
     authStore.userRole === "admin" &&

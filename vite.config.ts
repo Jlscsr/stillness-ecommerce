@@ -5,8 +5,13 @@ import fs from "fs";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const isDev = env.VITE_ENV === "development";
-  const targetUrl = isDev ? "https://127.0.0.1:3000" : env.VITE_API_URL_HOST;
+  const isDev = env.VITE_ENV !== "production";
+  const targetUrl = isDev
+    ? env.VITE_API_URL || "http://localhost:5000"
+    : env.VITE_API_URL_HOST;
+  const keyPath = "certs/stillness.local-key.pem";
+  const certPath = "certs/stillness.local.pem";
+  const hasLocalCerts = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
   const resolvePath = (dir: string) =>
     fileURLToPath(new URL(`./src/${dir}`, import.meta.url));
@@ -36,10 +41,12 @@ export default defineConfig(({ mode }) => {
       host: true,
       port: 5173,
       ...(isDev && {
-        https: {
-          key: fs.readFileSync("certs/stillness.local-key.pem"),
-          cert: fs.readFileSync("certs/stillness.local.pem"),
-        },
+        ...(hasLocalCerts && {
+          https: {
+            key: fs.readFileSync(keyPath),
+            cert: fs.readFileSync(certPath),
+          },
+        }),
         proxy: {
           "/api": {
             target: targetUrl,
@@ -67,7 +74,7 @@ export default defineConfig(({ mode }) => {
     define: {
       __VUE_PROD_DEVTOOLS__: false,
       __API_URL__: JSON.stringify(
-        isDev ? "https://localhost:3001" : env.VITE_API_URL_HOST
+        isDev ? targetUrl : env.VITE_API_URL_HOST
       ),
       "process.env.NODE_ENV": JSON.stringify(mode),
     },

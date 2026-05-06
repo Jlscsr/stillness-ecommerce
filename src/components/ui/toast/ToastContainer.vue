@@ -35,9 +35,7 @@ interface Props {
     | "bottom-center";
 }
 
-const { position } = withDefaults(defineProps<Props>(), {
-  position: "top-right",
-});
+const { position = "top-right" } = defineProps<Props>();
 
 const toastStore = useToastStore();
 const { toasts } = storeToRefs(toastStore);

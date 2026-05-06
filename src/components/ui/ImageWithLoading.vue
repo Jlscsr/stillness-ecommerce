@@ -52,13 +52,17 @@
     >
       <img
         v-if="shouldLoad"
-        v-show="!isLoading && !hasError"
         :src="src"
         :alt="alt"
-        :class="imageClass"
+        :class="[
+          imageClass,
+          'transition-opacity duration-300',
+          isLoading || hasError ? 'opacity-0' : 'opacity-100',
+        ]"
         @load="handleImageLoad"
         @error="handleImageError"
-        loading="eager"
+        :loading="props.eager ? 'eager' : 'lazy'"
+        decoding="async"
       />
     </Transition>
 

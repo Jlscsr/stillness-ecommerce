@@ -25,6 +25,7 @@ export const useAuthStore = defineStore("auth", () => {
         return { success: false, error: response.message };
       }
       isAuthenticated.value = true;
+      await checkUserAuthStatus();
 
       return { success: true };
     } catch (err) {
@@ -43,6 +44,7 @@ export const useAuthStore = defineStore("auth", () => {
       }
 
       isAuthenticated.value = true;
+      await checkUserAuthStatus();
       return { success: true };
     } catch (err) {
       error.value = "Registration failed";
@@ -61,6 +63,7 @@ export const useAuthStore = defineStore("auth", () => {
 
       isAuthenticated.value = true;
       userRole.value = response.data?.role || null;
+      return { success: true, role: userRole.value };
     } catch (err) {
       error.value = "Failed to check authentication status";
       isAuthenticated.value = false;
@@ -68,13 +71,18 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  const clearAuthState = () => {
+    isAuthenticated.value = false;
+    userRole.value = null;
+    error.value = null;
+
+    resetAuthCheck();
+  };
+
   const logoutUser = async () => {
     try {
       await logout();
-      isAuthenticated.value = false;
-      error.value = null;
-
-      resetAuthCheck();
+      clearAuthState();
     } catch (err) {
       error.value = "Logout failed";
       return { success: false, error: error.value };
@@ -88,6 +96,7 @@ export const useAuthStore = defineStore("auth", () => {
     userLogin,
     userRegister,
     checkUserAuthStatus,
+    clearAuthState,
     logoutUser,
   };
 });

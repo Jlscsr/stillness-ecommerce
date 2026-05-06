@@ -295,7 +295,6 @@ watch(
 );
 
 onMounted(() => {
-  console.log(items.value);
   document.addEventListener("keydown", handleEscapeKey);
 });
 

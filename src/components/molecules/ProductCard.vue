@@ -5,8 +5,8 @@
   >
     <div class="mb-4 overflow-hidden rounded-sm shadow-lg">
       <ImageWithLoading
-        :src="product.images[0].src || '/placeholder.svg'"
-        :alt="product.images[0].alt || 'Product Image'"
+        :src="product.images?.[0]?.src ?? '/images/placeholder.webp'"
+        :alt="product.images?.[0]?.alt ?? `${product.name} image`"
         container-class="w-full h-[250px]"
         image-class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         root-margin="100px"

@@ -63,8 +63,13 @@ import {
   Leaf,
   Coffee,
   Sparkles,
+  Layers,
 } from "lucide-vue-next";
 import ScrollAnimation from "@/components/ui/ScrollAnimation.vue";
+import {
+  PRODUCT_CATEGORIES,
+  type ProductCategoryId,
+} from "@/constants/categories";
 
 interface Category {
   name: string;
@@ -74,62 +79,60 @@ interface Category {
   description: string;
 }
 
-const categories: Category[] = [
-  {
-    name: "Home",
-    japaneseText: "家",
+const categoryVisuals: Record<
+  ProductCategoryId,
+  Pick<Category, "icon" | "href" | "description">
+> = {
+  home: {
     icon: Home,
     href: "/categories/home",
     description: "Essentials for a tranquil living space",
   },
-  {
-    name: "Apparel",
-    japaneseText: "衣類",
+  apparel: {
     icon: ShoppingBag,
     href: "/categories/apparel",
     description: "Comfortable, minimalist clothing",
   },
-  {
-    name: "Decor",
-    japaneseText: "装飾",
+  decor: {
     icon: Lamp,
     href: "/categories/decor",
     description: "Mindful objects for your space",
   },
-  {
-    name: "Wellness",
-    japaneseText: "健康",
+  wellness: {
     icon: Heart,
     href: "/categories/wellness",
     description: "Products for mind and body balance",
   },
-  {
-    name: "Gifts",
-    japaneseText: "贈り物",
-    icon: Gift,
-    href: "/categories/gifts",
-    description: "Thoughtful presents for loved ones",
-  },
-  {
-    name: "Seasonal",
-    japaneseText: "季節",
-    icon: Leaf,
-    href: "/categories/seasonal",
-    description: "Items that celebrate nature's cycles",
-  },
-  {
-    name: "Tea",
-    japaneseText: "お茶",
+  tea: {
     icon: Coffee,
     href: "/categories/tea",
     description: "Ceremonial and everyday tea essentials",
   },
-  {
-    name: "Limited Edition",
-    japaneseText: "限定版",
+  collections: {
+    icon: Layers,
+    href: "/categories/collections",
+    description: "Curated pieces grouped by ritual and mood",
+  },
+  gifts: {
+    icon: Gift,
+    href: "/categories/gifts",
+    description: "Thoughtful presents for loved ones",
+  },
+  seasonal: {
+    icon: Leaf,
+    href: "/categories/seasonal",
+    description: "Items that celebrate nature's cycles",
+  },
+  limited_edition: {
     icon: Sparkles,
-    href: "/categories/limited",
+    href: "/categories/limited_edition",
     description: "Special collections and unique pieces",
   },
-];
+};
+
+const categories: Category[] = PRODUCT_CATEGORIES.map((category) => ({
+  name: category.label,
+  japaneseText: category.japaneseText,
+  ...categoryVisuals[category.id],
+}));
 </script>

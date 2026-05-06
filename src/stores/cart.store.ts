@@ -18,8 +18,6 @@ export const useCartStore = defineStore("cart", () => {
     try {
       const response = await fetchCartItems();
       cart.value = response.data ?? null;
-      console.log("Cart items:", cart.value);
-      console.log("Cart items count:", cartItemsCount.value);
     } catch (error) {
       cart.value = null;
       console.error("Failed to fetch cart items:", error);

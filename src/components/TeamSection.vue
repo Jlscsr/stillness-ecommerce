@@ -11,9 +11,9 @@
             Meet Our Team
           </h2>
           <p class="mt-4 max-w-2xl mx-auto text-charcoal/70">
-            This e-commerce platform was created as a final project for our
-            school. Our team members worked together to create this
-            Japanese-inspired online shopping experience.
+            Behind Stillness is a small team shaping a calm, thoughtful shopping
+            experience through careful curation, design, technology, and
+            customer care.
           </p>
         </div>
       </ScrollAnimation>
@@ -103,11 +103,10 @@
       <ScrollAnimation type="fade" :delay="0.5">
         <div class="mt-12 text-center">
           <p class="text-charcoal/80 max-w-2xl mx-auto mb-6">
-            This project represents our collective vision of bringing Japanese
-            aesthetic principles to the digital realm. We've applied concepts of
-            simplicity, harmony, and mindfulness to create not just an
-            e-commerce platform, but an immersive experience that honors the
-            beauty of Japanese craftsmanship and design philosophy.
+            Our shared vision is to bring Japanese aesthetic principles into a
+            modern online brand experience. Through simplicity, harmony, and
+            mindfulness, the team curates a space that honors the beauty of
+            thoughtful craftsmanship and intentional living.
           </p>
         </div>
       </ScrollAnimation>
@@ -137,57 +136,57 @@ const isMobile = ref(false);
 const teamMembers: TeamMember[] = [
   {
     name: "Julius Raagas",
-    role: "Developer | Project Manager",
+    role: "Founder & Technology Lead",
     description:
-      "Led the development team and built the full-stack application, managing both the Vue.js frontend and Node.js backend to deliver a seamless e-commerce platform.",
+      "Leads the brand's digital direction and builds the full-stack shopping experience, keeping the storefront fast, reliable, and easy to use.",
     image:
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
     name: "Team Member 1",
-    role: "UI Designer",
+    role: "Brand Designer",
     description:
-      "Designed the look and feel of the website, mixing Japanese design style with modern web design to make it both beautiful and easy to use.",
+      "Shapes the visual identity of Stillness, blending Japanese-inspired restraint with a warm, modern e-commerce presentation.",
     image:
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
     name: "Team Member 2",
-    role: "Documentation Specialist",
+    role: "Product Content Strategist",
     description:
-      "Wrote clear documentation for the project, creating guides and technical notes to help anyone understand how the website works.",
+      "Develops product stories, collection descriptions, and educational content that help customers understand the materials, rituals, and design ideas behind each item.",
     image:
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/93_xvfawx.png",
   },
   {
     name: "Team Member 3",
-    role: "UI Designer",
+    role: "Customer Experience Designer",
     description:
-      "Worked on making the website easy to use, focusing on user experience and creating designs that help customers enjoy shopping on the site.",
+      "Refines browsing, product discovery, and checkout flows so customers can move through the store with clarity and ease.",
     image:
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/93_xvfawx.png",
   },
   {
     name: "Team Member 4",
-    role: "Documentation Specialist",
+    role: "Merchandising Coordinator",
     description:
-      "Created technical documentation and guides, making sure all the project information is well organized and easy to understand for the team.",
+      "Organizes seasonal collections, product categories, and featured selections to keep the storefront focused, balanced, and easy to explore.",
     image:
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
     name: "Team Member 5",
-    role: "Documentation Specialist",
+    role: "Quality & Fulfillment Lead",
     description:
-      "Managed documentation and quality checks, making sure everything is properly documented and the website works as it should.",
+      "Oversees product quality checks, packing standards, and order readiness so each purchase feels considered from cart to doorstep.",
     image:
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },
   {
     name: "Team Member 6",
-    role: "UI Designer",
+    role: "Marketing & Community Lead",
     description:
-      "Focused on creating intuitive user interfaces and visual design elements, ensuring the website provides a seamless and aesthetically pleasing user experience.",
+      "Guides campaigns, customer communication, and community storytelling around mindful living and intentional design.",
     image:
       "https://res.cloudinary.com/duz4cbg9w/image/upload/v1749613592/47_agauqa.png",
   },

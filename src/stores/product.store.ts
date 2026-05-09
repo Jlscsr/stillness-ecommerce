@@ -5,6 +5,9 @@ import { fetchProducts, fetchProductById } from "@services/product.service";
 
 export const useProductStore = defineStore("product", () => {
   const products = ref<Product[]>([]);
+  const isLoading = ref(false);
+  const fetchError = ref<string | null>(null);
+  let productsRequest: Promise<Product[]> | null = null;
 
   // Getters for computed properties
   const productsCount = computed(() => products.value.length);
@@ -30,14 +33,37 @@ export const useProductStore = defineStore("product", () => {
     };
   });
 
-  const getProducts = async (params?: object) => {
-    try {
-      const response = await fetchProducts(params);
-      products.value = response.data || [];
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-      throw error;
+  const getProducts = async (params?: object): Promise<Product[]> => {
+    if (!params && productsRequest) {
+      return productsRequest;
     }
+
+    isLoading.value = true;
+    fetchError.value = null;
+
+    const request = fetchProducts(params)
+      .then((response) => {
+        products.value = response.data || [];
+        return products.value;
+      })
+      .catch((error) => {
+        fetchError.value = "Failed to fetch products.";
+        console.error("Failed to fetch products:", error);
+        throw error;
+      })
+      .finally(() => {
+        if (productsRequest === request) {
+          productsRequest = null;
+        }
+
+        isLoading.value = false;
+      });
+
+    if (!params) {
+      productsRequest = request;
+    }
+
+    return request;
   };
 
   const getProductById = async (id: string): Promise<Product | null> => {
@@ -71,6 +97,8 @@ export const useProductStore = defineStore("product", () => {
 
   return {
     products,
+    isLoading,
+    fetchError,
     getProducts,
     getProductById,
     productsCount,

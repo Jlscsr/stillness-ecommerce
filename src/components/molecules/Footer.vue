@@ -178,6 +178,10 @@
           <span class="text-xs">静けさ</span>
         </p>
       </div>
+      <p class="mt-4 text-center text-xs leading-relaxed text-charcoal/50">
+        Disclaimer: Stillness, this company, its stories, and any related
+        details are fictional and made up.
+      </p>
     </div>
   </footer>
 </template>

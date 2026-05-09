@@ -9,6 +9,7 @@
     <TestimonialsSection />
     <PromotionalBannerSection />
     <NewsLetterSection />
+    <ChatBotLauncher />
   </div>
 </template>
 
@@ -22,6 +23,7 @@ import TeamSection from "@components/TeamSection.vue";
 import TestimonialsSection from "@/components/TestimonialsSection.vue";
 import PromotionalBannerSection from "@/components/PromotionalBannerSection.vue";
 import NewsLetterSection from "@/components/NewsLetterSection.vue";
+import ChatBotLauncher from "@/components/ChatBotLauncher.vue";
 </script>
 
 <style scoped></style>
